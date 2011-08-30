@@ -23,26 +23,68 @@ public class TaskSelector {
         this.client = new DefaultHttpClient();
     }
 
-    public Document byId(int taskId) throws IOException, SAXException, ParsingException {
-        Document xml = this.loadDocument("get.xq?id=" + Integer.toString(taskId));
+    /**
+     * Gets a task from the database by ID.
+     *
+     * @param taskId The ID of the task.
+     * @return Document
+     * @throws IOException
+     * @throws SAXException
+     * @throws ParsingException
+     */
+    public Document byId(String taskId) throws IOException, SAXException, ParsingException {
+        Document xml = this.loadDocument("get.xq?id=" + taskId);
         return xml;
     }
 
+    /**
+     * Ges a random task from the database.
+     *
+     * @return Document
+     * @throws IOException
+     * @throws SAXException
+     * @throws ParsingException
+     */
     public Document random() throws IOException, SAXException, ParsingException {
         Document xml = this.loadDocument("get_random.xq");
         return xml;
     }
 
+    /**
+     * Gets a random task by type
+     *
+     * @param type The type ID (e.g. "spelling-error").
+     * @return Document
+     * @throws IOException
+     * @throws SAXException
+     * @throws ParsingException
+     */
     public Document randomByType(String type) throws IOException, SAXException, ParsingException {
         Document xml = this.loadDocument("random_by_type.xq?type=" + type);
         return xml;
     }
 
+    /**
+     * Gets all the tasks from the database.
+     *
+     * @return Document
+     * @throws IOException
+     * @throws SAXException
+     * @throws ParsingException
+     */
     public Document all() throws IOException, SAXException, ParsingException {
         Document xml = this.loadDocument("get.xq");
         return xml;
     }
 
+    /**
+     * Gets tasks sorted by priority.
+     *
+     * @return Document
+     * @throws IOException
+     * @throws SAXException
+     * @throws ParsingException
+     */
     public Document priority() throws IOException, SAXException, ParsingException {
         Document xml = this.loadDocument("priority.xq");
         return xml;
@@ -51,19 +93,36 @@ public class TaskSelector {
 //    public void create() throws IOException, SAXException {
 //
 //    }
-    
-    private nu.xom.Document loadDocument(String url) throws IOException, SAXException, ParsingException {
+
+    /**
+     * Loads a document from the database and parses it into an <code>Document</code>.
+     *
+     * @param urlStub The filename of the URL stub.
+     * @return Document
+     * @throws IOException
+     * @throws SAXException
+     * @throws ParsingException
+     */
+    private Document loadDocument(String urlStub) throws IOException, SAXException, ParsingException {
         HttpGet get = new HttpGet("http://" + this.address + ":" + this.port +
-                "/exist/rest/db/linkedgov-meta/taskhopper/" + url);
+                "/exist/rest/db/linkedgov-meta/taskhopper/" + urlStub);
         HttpResponse response = this.client.execute(get);
         HttpEntity entity = response.getEntity();
-        Document xml = TaskSelector.readDocumentXom(entity.getContent());
+        Document xml = TaskSelector.readDocument(entity.getContent());
         return xml;
     }
 
-    private static nu.xom.Document readDocumentXom(InputStream is) throws ParsingException, IOException {
+    /**
+     * Reads a document from an <code>InputStream</code> into a <code>Document</code>.
+     *
+     * @param is The <code>InputStream</code> containing XML.
+     * @return Document
+     * @throws ParsingException
+     * @throws IOException
+     */
+    private static Document readDocument(InputStream is) throws ParsingException, IOException {
         Builder parser = new Builder();
-        nu.xom.Document doc = parser.build(is);
+        Document doc = parser.build(is);
         return doc;
     }
 }

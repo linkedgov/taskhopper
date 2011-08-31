@@ -1,6 +1,10 @@
 package org.linkedgov.taskhopper;
+import groovyx.net.http.URIBuilder;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URISyntaxException;
+import java.util.HashMap;
+import java.util.Map;
 import nu.xom.ParsingException;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -59,7 +63,8 @@ public class TaskSelector {
      * @throws SAXException
      * @throws ParsingException
      */
-    public Document randomByType(String type) throws IOException, SAXException, ParsingException {
+    public Document randomByType(String type)
+            throws IOException, SAXException, ParsingException {
         Document xml = this.loadDocument("random_by_type.xq?type=" + type);
         return xml;
     }
@@ -90,9 +95,40 @@ public class TaskSelector {
         return xml;
     }
 
-//    public void create() throws IOException, SAXException {
-//
-//    }
+    /**
+     * Creates a task in the database.
+     *
+     * @param taskType
+     * @param issueUri
+     * @param graphUri
+     * @param id Leave this null to have an ID assigned automatically. If you
+     * provide a URI that duplicates one in the database already, it will be
+     * ignored and a new ID assigned.
+     * @throws IOException
+     * @throws SAXException
+     * @throws ParsingException
+     * @throws URISyntaxException
+     */
+    public void create(String taskType, String issueUri, String graphUri, String id)
+            throws IOException, SAXException, ParsingException, URISyntaxException {
+        Map<String, String> params = new HashMap<String, String>();
+        if (issueUri != null && issueUri.length() > 0)
+        {
+            params.put("issue-uri", issueUri);
+        }
+        if (taskType != null && taskType.length() > 0) {
+            params.put("task-type", taskType);
+        }
+        if (graphUri != null && graphUri.length() > 0) {
+            params.put("graph-uri", graphUri);
+        }
+        if (id != null && id.length() > 0) {
+            params.put("id", id);
+        }
+        URIBuilder uri = new URIBuilder("new.xq");
+        uri.addQueryParams(params);
+        Document xml = this.loadDocument(uri.toURI());
+    }
 
     /**
      * Loads a document from the database and parses it into an <code>Document</code>.

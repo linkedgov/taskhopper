@@ -125,6 +125,6 @@ public class InputServlet extends HttpServlet {
      */
     @Override
     public String getServletInfo() {
-        return "Short description";
+        return "For adding individual issues to the task hopper.";
     }// </editor-fold>
 }

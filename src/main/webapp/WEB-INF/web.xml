@@ -5,9 +5,18 @@
         <servlet-name>InputServlet</servlet-name>
         <servlet-class>org.linkedgov.taskhopper.http.InputServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>OutputServlet</servlet-name>
+        <servlet-class>org.linkedgov.taskhopper.http.OutputServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>InputServlet</servlet-name>
         <url-pattern>/task/new</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>OutputServlet</servlet-name>
+        <url-pattern>/task</url-pattern>
+        <url-pattern>/task/random</url-pattern>
     </servlet-mapping>
     <welcome-file-list>
         <welcome-file>/WEB-INF/jsp/hello.jsp</welcome-file>

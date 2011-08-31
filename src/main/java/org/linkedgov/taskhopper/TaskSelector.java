@@ -109,11 +109,10 @@ public class TaskSelector {
      * @throws ParsingException
      * @throws URISyntaxException
      */
-    public void create(String taskType, String issueUri, String graphUri, String id)
+    public Document create(String taskType, String issueUri, String graphUri, String id)
             throws IOException, SAXException, ParsingException, URISyntaxException {
         Map<String, String> params = new HashMap<String, String>();
-        if (issueUri != null && issueUri.length() > 0)
-        {
+        if (issueUri != null && issueUri.length() > 0) {
             params.put("issue-uri", issueUri);
         }
         if (taskType != null && taskType.length() > 0) {
@@ -127,7 +126,9 @@ public class TaskSelector {
         }
         URIBuilder uri = new URIBuilder("new.xq");
         uri.addQueryParams(params);
-        Document xml = this.loadDocument(uri.toURI());
+        System.out.println(uri.toURI().toString());
+        Document xml = this.loadDocument(uri.toURI().toString());
+        return xml;
     }
 
     /**

@@ -2,14 +2,14 @@
 <web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
     <display-name>LinkedGov TaskHopper</display-name>
     <servlet>
-        <servlet-name>TaskHopperServlet</servlet-name>
-        <servlet-class>org.linkedgov.taskhopper.http.TaskHopperServlet</servlet-class>
+        <servlet-name>InputServlet</servlet-name>
+        <servlet-class>org.linkedgov.taskhopper.http.InputServlet</servlet-class>
     </servlet>
     <servlet-mapping>
-        <servlet-name>TaskHopperServlet</servlet-name>
-        <url-pattern>/issue/new</url-pattern>
+        <servlet-name>InputServlet</servlet-name>
+        <url-pattern>/task/new</url-pattern>
     </servlet-mapping>
     <welcome-file-list>
-      <welcome-file>/WEB-INF/jsp/hello.jsp</welcome-file>
+        <welcome-file>/WEB-INF/jsp/hello.jsp</welcome-file>
     </welcome-file-list>
-  </web-app>
+</web-app>

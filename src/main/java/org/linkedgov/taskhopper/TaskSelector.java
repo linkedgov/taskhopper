@@ -9,16 +9,30 @@ import org.xml.sax.SAXException;
 import nu.xom.Document;
 
 public class TaskSelector {
+    // <editor-fold defaultstate="collapsed" desc="Connection conn;">
 
-    private Connection conn;
+    private Connection connection;
+     /**
+     * @return the connection to the database
+     */
+    public Connection getConnection() {
+        return connection;
+    }
+
+    /**
+     * @param conn the connection to the database to set
+     */
+    public void setConnection(Connection conn) {
+        this.connection = conn;
+    }// </editor-fold>
 
     public TaskSelector(String address, int port) {
         Connection newConn = new Connection(address, port);
-        this.conn = newConn;
+        this.connection = newConn;
     }
 
     public TaskSelector(Connection conn) {
-        this.conn = conn;
+        this.connection = conn;
     }
 
     /**
@@ -31,7 +45,7 @@ public class TaskSelector {
      * @throws ParsingException
      */
     public Document byId(String taskId) throws IOException, SAXException, ParsingException {
-        Document xml = this.conn.loadDocument("get.xq?id=" + taskId);
+        Document xml = this.getConnection().loadDocument("get.xq?id=" + taskId);
         return xml;
     }
 
@@ -44,7 +58,7 @@ public class TaskSelector {
      * @throws ParsingException
      */
     public Document random() throws IOException, SAXException, ParsingException {
-        Document xml = this.conn.loadDocument("get_random.xq");
+        Document xml = this.getConnection().loadDocument("get_random.xq");
         return xml;
     }
 
@@ -62,7 +76,7 @@ public class TaskSelector {
             URISyntaxException, URISyntaxException {
         URIBuilder uri = new URIBuilder("random_by_type.xq");
         uri.addQueryParam("type", type);
-        Document xml = this.conn.loadDocument(uri);
+        Document xml = this.getConnection().loadDocument(uri);
         return xml;
     }
 
@@ -75,7 +89,7 @@ public class TaskSelector {
      * @throws ParsingException
      */
     public Document all() throws IOException, SAXException, ParsingException {
-        Document xml = this.conn.loadDocument("get.xq");
+        Document xml = this.getConnection().loadDocument("get.xq");
         return xml;
     }
 
@@ -88,7 +102,7 @@ public class TaskSelector {
      * @throws ParsingException
      */
     public Document priority() throws IOException, SAXException, ParsingException {
-        Document xml = this.conn.loadDocument("priority.xq");
+        Document xml = this.getConnection().loadDocument("priority.xq");
         return xml;
     }
 
@@ -124,7 +138,8 @@ public class TaskSelector {
         URIBuilder uri = new URIBuilder("new.xq");
         uri.addQueryParams(params);
         System.out.println(uri.toURI().toString());
-        Document xml = this.conn.loadDocument(uri);
+        Document xml = this.getConnection().loadDocument(uri);
         return xml;
     }
+
 }

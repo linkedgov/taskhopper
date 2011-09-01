@@ -32,25 +32,25 @@ public class Connection {
     public void setUrl(String url) {
         this.url = url;
     }// </editor-fold>
-    // <editor-fold defaultstate="collapsed" desc="int port;">
-    private int port;
+    // <editor-fold defaultstate="collapsed" desc="Integer port;">
+    private Integer port;
 
     /**
      * @return port number
      */
-    public int getPort() {
+    public Integer getPort() {
         return port;
     }
 
     /**
      * @param port the port to set
      */
-    public void setPort(int port) {
+    public void setPort(Integer port) {
         this.port = port;
     }// </editor-fold>
     private HttpClient client;
 
-    public Connection(String url, int port) {
+    public Connection(String url, Integer port) {
         this.setUrl(url);
         this.setPort(port);
         this.client = new DefaultHttpClient();

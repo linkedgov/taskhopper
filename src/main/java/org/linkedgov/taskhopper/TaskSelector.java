@@ -26,7 +26,13 @@ public class TaskSelector {
         this.connection = conn;
     }// </editor-fold>
 
-    public TaskSelector(String address, int port) {
+    public TaskSelector(String address, Integer port) {
+        if (address == null) {
+            throw new NullPointerException("Address must be set.");
+        }
+        if (port == null) {
+            port = 8080;
+        }
         Connection newConn = new Connection(address, port);
         this.connection = newConn;
     }

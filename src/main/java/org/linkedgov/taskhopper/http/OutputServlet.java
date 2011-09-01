@@ -18,8 +18,11 @@ public class OutputServlet extends HttpServlet {
     // TODO: put the configuration into a properties file or into Maven etc.
     private TaskSelector ts = new TaskSelector("localhost", 8080);
 
-    /** 
+    /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
+     *
+     * Handles random and byId lookups.
+     *
      * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs

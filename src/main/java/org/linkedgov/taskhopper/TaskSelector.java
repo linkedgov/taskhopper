@@ -64,8 +64,11 @@ public class TaskSelector {
      * @throws ParsingException
      */
     public Document randomByType(String type)
-            throws IOException, SAXException, ParsingException {
-        Document xml = this.loadDocument("random_by_type.xq?type=" + type);
+            throws IOException, SAXException, ParsingException,
+            URISyntaxException, URISyntaxException {
+        URIBuilder uri = new URIBuilder("random_by_type.xq");
+        uri.addQueryParam("type", type);
+        Document xml = this.loadDocument(uri.toURI().toString());
         return xml;
     }
 

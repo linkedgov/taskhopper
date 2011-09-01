@@ -2,6 +2,10 @@
 <web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
     <display-name>LinkedGov TaskHopper</display-name>
     <servlet>
+        <servlet-name>DispatchServlet</servlet-name>
+        <servlet-class>org.linkedgov.taskhopper.http.DispatchServlet</servlet-class>
+    </servlet>
+    <servlet>
         <servlet-name>InputServlet</servlet-name>
         <servlet-class>org.linkedgov.taskhopper.http.InputServlet</servlet-class>
     </servlet>
@@ -10,13 +14,9 @@
         <servlet-class>org.linkedgov.taskhopper.http.OutputServlet</servlet-class>
     </servlet>
     <servlet-mapping>
-        <servlet-name>InputServlet</servlet-name>
-        <url-pattern>/task/new</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>OutputServlet</servlet-name>
+        <servlet-name>DispatchServlet</servlet-name>
         <url-pattern>/task</url-pattern>
-        <url-pattern>/task/random</url-pattern>
+        <url-pattern>/task/*</url-pattern>
     </servlet-mapping>
     <welcome-file-list>
         <welcome-file>/WEB-INF/jsp/hello.jsp</welcome-file>

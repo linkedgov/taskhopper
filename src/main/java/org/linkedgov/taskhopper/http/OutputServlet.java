@@ -3,18 +3,20 @@ package org.linkedgov.taskhopper.http;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import nu.xom.Document;
+import nu.xom.Element;
+import nu.xom.Elements;
 import nu.xom.ParsingException;
-import org.apache.commons.lang.StringUtils;
 import org.linkedgov.taskhopper.TaskSelector;
 import org.xml.sax.SAXException;
 
 public class OutputServlet extends HttpServlet {
+    // TODO: put the configuration into a properties file or into Maven etc.
+    private TaskSelector ts = new TaskSelector("localhost", 8080);
 
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -25,16 +27,51 @@ public class OutputServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-        // TODO: put the configuration into a properties file or into Maven etc.
-        TaskSelector ts = new TaskSelector("localhost", 8080);
         response.setContentType("application/xml;charset=UTF-8");
         PrintWriter out = response.getWriter();
-        // TODO: test this
-        System.out.println(request.getServletPath());
 
         try {
-            Document dbResponse;
+            if (request.getAttribute("action") ==  "random") {
+                if (request.getParameter("type") != null &&
+                        !(request.getParameter("type").isEmpty())) {
+                    /* Handle random with type, using random_by_type.xq */
+                    String typeInput = request.getParameter("type");
+                    Document randomByType = ts.randomByType(typeInput);
+                    out.write(randomByType.toXML());
+                } else {
+                    /* Handle random with random.xq */
+                    Document random = ts.random();
+                    out.write(random.toXML());
+                }
+
+            }
+            if (request.getAttribute("action") == "byId") {
+                /* Handle requests for specific tasks by ID using get.xq */
+                String reqId = (String) request.getAttribute("id");
+                Document doc = ts.byId(reqId);
+
+                /* Check to see if the result is empty. If it is,
+                 * we return 404 Not Found status code. */
+                Element root = doc.getRootElement();
+                Elements empties = root.getChildElements("empty");
+                if (empties.size() != 0) {
+                    response.setStatus(response.SC_NOT_FOUND);
+                }
+                out.write(doc.toXML());
+            }
+        /* Catch hopefully rare errors. */
+        } catch (SAXException e) {
+            response.setStatus(response.SC_INTERNAL_SERVER_ERROR);
+            out.write("<?xml version=\"1.0\" ?>\n");
+            out.write("<error>SAXException</error>");
+        } catch (ParsingException e) {
+            response.setStatus(response.SC_INTERNAL_SERVER_ERROR);
+            out.write("<?xml version=\"1.0\" ?>\n");
+            out.write("<error>ParsingException</error>");
+        } catch (URISyntaxException e) {
+            response.setStatus(response.SC_INTERNAL_SERVER_ERROR);
+            out.write("<?xml version=\"1.0\" ?>\n");
+            out.write("<error>The URI provided has a syntax error.</error>");
         } finally {
             out.close();
         }

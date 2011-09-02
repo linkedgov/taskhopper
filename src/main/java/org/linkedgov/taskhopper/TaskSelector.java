@@ -153,7 +153,6 @@ public class TaskSelector {
         }
         URIBuilder uri = new URIBuilder("new.xq");
         uri.addQueryParams(params);
-        System.out.println(uri.toURI().toString());
         Document xml = this.getConnection().loadDocument(uri);
         return xml;
     }

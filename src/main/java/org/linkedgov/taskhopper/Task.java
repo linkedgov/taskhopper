@@ -111,4 +111,13 @@ public class Task {
         this.setPriority(0);
     }
 
+    @Override
+    public String toString() {
+        String out = "Task: ";
+        out = out + this.getTaskType() + " | ";
+        out = out + this.getIssueUri() + " | ";
+        out = out + this.getGraphUri();
+        return out;
+    }
+
 }

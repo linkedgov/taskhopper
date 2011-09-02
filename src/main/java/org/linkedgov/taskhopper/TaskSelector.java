@@ -13,7 +13,6 @@ import org.xml.sax.SAXException;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.zip.DataFormatException;
 
 public class TaskSelector {
     private final String potentiallyIncorrectUri =
@@ -157,9 +156,6 @@ public class TaskSelector {
         return xml;
     }
 
-    /* TODO: method to retrieve a document from the XML database, parse the
-     * issues out of it (using either low-level RDF manipulation or SPARQL) and
-     * create those as methods in the database */
     /**
      * Retrieves a document from the XML database (or anywhere with a URI),
      * parses the issues from it and returns an array of Task objects for
@@ -171,7 +167,7 @@ public class TaskSelector {
      * @throws DataFormatException
      */
     public ArrayList<Task> importIssues(String url)
-            throws ParsingException, IOException, DataFormatException {
+            throws ParsingException, IOException {
         Document xml = this.getConnection().loadUrl(url);
 
         /* Parse the main document from the XML into RDF. */

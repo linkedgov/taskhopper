@@ -6,6 +6,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import nu.xom.ParsingException;
 
 public class DispatchServlet extends HttpServlet {
    
@@ -22,6 +23,9 @@ public class DispatchServlet extends HttpServlet {
         
         if (uri.matches("^/task/new")) {
             InputServlet srv = new InputServlet();
+            srv.processRequest(request, response);
+        } else if (uri.matches("^/task/import")) {
+            ImportServlet srv = new ImportServlet();
             srv.processRequest(request, response);
         } else if (uri.matches("^/task/random")) {
             OutputServlet srv = new OutputServlet();

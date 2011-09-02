@@ -10,6 +10,10 @@
         <servlet-class>org.linkedgov.taskhopper.http.InputServlet</servlet-class>
     </servlet>
     <servlet>
+        <servlet-name>ImportServlet</servlet-name>
+        <servlet-class>org.linkedgov.taskhopper.http.ImportServlet</servlet-class>
+    </servlet>
+    <servlet>
         <servlet-name>OutputServlet</servlet-name>
         <servlet-class>org.linkedgov.taskhopper.http.OutputServlet</servlet-class>
     </servlet>

@@ -1,5 +1,14 @@
 package org.linkedgov.taskhopper;
 
+import groovyx.net.http.URIBuilder;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.util.HashMap;
+import java.util.Map;
+import nu.xom.Document;
+import nu.xom.ParsingException;
+import org.xml.sax.SAXException;
+
 public class Task {
     // <editor-fold defaultstate="collapsed" desc="String id;">
     private String id;
@@ -67,6 +76,8 @@ public class Task {
         this.graphUri = graphUri;
     }// </editor-fold>
 
+    private boolean inDatabase = false;
+
     public Task(String taskType, String issueUri, String graphUri) {
         if (taskType != null) {
             this.setTaskType(taskType);
@@ -76,6 +87,41 @@ public class Task {
         }
         if (graphUri != null) {
             this.setGraphUri(graphUri);
+        }
+    }
+
+    public void update(Connection conn) {
+        // TODO: implement update
+    }
+    
+    public Document create(Connection conn)
+            throws URISyntaxException, IOException, SAXException, ParsingException {
+        Map<String, String> params = new HashMap<String, String>();
+        if (this.getIssueUri() != null && this.getIssueUri().length() > 0) {
+            params.put("issue-uri", this.getIssueUri());
+        }
+        if (this.getTaskType() != null && this.getTaskType().length() > 0) {
+            params.put("task-type", this.getTaskType());
+        }
+        if (this.getGraphUri() != null && this.getGraphUri().length() > 0) {
+            params.put("graph-uri", this.getGraphUri());
+        }
+        if (this.id != null && this.id.length() > 0) {
+            params.put("id", this.id);
+        }
+        
+        URIBuilder uri = new URIBuilder("new.xq");
+        uri.addQueryParams(params);
+        Document xml = conn.loadDocument(uri);
+        return xml;
+    }
+
+    public void save(Connection conn)
+            throws URISyntaxException, IOException, SAXException, ParsingException {
+        if (this.inDatabase == true) {
+            this.update(conn);
+        } else {
+            this.create(conn);
         }
     }
 

@@ -1,6 +1,6 @@
 package org.linkedgov.taskhopper;
 
-import groovyx.net.http.URIBuilder;
+import org.linkedgov.taskhopper.thirdparty.URIBuilder;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;

@@ -1,6 +1,6 @@
 package org.linkedgov.taskhopper;
 import com.hp.hpl.jena.rdf.model.*;
-import groovyx.net.http.URIBuilder;
+import org.linkedgov.taskhopper.thirdparty.URIBuilder;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.HashMap;

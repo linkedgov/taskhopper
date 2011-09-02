@@ -11,6 +11,10 @@
     <url>http://maven.apache.org</url>
     <repositories>
         <repository>
+            <id>OpenJena</id>
+            <url>http://openjena.org/repo/</url>
+        </repository>
+        <repository>
             <id>Codehaus</id>
             <url>http://repository.codehaus.org</url>
         </repository>
@@ -70,6 +74,18 @@
             <version>0.5.1</version>
         </dependency>
 
+        <dependency>
+            <groupId>net.sourceforge.jena</groupId>
+            <artifactId>jena</artifactId>
+            <version>2.3</version>
+            <exclusions>
+                <!-- http://jira.codehaus.org/browse/MXMLBEANS-13 -->
+                <exclusion>
+                    <artifactId>xmlbeans-jsr173-api</artifactId>
+                    <groupId>xmlbeans</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
     </dependencies>
 
     <build>

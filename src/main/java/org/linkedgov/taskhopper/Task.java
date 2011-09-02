@@ -67,37 +67,6 @@ public class Task {
         this.graphUri = graphUri;
     }// </editor-fold>
 
-    // <editor-fold defaultstate="collapsed" desc="int priority;">
-    private int priority;
-    /**
-     * @return the priority
-     */
-    public int getPriority() {
-        return priority;
-    }
-
-    /**
-     * @param priority the priority to set
-     */
-    public void setPriority(int priority) {
-        this.priority = priority;
-    }// </editor-fold>
-
-    public Task(String taskType, String issueUri, String graphUri, Integer priority) {
-        if (taskType != null) {
-            this.setTaskType(taskType);
-        }
-        if (issueUri != null) {
-            this.setIssueUri(issueUri);
-        }
-        if (graphUri != null) {
-            this.setGraphUri(graphUri);
-        }
-        if (priority != null) {
-            this.setPriority(priority);
-        }
-    }
-
     public Task(String taskType, String issueUri, String graphUri) {
         if (taskType != null) {
             this.setTaskType(taskType);
@@ -108,7 +77,6 @@ public class Task {
         if (graphUri != null) {
             this.setGraphUri(graphUri);
         }
-        this.setPriority(0);
     }
 
     @Override

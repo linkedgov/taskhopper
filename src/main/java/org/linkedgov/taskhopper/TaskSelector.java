@@ -1,14 +1,24 @@
 package org.linkedgov.taskhopper;
+import com.hp.hpl.jena.rdf.model.*;
 import groovyx.net.http.URIBuilder;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
 import nu.xom.ParsingException;
-import org.xml.sax.SAXException;
 import nu.xom.Document;
+import nu.xom.Element;
+import nu.xom.Nodes;
+import org.xml.sax.SAXException;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.zip.DataFormatException;
 
 public class TaskSelector {
+    private final String potentiallyIncorrectUri =
+            "http://linkedgov.org/schema/potentiallyIncorrect";
+    
     // <editor-fold defaultstate="collapsed" desc="Connection conn;">
 
     private Connection connection;
@@ -51,7 +61,7 @@ public class TaskSelector {
      * @throws ParsingException
      */
     public Document byId(String taskId) throws IOException, SAXException, ParsingException {
-        Document xml = this.getConnection().loadDocument("get.xq?id=" + taskId);
+        Document xml = this.getConnection().loadDocument("get.xq?id=" + taskId, null);
         return xml;
     }
 
@@ -64,7 +74,7 @@ public class TaskSelector {
      * @throws ParsingException
      */
     public Document random() throws IOException, SAXException, ParsingException {
-        Document xml = this.getConnection().loadDocument("get_random.xq");
+        Document xml = this.getConnection().loadDocument("get_random.xq", null);
         return xml;
     }
 
@@ -95,7 +105,7 @@ public class TaskSelector {
      * @throws ParsingException
      */
     public Document all() throws IOException, SAXException, ParsingException {
-        Document xml = this.getConnection().loadDocument("get.xq");
+        Document xml = this.getConnection().loadDocument("get.xq", null);
         return xml;
     }
 
@@ -108,44 +118,7 @@ public class TaskSelector {
      * @throws ParsingException
      */
     public Document priority() throws IOException, SAXException, ParsingException {
-        Document xml = this.getConnection().loadDocument("priority.xq");
+        Document xml = this.getConnection().loadDocument("priority.xq", null);
         return xml;
     }
-
-    /**
-     * Creates a task in the database.
-     *
-     * @param taskType
-     * @param issueUri
-     * @param graphUri
-     * @param id Leave this null to have an ID assigned automatically. If you
-     * provide a URI that duplicates one in the database already, it will be
-     * ignored and a new ID assigned.
-     * @throws IOException
-     * @throws SAXException
-     * @throws ParsingException
-     * @throws URISyntaxException
-     */
-    public Document create(String taskType, String issueUri, String graphUri, String id)
-            throws IOException, SAXException, ParsingException, URISyntaxException {
-        Map<String, String> params = new HashMap<String, String>();
-        if (issueUri != null && issueUri.length() > 0) {
-            params.put("issue-uri", issueUri);
-        }
-        if (taskType != null && taskType.length() > 0) {
-            params.put("task-type", taskType);
-        }
-        if (graphUri != null && graphUri.length() > 0) {
-            params.put("graph-uri", graphUri);
-        }
-        if (id != null && id.length() > 0) {
-            params.put("id", id);
-        }
-        URIBuilder uri = new URIBuilder("new.xq");
-        uri.addQueryParams(params);
-        System.out.println(uri.toURI().toString());
-        Document xml = this.getConnection().loadDocument(uri);
-        return xml;
-    }
-
 }

@@ -48,7 +48,21 @@ public class Connection {
     public void setPort(Integer port) {
         this.port = port;
     }// </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="HttpClient client;">
     private HttpClient client;
+    /**
+     * @return the client
+     */
+    public HttpClient getClient() {
+        return client;
+    }
+
+    /**
+     * @param client the client to set
+     */
+    public void setClient(HttpClient client) {
+        this.client = client;
+    }//</editor-fold>
 
     public Connection(String url, Integer port) {
         this.setUrl(url);
@@ -56,6 +70,13 @@ public class Connection {
         this.client = new DefaultHttpClient();
     }
 
+    public Document loadUrl(String url) throws ParsingException, IOException {
+        HttpGet get = new HttpGet(url);
+        HttpResponse response = this.getClient().execute(get);
+        HttpEntity entity = response.getEntity();
+        Document xml = Connection.readDocument(entity.getContent());
+        return xml;
+    }
     /**
      * Loads a document from the database and parses it into an <code>Document</code>.
      *
@@ -65,11 +86,14 @@ public class Connection {
      * @throws SAXException
      * @throws ParsingException
      */
-    public Document loadDocument(String urlStub)
+    public Document loadDocument(String urlStub, String path)
             throws IOException, SAXException, ParsingException {
+        if (path == null) {
+            path = "/exist/rest/db/linkedgov-meta/taskhopper/";
+        }
         HttpGet get = new HttpGet("http://" + this.getUrl() + ":"
-                + this.getPort() + "/exist/rest/db/linkedgov-meta/taskhopper/" + urlStub);
-        HttpResponse response = this.client.execute(get);
+                + this.getPort() + path + urlStub);
+        HttpResponse response = this.getClient().execute(get);
         HttpEntity entity = response.getEntity();
         Document xml = Connection.readDocument(entity.getContent());
         return xml;
@@ -86,7 +110,7 @@ public class Connection {
      */
     public Document loadDocument(URIBuilder urlStub)
             throws IOException, SAXException, ParsingException {
-        return this.loadDocument(urlStub.toURI().toString());
+        return this.loadDocument(urlStub.toURI().toString(), null);
     }
 
     /**
@@ -100,7 +124,7 @@ public class Connection {
      */
     public Document loadDocument(URI urlStub)
             throws IOException, SAXException, ParsingException {
-        return this.loadDocument(urlStub.toString());
+        return this.loadDocument(urlStub.toString(), null);
     }
 
     /**

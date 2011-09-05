@@ -6,6 +6,7 @@ import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
 import nu.xom.Document;
+import nu.xom.Element;
 import nu.xom.ParsingException;
 import org.xml.sax.SAXException;
 
@@ -77,6 +78,25 @@ public class Task {
     }// </editor-fold>
 
     private boolean inDatabase = false;
+    
+    // <editor-fold defaultstate="collapsed" desc="static Connection connection;">
+    private static Connection connection;
+    
+    public static void setConnection(Connection conn) {
+        Task.connection = conn;
+    }
+    
+    public static Connection getConnection() {
+        return Task.connection;
+    }
+    
+    public static boolean hasConnection() {
+        if (Task.getConnection() == null) {
+            return false;
+        } else {
+            return true;
+        }
+    }// </editor-fold>
 
     public Task(String taskType, String issueUri, String graphUri) {
         if (taskType != null) {
@@ -89,6 +109,39 @@ public class Task {
             this.setGraphUri(graphUri);
         }
     }
+
+     /**
+     * Gets a task from the database by ID.
+     *
+     * @param taskId The ID of the task.
+     * @return Document
+     * @throws IOException
+     * @throws SAXException
+     * @throws ParsingException
+     */
+    public static Task byId(String taskId) throws IOException, SAXException, ParsingException {
+        Document xml = Task.getConnection().loadDocument("get.xq?id=" + taskId, null);
+        Task t = Task.xmlToTask(xml);
+        return t;
+    }
+
+    /**
+     * Turn XML task document into Task.
+     *
+     * @param xml
+     * @return Task instance.
+     */
+    private static Task xmlToTask(Document xml) {
+        Element root = xml.getRootElement();
+        String taskType = root.getFirstChildElement("task-type").getAttribute("href").getValue();
+        String graphUri = root.getFirstChildElement("graph-uri").getAttribute("href").getValue();
+        String issueUri = root.getFirstChildElement("issue-uri").getAttribute("href").getValue();
+        Task t = new Task(taskType, issueUri, graphUri);
+        String id = root.getAttribute("id").getValue();
+        t.setId(id);
+        return t;
+    }
+
 
     public void update(Connection conn) {
         // TODO: implement update

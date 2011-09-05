@@ -15,7 +15,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 
 public class TaskSelector {
-    private final String potentiallyIncorrectUri =
+    public static final String potentiallyIncorrectUri =
             "http://linkedgov.org/schema/potentiallyIncorrect";
     
     // <editor-fold defaultstate="collapsed" desc="Connection conn;">
@@ -182,7 +182,7 @@ public class TaskSelector {
         model.read(mainDocStream, "");
 
         /* Now select "potentiallyIncorrect" property. */
-        Property incorrect = model.createProperty(this.potentiallyIncorrectUri);
+        Property incorrect = model.createProperty(TaskSelector.potentiallyIncorrectUri);
         StmtIterator stmts = model.listStatements((Resource) null, incorrect, (Resource) null);
         ArrayList<Task> tasks = new ArrayList<Task>();
         while(stmts.hasNext()) {

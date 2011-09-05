@@ -181,7 +181,7 @@ public class Task {
     /**
      * Calls TaskUpdater.nullifyTask to mark a task as nullified.
      *
-     * @return
+     * @return Document containing the updated graph.
      * @throws ParsingException
      * @throws IOException
      */
@@ -189,6 +189,21 @@ public class Task {
             throws ParsingException, IOException {
         Document input = Task.getConnection().loadUrl(this.getGraphUri());
         Document output = TaskUpdater.nullifyTask(input, this.getId());
+        return output;
+    }
+
+    /**
+     * Calls TaskUpdater.editValue to change the value in a graph.
+     *
+     * @param value
+     * @return Document containing the updated graph.
+     * @throws ParsingException
+     * @throws IOException
+     */
+    public Document edit(String value)
+            throws ParsingException, IOException {
+        Document input = Task.getConnection().loadUrl(this.getGraphUri());
+        Document output = TaskUpdater.editValue(input, this.getTaskType(), value, null);
         return output;
     }
 

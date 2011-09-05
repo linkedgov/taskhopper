@@ -14,7 +14,7 @@ import org.linkedgov.taskhopper.TaskSelector;
 import org.xml.sax.SAXException;
 
 public class UpdateServlet extends HttpServlet {
-   
+
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
      * @param request servlet request
@@ -23,18 +23,25 @@ public class UpdateServlet extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
+            throws ServletException, IOException {
         response.setContentType("application/xml;charset=UTF-8");
         PrintWriter out = response.getWriter();
         Connection conn = new Connection("localhost", 8080);
         TaskSelector ts = new TaskSelector(conn);
+        String id = (String) request.getAttribute("id");
         try {
             String action = request.getParameter("action");
             if (action.equals("edit")) {
                 String value = request.getParameter("value");
-                Task task = Task.byId(value);
+                Task task = Task.byId(id);
                 Document output = task.edit(value);
                 out.write(output.toXML());
+            }
+            if (action.equals("null")) {
+                Task task = Task.byId(id);
+                Document output = task.nullify();
+                out.write(output.toXML());
+
             }
             out.println();
         } catch (SAXException e) {
@@ -45,10 +52,10 @@ public class UpdateServlet extends HttpServlet {
             response.setStatus(response.SC_INTERNAL_SERVER_ERROR);
             out.write("<?xml version=\"1.0\" ?>\n");
             out.write("<error>ParsingException</error>");
-        } finally { 
+        } finally {
             out.close();
         }
-    } 
+    }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /** 
@@ -60,9 +67,9 @@ public class UpdateServlet extends HttpServlet {
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
+            throws ServletException, IOException {
         processRequest(request, response);
-    } 
+    }
 
     /** 
      * Handles the HTTP <code>POST</code> method.
@@ -73,7 +80,7 @@ public class UpdateServlet extends HttpServlet {
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
+            throws ServletException, IOException {
         processRequest(request, response);
     }
 
@@ -85,5 +92,4 @@ public class UpdateServlet extends HttpServlet {
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
-
 }

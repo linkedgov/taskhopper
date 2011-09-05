@@ -6,10 +6,9 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import nu.xom.ParsingException;
 
 public class DispatchServlet extends HttpServlet {
-   
+
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
      * @param request servlet request
@@ -18,9 +17,9 @@ public class DispatchServlet extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
+            throws ServletException, IOException {
         String uri = request.getRequestURI();
-        
+
         if (uri.matches("^/task/new")) {
             InputServlet srv = new InputServlet();
             srv.processRequest(request, response);
@@ -32,14 +31,19 @@ public class DispatchServlet extends HttpServlet {
             request.setAttribute("action", "random");
             srv.processRequest(request, response);
         } else if (uri.matches("^/task/\\d+")) {
-            OutputServlet srv = new OutputServlet();
-            request.setAttribute("action", "byId");
             // parse out ID
             String reqId = uri.replaceAll("/task/(\\d+)", "$1");
             request.setAttribute("id", reqId);
-            srv.processRequest(request, response);
+            if (request.getMethod().equals("GET")) {
+                OutputServlet srv = new OutputServlet();
+                request.setAttribute("action", "byId");
+                srv.processRequest(request, response);
+            } else if (request.getMethod().equals("POST")) {
+                UpdateServlet srv = new UpdateServlet();
+                srv.processRequest(request, response);
+            }
         }
-    } 
+    }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /** 
@@ -51,9 +55,9 @@ public class DispatchServlet extends HttpServlet {
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
+            throws ServletException, IOException {
         processRequest(request, response);
-    } 
+    }
 
     /** 
      * Handles the HTTP <code>POST</code> method.
@@ -64,7 +68,7 @@ public class DispatchServlet extends HttpServlet {
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
+            throws ServletException, IOException {
         processRequest(request, response);
     }
 
@@ -76,6 +80,7 @@ public class DispatchServlet extends HttpServlet {
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
+
     /**
      * Takes a path array, turns it into an <code>ArrayList</code> and removes
      * empty strings.

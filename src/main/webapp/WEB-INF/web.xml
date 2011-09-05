@@ -17,6 +17,10 @@
         <servlet-name>OutputServlet</servlet-name>
         <servlet-class>org.linkedgov.taskhopper.http.OutputServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>UpdateServlet</servlet-name>
+        <servlet-class>org.linkedgov.taskhopper.http.UpdateServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>DispatchServlet</servlet-name>
         <url-pattern>/task</url-pattern>

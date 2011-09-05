@@ -178,6 +178,20 @@ public class Task {
         }
     }
 
+    /**
+     * Calls TaskUpdater.nullifyTask to mark a task as nullified.
+     *
+     * @return
+     * @throws ParsingException
+     * @throws IOException
+     */
+    public Document nullify()
+            throws ParsingException, IOException {
+        Document input = Task.getConnection().loadUrl(this.getGraphUri());
+        Document output = TaskUpdater.nullifyTask(input, this.getId());
+        return output;
+    }
+
     @Override
     public String toString() {
         String out = "Task: ";

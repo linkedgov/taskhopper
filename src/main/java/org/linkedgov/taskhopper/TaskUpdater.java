@@ -1,5 +1,7 @@
 package org.linkedgov.taskhopper;
 
+import com.hp.hpl.jena.datatypes.RDFDatatype;
+import com.hp.hpl.jena.rdf.model.Literal;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.Property;
@@ -10,7 +12,6 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.Map;
 import nu.xom.Builder;
@@ -25,6 +26,7 @@ public class TaskUpdater {
 
     private Connection connection;
 
+    // TODO: javaDoc this constructor
     public TaskUpdater(String address, Integer port) {
         if (address == null) {
             throw new NullPointerException("Address must be set.");
@@ -36,6 +38,7 @@ public class TaskUpdater {
         this.connection = newConn;
     }
 
+    // TODO: javaDoc this constructor
     public TaskUpdater(Connection conn) {
         this.connection = conn;
     }
@@ -107,6 +110,21 @@ public class TaskUpdater {
         return document;
     }
 
+    /**
+     * Resolves a task by editing the value of a literal and then merges that
+     * graph into the main graph, the removes the issue from the document and
+     * saves the document left at the end into the database.
+     *
+     * @param document
+     * @param taskId the URI of the task
+     * @param replacementValue replacement string
+     * @param replacementXsdType replacement type (not yet supported, pass null)
+     * @return the updated representation of the document.
+     * @throws UnsupportedEncodingException
+     * @throws ParsingException
+     * @throws ValidityException
+     * @throws IOException
+     */
     public static Document editValue(Document document, String taskId,
             String replacementValue, String replacementXsdType)
             throws UnsupportedEncodingException, ParsingException,
@@ -120,21 +138,38 @@ public class TaskUpdater {
          */
         Element root = document.getRootElement();
         Model model = TaskUpdater.getMainGraphFromDocument(document);
-        if (replacementXsdType != null) {
-            // TODO: implement something intelligent to do with replacement XSD types.
-        }
+
+
 
         Model taskGraph = TaskUpdater.getTaskGraphFromDocument(document, taskId);
         StmtIterator stmts = taskGraph.listStatements();
         while (stmts.hasNext()) {
             Statement stmt = (Statement) stmts.next();
+
+            /* Type mangling. We don't want to change the type. We may need to
+             * do so in the future to implement replacementXsdType.
+             *
+             * Until that point, we'll respect the type on the existing literal
+             * including if it has no type (in which case existingDatatype
+             * will be null).
+             */
+            RDFDatatype existingDatatype = null;
+
+            if (stmt.getObject().isLiteral()) {
+                Literal existingLiteral = (Literal) stmt.getObject();
+                existingDatatype = existingLiteral.getDatatype();
+            }
+            Literal replacementValueWrapped = model.createTypedLiteral(
+                    replacementValue, existingDatatype);
+
             /* changeObject mutates the graph! The word 'change' kind of
              * hints at that, but it is still potentially surprising.
              * Given what we are intending to do with the statement,
              * this is an unnecessary side-effect, but we are going to
              * be getting rid of the contents of the taskGraph anyway.
              */
-            Statement newStmt = stmt.changeObject(replacementValue);
+
+            Statement newStmt = stmt.changeObject(replacementValueWrapped);
             /* Add to the document graph rather than the task graph. */
             model.add(newStmt);
         }
@@ -228,6 +263,7 @@ public class TaskUpdater {
         }
     }
 
+    // TODO: javaDoc this method
     private static Element getTaskElementFromDocument(Document document, String taskId) {
         Element root = document.getRootElement();
         String taskQuery = String.format("//issue[@uri = '%s']", taskId);

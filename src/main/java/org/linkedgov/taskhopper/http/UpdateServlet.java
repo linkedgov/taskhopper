@@ -41,7 +41,6 @@ public class UpdateServlet extends HttpServlet {
                 Task task = Task.byId(id);
                 Document output = task.nullify();
                 out.write(output.toXML());
-
             }
             out.println();
         } catch (SAXException e) {
@@ -90,6 +89,6 @@ public class UpdateServlet extends HttpServlet {
      */
     @Override
     public String getServletInfo() {
-        return "Short description";
+        return "For saving updates to the database.";
     }// </editor-fold>
 }

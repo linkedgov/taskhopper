@@ -105,7 +105,7 @@ public class Connection {
     private boolean authenticating;
 
     /**
-     * @return the authenticating
+     * @return whether the HTTP request are being authenticated 
      */
     public boolean isAuthenticating() {
         return authenticating;
@@ -118,6 +118,16 @@ public class Connection {
         this.authenticating = authenticating;
     } //</editor-fold>
 
+    /**
+     * authenticationCallback is called after the username or password
+     * is updated. If both username and password have been set, it sets
+     * the credentials with the HTTP Client (this.client) and modifies
+     * the authenticating method to true.
+     *
+     * Note: this.authenticating and the authentication callback
+     * don't check to see if the username and password work, but
+     * this is for database access rather than for use by end users.
+     */
     private void authenticationCallback() {
         if (this.username != null && this.password != null) {
             this.client.getCredentialsProvider().setCredentials(
@@ -129,6 +139,7 @@ public class Connection {
         }
     }
 
+    // TODO: javaDoc this method
     public Connection(String url, Integer port) {
         this.setUrl(url);
         this.setPort(port);
@@ -136,6 +147,7 @@ public class Connection {
         this.setAuthenticating(false);
     }
 
+    // TODO: javaDoc this method
     public Document loadUrl(String url) throws ParsingException, IOException {
         HttpGet get = new HttpGet(url);
         HttpResponse response = this.getClient().execute(get);

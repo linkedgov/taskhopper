@@ -11,6 +11,8 @@ import javax.servlet.http.HttpServletResponse;
 import nu.xom.Document;
 import nu.xom.ParsingException;
 import org.apache.commons.lang.StringUtils;
+import org.linkedgov.taskhopper.Connection;
+import org.linkedgov.taskhopper.Task;
 import org.linkedgov.taskhopper.TaskSelector;
 import org.xml.sax.SAXException;
 
@@ -29,7 +31,9 @@ public class InputServlet extends HttpServlet {
         ArrayList<String> errors = new ArrayList<String>();
 
         // TODO: put the configuration into a properties file or into Maven etc.
-        TaskSelector ts = new TaskSelector("localhost", 8080);
+        Connection conn = new Connection("localhost", 8080);
+        Task.setConnection(conn);
+        TaskSelector ts = new TaskSelector(conn);
         String issueUri = request.getParameter("issue-uri");
         if (issueUri == null || issueUri.isEmpty()) {
             willStore = false;
@@ -70,6 +74,8 @@ public class InputServlet extends HttpServlet {
             // Write to XML database.
             Document dbResponse;
             try {
+                Task task = new Task(taskType, issueUri, graphUri);
+                dbResponse = task.create();
                 dbResponse = ts.create(taskType, issueUri, graphUri, null);
                 // Output
                 out.write(dbResponse.toXML());

@@ -15,6 +15,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 
 public class TaskSelector {
+    // TODO: perhaps spin this out into an XML or Java properties file
     public static final String potentiallyIncorrectUri =
             "http://linkedgov.org/schema/potentiallyIncorrect";
     
@@ -35,6 +36,7 @@ public class TaskSelector {
         this.connection = conn;
     }// </editor-fold>
 
+    // TODO: javaDoc this method
     public TaskSelector(String address, Integer port) {
         if (address == null) {
             throw new NullPointerException("Address must be set.");
@@ -46,6 +48,7 @@ public class TaskSelector {
         this.connection = newConn;
     }
 
+    // TODO: javaDoc this method
     public TaskSelector(Connection conn) {
         this.connection = conn;
     }

@@ -30,8 +30,7 @@ public class InputServlet extends HttpServlet {
         boolean willStore = true;
         ArrayList<String> errors = new ArrayList<String>();
 
-        // TODO: put the configuration into a properties file or into Maven etc.
-        Connection conn = new Connection("localhost", 8080);
+        Connection conn = ApplicationSettings.getConnection();
         Task.setConnection(conn);
         TaskSelector ts = new TaskSelector(conn);
         String issueUri = request.getParameter("issue-uri");

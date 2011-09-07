@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
     <display-name>LinkedGov TaskHopper</display-name>
+    <listener>
+        <description>
+            ApplicationSettings loads settings from web.xml when the server starts.
+        </description>
+        <listener-class>org.linkedgov.taskhopper.http.ApplicationSettings</listener-class>
+    </listener>
+    
+    <!-- servlet listing -->
     <servlet>
         <servlet-name>DispatchServlet</servlet-name>
         <servlet-class>org.linkedgov.taskhopper.http.DispatchServlet</servlet-class>
@@ -21,12 +29,47 @@
         <servlet-name>UpdateServlet</servlet-name>
         <servlet-class>org.linkedgov.taskhopper.http.UpdateServlet</servlet-class>
     </servlet>
+
+    <!-- Map all the /task URLs to DispatchServlet, which farms them out to the
+         individual servlets. -->
     <servlet-mapping>
         <servlet-name>DispatchServlet</servlet-name>
         <url-pattern>/task</url-pattern>
         <url-pattern>/task/*</url-pattern>
     </servlet-mapping>
-    <welcome-file-list>
-        <welcome-file>/WEB-INF/jsp/hello.jsp</welcome-file>
-    </welcome-file-list>
+
+    <!-- define environmental variables -->
+    <env-entry>
+        <env-entry-name>exist-hostname</env-entry-name>
+        <env-entry-type>java.lang.String</env-entry-type>
+        <!-- The hostname of the eXist database. -->
+        <env-entry-value>localhost</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+        <env-entry-name>exist-port</env-entry-name>
+        <env-entry-type>java.lang.Integer</env-entry-type>
+        <!-- The port number of the eXist database. -->
+        <env-entry-value>8080</env-entry-value>
+    </env-entry>
+
+    <env-entry>
+        <env-entry-name>exist-username</env-entry-name>
+        <env-entry-type>java.lang.String</env-entry-type>
+        <!--
+            Username used to authenticate with the eXist database.
+            May be blank: if blank, no authentication is used.
+        -->
+        <env-entry-value></env-entry-value>
+    </env-entry>
+
+    <env-entry>
+        <env-entry-name>exist-password</env-entry-name>
+        <!--
+            Password used to authenticate with the eXist database.
+            May be blank. Not used if username is not set or is empty.
+        -->
+        <env-entry-type>java.lang.String</env-entry-type>
+        <env-entry-value></env-entry-value>
+    </env-entry>
 </web-app>

@@ -26,7 +26,7 @@ public class UpdateServlet extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("application/xml;charset=UTF-8");
         PrintWriter out = response.getWriter();
-        Connection conn = new Connection("localhost", 8080);
+        Connection conn = ApplicationSettings.getConnection();
         TaskSelector ts = new TaskSelector(conn);
         String id = (String) request.getAttribute("id");
         try {

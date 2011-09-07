@@ -34,7 +34,7 @@ public class ImportServlet extends HttpServlet {
         PrintWriter out = response.getWriter();
 
         try {
-            Connection conn = new Connection("localhost", 8080);
+            Connection conn = ApplicationSettings.getConnection();
             TaskSelector ts = new TaskSelector(conn);
             ArrayList<Task> tasks = ts.importIssues(url);
 
@@ -45,7 +45,7 @@ public class ImportServlet extends HttpServlet {
 
             /* Iterate through the tasks and store them in the database. */
             for (Task task : tasks) {
-                Document resp = task.create(conn);
+                Document resp = task.create();
                 boolean success = resp.getRootElement().getChildElements().size() > 0;
                 if (success) {
                     successCount++;

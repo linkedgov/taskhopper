@@ -32,6 +32,10 @@ public class OutputServlet extends HttpServlet {
         TaskSelector ts = new TaskSelector(conn);
 
         response.setContentType("application/xml;charset=UTF-8");
+        /* Access-Control-Allow-Origin headers allow Ajax requests
+         * across domains.
+         */
+        response.addHeader("Access-Control-Allow-Origin", "*");
         PrintWriter out = response.getWriter();
 
         try {

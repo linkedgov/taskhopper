@@ -42,7 +42,6 @@ public class UpdateServlet extends HttpServlet {
                 Document output = task.nullify();
                 out.write(output.toXML());
             }
-            out.println();
         } catch (SAXException e) {
             response.setStatus(response.SC_INTERNAL_SERVER_ERROR);
             out.write("<?xml version=\"1.0\" ?>\n");

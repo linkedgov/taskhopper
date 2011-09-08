@@ -3,6 +3,7 @@ package org.linkedgov.taskhopper.http;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URISyntaxException;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -29,14 +30,15 @@ public class ImportServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
+        response.setContentType("application/xml;charset=UTF-8");
         String url = request.getParameter("url");
+        String decodedUrl = URLDecoder.decode(url, "UTF-8");
         PrintWriter out = response.getWriter();
 
         try {
             Connection conn = ApplicationSettings.getConnection();
             TaskSelector ts = new TaskSelector(conn);
-            ArrayList<Task> tasks = ts.importIssues(url);
+            ArrayList<Task> tasks = ts.importIssues(decodedUrl);
 
             /* Setup variables for output. */
             Nodes outputTaskNodes = new Nodes();

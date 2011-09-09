@@ -3,12 +3,14 @@ package org.linkedgov.taskhopper;
 import org.linkedgov.taskhopper.thirdparty.URIBuilder;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import nu.xom.Document;
 import nu.xom.Element;
 import nu.xom.ParsingException;
 import org.linkedgov.taskhopper.http.ApplicationSettings;
+import org.json.simple.JSONObject;
 import org.xml.sax.SAXException;
 
 public class Task {
@@ -77,6 +79,13 @@ public class Task {
     public void setGraphUri(String graphUri) {
         this.graphUri = graphUri;
     }// </editor-fold>
+
+    // TODO: javaDoc this method
+    public String getDatasetUri() {
+      URL graphUrl = new URL(this.getGraphUri());
+      URL dataSetUrl = new URL(graphUrl, "./");
+      return datSetUrl.toString();
+    }
 
     /*
      * inDatabase tells you whether the object is actually in the database or not.
@@ -263,6 +272,17 @@ public class Task {
         Document input = Task.getConnection().loadUrl(this.getGraphUri());
         Document output = TaskUpdater.editValue(input, this.getTaskType(), value, null);
         return output;
+    }
+
+    private JSONObject toJSON() {
+        JSONObject json = new JSONObject();
+        json.put("id", this.getId());
+        json.put("graph-uri", this.getGraphUri());
+        json.put("issue-uri", this.getIssueUri());
+        json.put("task-type", this.getTaskType());
+        // TODO: extract value from graph and present as broken-value
+        // TODO: specify a way of
+        return json;
     }
 
     @Override

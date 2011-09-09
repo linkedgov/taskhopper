@@ -120,6 +120,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <netbeans.hint.deploy.server>J2EE</netbeans.hint.deploy.server>
+        <jetty.port>8180</jetty.port>
     </properties>
 </project>
 

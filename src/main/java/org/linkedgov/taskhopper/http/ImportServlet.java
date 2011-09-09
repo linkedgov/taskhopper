@@ -53,7 +53,7 @@ public class ImportServlet extends HttpServlet {
                     successCount++;
                     Nodes successfulTasks = resp.getRootElement().query("task");
                     for (int i = 0; i < successfulTasks.size(); i++) {
-                        outputTaskNodes.append(successfulTasks.get(i));
+                        outputTaskNodes.append(successfulTasks.get(i).copy());
                     }
                 } else {
                     failureCount++;

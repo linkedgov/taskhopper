@@ -47,9 +47,22 @@ public class ApplicationSettings implements javax.servlet.ServletContextListener
         if (ApplicationSettings.getServerHostName() != null) {
             Connection conn = new Connection(ApplicationSettings.getServerHostName(),
                     ApplicationSettings.getPort());
+            if (ApplicationSettings.getUsername() != null &&
+                    ApplicationSettings.getPassword() != null) {
+                conn.setUsername(ApplicationSettings.getUsername());
+                conn.setPassword(ApplicationSettings.getPassword());
+            }
             return conn;
         } else {
             return null;
+        }
+    }
+
+    public static boolean hasConnection() {
+        if (ApplicationSettings.getServerHostName() != null) {
+            return true;
+        } else {
+            return false;
         }
     }
 

@@ -8,6 +8,7 @@ import java.util.Map;
 import nu.xom.Document;
 import nu.xom.Element;
 import nu.xom.ParsingException;
+import org.linkedgov.taskhopper.http.ApplicationSettings;
 import org.xml.sax.SAXException;
 
 public class Task {
@@ -126,6 +127,9 @@ public class Task {
      * @param graphUri URI of the graph.
      */
     public Task(String taskType, String issueUri, String graphUri) {
+        if (ApplicationSettings.hasConnection()) {
+            Task.setConnection(ApplicationSettings.getConnection());
+        }
         if (taskType != null) {
             this.setTaskType(taskType);
         }

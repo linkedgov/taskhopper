@@ -59,11 +59,13 @@ public class ApplicationSettings implements javax.servlet.ServletContextListener
     }
 
     public static boolean hasConnection() {
-        if (ApplicationSettings.getServerHostName() != null) {
-            return true;
-        } else {
-            return false;
-        }
+        try {
+            if (ApplicationSettings.getServerHostName() != null) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch(NullPointerException e) { return false; }
     }
 
     public static void initialize() throws NamingException {

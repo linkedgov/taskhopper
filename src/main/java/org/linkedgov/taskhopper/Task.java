@@ -3,13 +3,14 @@ package org.linkedgov.taskhopper;
 import org.linkedgov.taskhopper.thirdparty.URIBuilder;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import nu.xom.Attribute;
 import nu.xom.Document;
+import nu.xom.Nodes;
 import nu.xom.Element;
 import nu.xom.ParsingException;
-import org.linkedgov.taskhopper.http.ApplicationSettings;
 import org.json.simple.JSONObject;
 import org.xml.sax.SAXException;
 
@@ -79,13 +80,6 @@ public class Task {
     public void setGraphUri(String graphUri) {
         this.graphUri = graphUri;
     }// </editor-fold>
-
-    // TODO: javaDoc this method
-    public String getDatasetUri() {
-      URL graphUrl = new URL(this.getGraphUri());
-      URL dataSetUrl = new URL(graphUrl, "./");
-      return datSetUrl.toString();
-    }
 
     /*
      * inDatabase tells you whether the object is actually in the database or not.
@@ -173,7 +167,7 @@ public class Task {
      * @param xml
      * @return Task instance.
      */
-    private static Task xmlToTask(Document xml) {
+    public static Task xmlToTask(Document xml) {
         Element root = xml.getRootElement();
         String taskType = root.getFirstChildElement("task-type").getAttribute("href").getValue();
         String graphUri = root.getFirstChildElement("graph-uri").getAttribute("href").getValue();
@@ -274,12 +268,41 @@ public class Task {
         return output;
     }
 
-    private JSONObject toJSON() {
+    /**
+     * Returns a Dataset object for a particular task.
+     *
+     * @return dataset
+     * @throws ParsingException
+     * @throws IOException
+     */
+    public Dataset getDataset() throws ParsingException, IOException {
+        Document graphDoc = Task.getConnection().loadUrl(this.getGraphUri());
+        Nodes datasetElems = graphDoc.getRootElement().query("dataset");
+        Attribute href = null;
+        Attribute title = null;
+        for (int i = 0; i < datasetElems.size(); i++) {
+            Element datasetElem = (Element) datasetElems.get(i);
+            href = datasetElem.getAttribute("href");
+            title = datasetElem.getAttribute("title");
+        }
+        Dataset dataset = new Dataset();
+        if (href != null) {
+            dataset.setUrl(href.getValue());
+        }
+        if (title != null) {
+            dataset.setTitle(title.getValue());
+        }
+        return dataset;
+    }
+
+    // TODO: javaDoc this
+    public JSONObject toJSON() throws ParsingException, IOException {
         JSONObject json = new JSONObject();
         json.put("id", this.getId());
         json.put("graph-uri", this.getGraphUri());
         json.put("issue-uri", this.getIssueUri());
         json.put("task-type", this.getTaskType());
+        json.put("dataset", this.getDataset().toMap());
         // TODO: extract value from graph and present as broken-value
         // TODO: specify a way of
         return json;

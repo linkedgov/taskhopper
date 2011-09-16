@@ -1,5 +1,9 @@
 package org.linkedgov.taskhopper;
 
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.Property;
+import com.hp.hpl.jena.rdf.model.Statement;
+import com.hp.hpl.jena.rdf.model.StmtIterator;
 import org.linkedgov.taskhopper.thirdparty.URIBuilder;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -280,10 +284,12 @@ public class Task {
         Nodes datasetElems = graphDoc.getRootElement().query("dataset");
         Attribute href = null;
         Attribute title = null;
+        Attribute datasetId = null;
         for (int i = 0; i < datasetElems.size(); i++) {
             Element datasetElem = (Element) datasetElems.get(i);
             href = datasetElem.getAttribute("href");
             title = datasetElem.getAttribute("title");
+            datasetId = datasetElem.getAttribute("id");
         }
         Dataset dataset = new Dataset();
         if (href != null) {
@@ -292,17 +298,52 @@ public class Task {
         if (title != null) {
             dataset.setTitle(title.getValue());
         }
+        if (datasetId != null) {
+            dataset.setId(datasetId.getValue());
+        }
+        dataset.setConnection(Task.getConnection());
         return dataset;
     }
 
+    public ArrayList<String> getExampleData(int maximum)
+            throws ParsingException, IOException, URISyntaxException, SAXException {
+        Dataset dataset = this.getDataset();
+        String issuePredicate = this.getIssuePredicate();
+        ArrayList<String> out = dataset.getExampleData(issuePredicate, maximum);
+        return out;
+    }
+
+    /**
+     * Retrieves the issue predicate URI as string from the issue graph.
+     * 
+     * @return predicate URI string for the issue this task represents.
+     * @throws ParsingException
+     * @throws IOException
+     */
+    public String getIssuePredicate() throws ParsingException, IOException {
+        Document xml = Task.getConnection().loadUrl(this.getGraphUri());
+        Model taskGraph = TaskUpdater.getTaskGraphFromDocument(xml, this.getIssueUri());
+        StmtIterator stmts = taskGraph.listStatements();
+        assert(taskGraph.size() == 1);
+        Property predicate = null;
+        while(stmts.hasNext()) {
+            Statement stmt = (Statement) stmts.next();
+            predicate = stmt.getPredicate();
+        }
+        return predicate.getURI();
+    }
+
     // TODO: javaDoc this
-    public JSONObject toJSON() throws ParsingException, IOException {
+    public JSONObject toJSON()
+            throws ParsingException, IOException, SAXException, URISyntaxException {
         JSONObject json = new JSONObject();
         json.put("id", this.getId());
         json.put("graph-uri", this.getGraphUri());
         json.put("issue-uri", this.getIssueUri());
         json.put("task-type", this.getTaskType());
+        json.put("property", this.getIssuePredicate());
         json.put("dataset", this.getDataset().toMap());
+        json.put("example-values", this.getExampleData(5));
         // TODO: extract value from graph and present as broken-value
         // TODO: specify a way of
         return json;

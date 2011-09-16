@@ -206,7 +206,7 @@ public class TaskUpdater {
      * @throws UnsupportedEncodingException
      * @return RDF model.
      */
-    private static Model getMainGraphFromDocument(Document document)
+    public static Model getMainGraphFromDocument(Document document)
             throws UnsupportedEncodingException {
         Element root = document.getRootElement();
         Element mainDoc = root.getFirstChildElement("main");
@@ -243,14 +243,14 @@ public class TaskUpdater {
     }
 
     /**
-     * Takes a document and returns a 'task graph' as a Jena model.
+     * Retrieves the task as a Jena graph for a given task ID.
      *
      * @param document
      * @param taskId
      * @return
      * @throws UnsupportedEncodingException
      */
-    private static Model getTaskGraphFromDocument(Document document, String taskId) throws UnsupportedEncodingException {
+    public static Model getTaskGraphFromDocument(Document document, String taskId) throws UnsupportedEncodingException {
         Element taskRDF = TaskUpdater.getTaskElementFromDocument(document, taskId);
         if (taskRDF != null) {
             InputStream mainDocStream = new ByteArrayInputStream(
@@ -263,7 +263,13 @@ public class TaskUpdater {
         }
     }
 
-    // TODO: javaDoc this method
+    /**
+     * Retrieves the task element from the document for a given task ID.
+     *
+     * @param document
+     * @param taskId
+     * @return
+     */
     private static Element getTaskElementFromDocument(Document document, String taskId) {
         Element root = document.getRootElement();
         String taskQuery = String.format("//issue[@uri = '%s']", taskId);

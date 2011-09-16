@@ -134,9 +134,6 @@ public class Task {
      * @param graphUri URI of the graph.
      */
     public Task(String taskType, String issueUri, String graphUri) {
-        if (ApplicationSettings.hasConnection()) {
-            Task.setConnection(ApplicationSettings.getConnection());
-        }
         if (taskType != null) {
             this.setTaskType(taskType);
         }
@@ -173,12 +170,13 @@ public class Task {
      */
     public static Task xmlToTask(Document xml) {
         Element root = xml.getRootElement();
-        String taskType = root.getFirstChildElement("task-type").getAttribute("href").getValue();
-        String graphUri = root.getFirstChildElement("graph-uri").getAttribute("href").getValue();
-        String issueUri = root.getFirstChildElement("issue-uri").getAttribute("href").getValue();
-        Task t = new Task(taskType, issueUri, graphUri);
-        String id = root.getAttribute("id").getValue();
-        t.setId(id);
+        Element task = root.getFirstChildElement("task");
+        String aTaskType = task.getFirstChildElement("task-type").getAttribute("href").getValue();
+        String aGraphUri = task.getFirstChildElement("graph-uri").getAttribute("href").getValue();
+        String aIssueUri = task.getFirstChildElement("issue-uri").getAttribute("href").getValue();
+        String aId = task.getAttribute("id").getValue();
+        Task t = new Task(aTaskType, aIssueUri, aGraphUri);
+        t.setId(aId);
         return t;
     }
 

@@ -1,9 +1,11 @@
 package org.linkedgov.taskhopper;
 
+import com.hp.hpl.jena.rdf.model.Literal;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.Statement;
 import com.hp.hpl.jena.rdf.model.StmtIterator;
+import com.hp.hpl.jena.rdf.model.RDFNode;
 import org.linkedgov.taskhopper.thirdparty.URIBuilder;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -322,13 +324,40 @@ public class Task {
         Document xml = Task.getConnection().loadUrl(this.getGraphUri());
         Model taskGraph = TaskUpdater.getTaskGraphFromDocument(xml, this.getIssueUri());
         StmtIterator stmts = taskGraph.listStatements();
-        assert(taskGraph.size() == 1);
+        assert (taskGraph.size() == 1);
         Property predicate = null;
-        while(stmts.hasNext()) {
+        while (stmts.hasNext()) {
             Statement stmt = (Statement) stmts.next();
             predicate = stmt.getPredicate();
         }
         return predicate.getURI();
+    }
+
+    public String getBrokenValue() throws ParsingException, IOException {
+        Map<String, String> issueValues = this.getIssueValuesMap();
+        return issueValues.get("value");
+    }
+
+    public Map<String, String> getIssueValuesMap() throws ParsingException, IOException {
+        Map<String, String> out = new HashMap<String, String>();
+        Document xml = Task.getConnection().loadUrl(this.getGraphUri());
+        Model taskGraph = TaskUpdater.getTaskGraphFromDocument(xml, this.getIssueUri());
+        StmtIterator stmts = taskGraph.listStatements();
+        assert (taskGraph.size() == 1);
+        String resp = null;
+        String datatype = null;
+        while (stmts.hasNext()) {
+            Statement stmt = (Statement) stmts.next();
+            RDFNode object = stmt.getObject();
+            if (object.isLiteral()) {
+                Literal objectLiteral = (Literal) object;
+                resp = objectLiteral.getLexicalForm();
+                datatype = objectLiteral.getDatatypeURI();
+                out.put("type", datatype);
+                out.put("value", resp);
+            }
+        }
+        return out;
     }
 
     // TODO: javaDoc this
@@ -336,12 +365,13 @@ public class Task {
             throws ParsingException, IOException, SAXException, URISyntaxException {
         JSONObject json = new JSONObject();
         json.put("id", this.getId());
-        json.put("graph-uri", this.getGraphUri());
-        json.put("issue-uri", this.getIssueUri());
-        json.put("task-type", this.getTaskType());
+        json.put("graphUri", this.getGraphUri());
+        json.put("issueUri", this.getIssueUri());
+        json.put("taskType", this.getTaskType());
         json.put("property", this.getIssuePredicate());
         json.put("dataset", this.getDataset().toMap());
-        json.put("example-values", this.getExampleData(5));
+        json.put("example", this.getExampleData(5));
+        json.put("brokenValue", this.getIssueValuesMap());
         // TODO: extract value from graph and present as broken-value
         // TODO: specify a way of
         return json;

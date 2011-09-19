@@ -7,7 +7,24 @@
         </description>
         <listener-class>org.linkedgov.taskhopper.http.ApplicationSettings</listener-class>
     </listener>
-    
+
+    <!-- jersey -->
+    <servlet>
+        <servlet-name>Jersey</servlet-name>
+        <servlet-class>
+                com.sun.jersey.spi.container.servlet.ServletContainer
+        </servlet-class>
+        <init-param>
+            <param-name>com.sun.jersey.config.property.packages</param-name>
+            <param-value>org.linkedgov.taskhopper.http</param-value>
+        </init-param>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>Jersey</servlet-name>
+        <url-pattern>/*</url-pattern>
+    </servlet-mapping>
+
     <!-- servlet listing -->
     <servlet>
         <servlet-name>DispatchServlet</servlet-name>
@@ -32,11 +49,11 @@
 
     <!-- Map all the /task URLs to DispatchServlet, which farms them out to the
          individual servlets. -->
-    <servlet-mapping>
+<!--    <servlet-mapping>
         <servlet-name>DispatchServlet</servlet-name>
         <url-pattern>/task</url-pattern>
         <url-pattern>/task/*</url-pattern>
-    </servlet-mapping>
+    </servlet-mapping>-->
 
     <!-- define environmental variables -->
     <env-entry>

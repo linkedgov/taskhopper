@@ -26,19 +26,20 @@ public class DispatchServlet extends HttpServlet {
         } else if (uri.matches("^/task/import")) {
             ImportServlet srv = new ImportServlet();
             srv.processRequest(request, response);
-        } else if (uri.matches("^/task/random")) {
-            OutputServlet srv = new OutputServlet();
-            request.setAttribute("action", "random");
-            srv.processRequest(request, response);
+//        } else if (uri.matches("^/task/random")) {
+//            OutputServlet srv = new OutputServlet();
+//            request.setAttribute("action", "random");
+//            srv.processRequest(request, response);
         } else if (uri.matches("^/task/\\d+")) {
             // parse out ID
             String reqId = uri.replaceAll("/task/(\\d+)", "$1");
             request.setAttribute("id", reqId);
-            if (request.getMethod().equals("GET")) {
-                OutputServlet srv = new OutputServlet();
-                request.setAttribute("action", "byId");
-                srv.processRequest(request, response);
-            } else if (request.getMethod().equals("POST")) {
+//            if (request.getMethod().equals("GET")) {
+//                OutputServlet srv = new OutputServlet();
+//                request.setAttribute("action", "byId");
+//                srv.processRequest(request, response);
+//            } else
+            if (request.getMethod().equals("POST")) {
                 UpdateServlet srv = new UpdateServlet();
                 srv.processRequest(request, response);
             }

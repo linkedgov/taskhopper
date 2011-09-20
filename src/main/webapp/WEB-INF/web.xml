@@ -8,52 +8,26 @@
         <listener-class>org.linkedgov.taskhopper.http.ApplicationSettings</listener-class>
     </listener>
 
-    <!-- jersey -->
     <servlet>
         <servlet-name>Jersey</servlet-name>
-        <servlet-class>
-                com.sun.jersey.spi.container.servlet.ServletContainer
-        </servlet-class>
+        <servlet-class>com.sun.jersey.spi.container.servlet.ServletContainer</servlet-class>
         <init-param>
             <param-name>com.sun.jersey.config.property.packages</param-name>
             <param-value>org.linkedgov.taskhopper.http</param-value>
         </init-param>
+
+        <init-param>
+            <param-name>com.sun.jersey.config.property.resourceConfigClass</param-name>
+            <param-value>org.linkedgov.taskhopper.http.UriExtensionsConfig</param-value>
+        </init-param>
+
         <load-on-startup>1</load-on-startup>
     </servlet>
+
     <servlet-mapping>
         <servlet-name>Jersey</servlet-name>
         <url-pattern>/*</url-pattern>
     </servlet-mapping>
-
-    <!-- servlet listing -->
-    <servlet>
-        <servlet-name>DispatchServlet</servlet-name>
-        <servlet-class>org.linkedgov.taskhopper.http.DispatchServlet</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>InputServlet</servlet-name>
-        <servlet-class>org.linkedgov.taskhopper.http.InputServlet</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>ImportServlet</servlet-name>
-        <servlet-class>org.linkedgov.taskhopper.http.ImportServlet</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>OutputServlet</servlet-name>
-        <servlet-class>org.linkedgov.taskhopper.http.OutputServlet</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>UpdateServlet</servlet-name>
-        <servlet-class>org.linkedgov.taskhopper.http.UpdateServlet</servlet-class>
-    </servlet>
-
-    <!-- Map all the /task URLs to DispatchServlet, which farms them out to the
-         individual servlets. -->
-<!--    <servlet-mapping>
-        <servlet-name>DispatchServlet</servlet-name>
-        <url-pattern>/task</url-pattern>
-        <url-pattern>/task/*</url-pattern>
-    </servlet-mapping>-->
 
     <!-- define environmental variables -->
     <env-entry>
@@ -62,7 +36,7 @@
         <!-- The hostname of the eXist database. -->
         <env-entry-value>localhost</env-entry-value>
     </env-entry>
-    
+
     <env-entry>
         <env-entry-name>exist-port</env-entry-name>
         <env-entry-type>java.lang.Integer</env-entry-type>
@@ -77,7 +51,7 @@
             Username used to authenticate with the eXist database.
             May be blank: if blank, no authentication is used.
         -->
-        <env-entry-value></env-entry-value>
+        <env-entry-value/>
     </env-entry>
 
     <env-entry>
@@ -87,6 +61,9 @@
             May be blank. Not used if username is not set or is empty.
         -->
         <env-entry-type>java.lang.String</env-entry-type>
-        <env-entry-value></env-entry-value>
+        <env-entry-value/>
     </env-entry>
-</web-app>
+<init-param>
+         <param-name>com.sun.jersey.spi.container.ContainerRequestFilters</param-name>
+         <param-value>foo.MyUriConnegFilter</param-value>
+     </init-param></web-app>

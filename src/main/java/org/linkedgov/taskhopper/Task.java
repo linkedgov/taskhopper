@@ -17,7 +17,8 @@ import nu.xom.Document;
 import nu.xom.Nodes;
 import nu.xom.Element;
 import nu.xom.ParsingException;
-import org.json.simple.JSONObject;
+import org.codehaus.jettison.json.JSONObject;
+import org.codehaus.jettison.json.JSONException;
 import org.xml.sax.SAXException;
 
 public class Task {
@@ -362,7 +363,7 @@ public class Task {
 
     // TODO: javaDoc this
     public JSONObject toJSON()
-            throws ParsingException, IOException, SAXException, URISyntaxException {
+            throws ParsingException, IOException, SAXException, URISyntaxException, JSONException {
         JSONObject json = new JSONObject();
         json.put("id", this.getId());
         json.put("graphUri", this.getGraphUri());
@@ -372,8 +373,6 @@ public class Task {
         json.put("dataset", this.getDataset().toMap());
         json.put("example", this.getExampleData(5));
         json.put("brokenValue", this.getIssueValuesMap());
-        // TODO: extract value from graph and present as broken-value
-        // TODO: specify a way of
         return json;
     }
 

@@ -14,6 +14,7 @@ import nu.xom.ParsingException;
 import org.linkedgov.taskhopper.Connection;
 import org.linkedgov.taskhopper.TaskSelector;
 import org.linkedgov.taskhopper.Task;
+import org.linkedgov.taskhopper.Instance;
 import org.xml.sax.SAXException;
 
 @Path("/task/new")
@@ -53,8 +54,10 @@ public class Input {
                 root.appendChild(li);
             }
             Document doc = new Document(root);
+            Instance inst = Instance.fromDocument(doc);
             org.w3c.dom.Document out = Support.xomToDom(doc);
-            return Response.status(Response.Status.BAD_REQUEST).entity(out).build();
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity(inst.toW3CDOMDocument()).build();
         }
 
         /* If there aren't any errors, store in the database and send response. */

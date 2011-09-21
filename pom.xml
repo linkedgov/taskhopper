@@ -59,9 +59,9 @@
       <version>1.2.5</version>
     </dependency>
     <dependency>
-      <groupId>net.sourceforge.jena</groupId>
+      <groupId>com.hp.hpl.jena</groupId>
       <artifactId>jena</artifactId>
-      <version>2.3</version>
+      <version>2.6.4</version>
       <exclusions>
         <!-- http://jira.codehaus.org/browse/MXMLBEANS-13 -->
         <exclusion>

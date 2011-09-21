@@ -71,14 +71,6 @@ public class ById {
         }
     }
 
-//    @GET
-//    @Path("/task/{id: [0-9]+}.json")
-//    @Produces({"application/javascript", "application/json"})
-//    public Response getJsonWithExtension(@PathParam("id") String reqId,
-//            @QueryParam("callback") @DefaultValue("") String callback) {
-//        return this.getJson(reqId, callback);
-//    }
-
     @POST
     @Produces("application/xml")
     public Response update(

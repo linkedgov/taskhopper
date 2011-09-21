@@ -2,9 +2,12 @@ package org.linkedgov.taskhopper;
 import com.hp.hpl.jena.vocabulary.RDF;
 import com.sun.jersey.api.json.JSONWithPadding;
 import java.io.IOException;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import nu.xom.Document;
 import nu.xom.Element;
 import nu.xom.Elements;
+import nu.xom.converters.DOMConverter;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.codehaus.jettison.json.JSONArray;
@@ -36,9 +39,9 @@ public class Instance {
             Element elem = elems.get(i);
             if (elem.getLocalName().equals("dataset")) {
                 JSONObject dataset = new JSONObject();
-                dataset.putOpt("href", elem.getAttribute("href"));
-                dataset.putOpt("title", elem.getAttribute("title"));
-                dataset.putOpt("id", elem.getAttribute("id"));
+                dataset.putOpt("href", elem.getAttribute("href").getValue());
+                dataset.putOpt("title", elem.getAttribute("title").getValue());
+                dataset.putOpt("id", elem.getAttribute("id").getValue());
                 if (dataset.length() != 0) {
                     out.put("dataset", dataset);
                 }
@@ -52,8 +55,8 @@ public class Instance {
             }
             if (elem.getLocalName().equals("issue")) {
                 JSONObject issue = new JSONObject();
-                issue.putOpt("task-type", elem.getAttribute("task-type"));
-                issue.putOpt("uri", elem.getAttribute("uri"));
+                issue.putOpt("task-type", elem.getAttribute("task-type").getValue());
+                issue.putOpt("uri", elem.getAttribute("uri").getValue());
                 JSONObject issueGraphSerialization = RDFToJSON.rdfXmlToJson(
                         elem.getFirstChildElement("RDF", RDF.getURI()));
                 issue.put("rdf", issueGraphSerialization);
@@ -74,5 +77,14 @@ public class Instance {
 
     public Document toXML() {
         return this.xml;
+    }
+
+    public org.w3c.dom.Document toW3CDOMDocument() {
+        try {
+            return DOMConverter.convert(this.xml,
+                    DocumentBuilderFactory.newInstance().newDocumentBuilder().getDOMImplementation());
+        } catch (ParserConfigurationException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

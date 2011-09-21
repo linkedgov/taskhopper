@@ -1,5 +1,4 @@
 package org.linkedgov.taskhopper.support;
-
 import com.hp.hpl.jena.rdf.model.Literal;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
@@ -17,6 +16,11 @@ import org.codehaus.jettison.json.JSONObject;
 import org.codehaus.jettison.json.JSONArray;
 import nu.xom.Element;
 
+/**
+ * Convenience class for turning RDF/XML (XOM) to RDF/JSON (Jettison).
+ *
+ * @author tom
+ */
 public class RDFToJSON {
 
     public static JSONObject rdfXmlToJson(Element xml) throws IOException, JSONException {

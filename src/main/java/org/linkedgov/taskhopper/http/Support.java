@@ -19,16 +19,20 @@ public class Support {
         }
     }
 
-    public static Response respondIfNotEmpty(Document doc) {
+    public static boolean isDocumentEmpty(Document doc) {
         Element root = doc.getRootElement();
         Elements empties = root.getChildElements("empty");
+        return (empties.size() != 0);
+    }
 
+    public static Response respondIfNotEmpty(Document doc) {
         /* Check to see if the result is empty. If it is, we return
          * 404 Not Found status code. */
-        if (empties.size() != 0) {
+        if (isDocumentEmpty(doc)) {
             return Response.status(Response.Status.NOT_FOUND).build();
         } else {
             return Response.ok(Support.xomToDom(doc)).build();
         }
     }
+
 }

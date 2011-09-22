@@ -176,7 +176,7 @@ public class TaskUpdater {
         /* We are done with the TaskGraph, so let's close it. */
         taskGraph.close();
         /* Remove the references from the document graph. */
-        TaskUpdater.removePotentiallyIncorrect(model, taskId);
+        model = TaskUpdater.removePotentiallyIncorrect(model, taskId);
 
         /* Now update the XML: write us a new main element. */
         ByteArrayOutputStream rdfOutStream = new ByteArrayOutputStream();
@@ -230,15 +230,7 @@ public class TaskUpdater {
         /* Now select "potentiallyIncorrect" property. */
         Property incorrect = model.createProperty(TaskSelector.potentiallyIncorrectUri);
         Resource taskIdResource = model.createResource(taskId);
-        StmtIterator stmts = model.listStatements((Resource) null,
-                incorrect,
-                (Resource) taskIdResource);
-
-        /* Remove potentiallyIncorrect statements from graph. */
-        while (stmts.hasNext()) {
-            Statement stmt = (Statement) stmts.next();
-            model.remove(stmt);
-        }
+        model.removeAll((Resource) null, incorrect, taskIdResource);
         return model;
     }
 

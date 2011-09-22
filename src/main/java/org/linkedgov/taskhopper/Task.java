@@ -87,6 +87,7 @@ public class Task {
     public void setGraphUri(String graphUri) {
         this.graphUri = graphUri;
     }// </editor-fold>
+    private Document xml;
 
     /*
      * inDatabase tells you whether the object is actually in the database or not.
@@ -162,6 +163,8 @@ public class Task {
         Task.checkConnection();
         Document xml = Task.getConnection().loadDocument("get.xq?id=" + taskId, null);
         Task t = Task.xmlToTask(xml);
+        t.xml = xml;
+        t.rebuildXml();
         return t;
     }
 
@@ -218,8 +221,8 @@ public class Task {
 
         URIBuilder uri = new URIBuilder("new.xq");
         uri.addQueryParams(params);
-        Document xml = Task.connection.loadDocument(uri);
-        return xml;
+        Document xmlResp = Task.connection.loadDocument(uri);
+        return xmlResp;
     }
 
     /**
@@ -322,8 +325,8 @@ public class Task {
      * @throws IOException
      */
     public String getIssuePredicate() throws ParsingException, IOException {
-        Document xml = Task.getConnection().loadUrl(this.getGraphUri());
-        Model taskGraph = TaskUpdater.getTaskGraphFromDocument(xml, this.getIssueUri());
+        Document xmlResp = Task.getConnection().loadUrl(this.getGraphUri());
+        Model taskGraph = TaskUpdater.getTaskGraphFromDocument(xmlResp, this.getIssueUri());
         StmtIterator stmts = taskGraph.listStatements();
         assert (taskGraph.size() == 1);
         Property predicate = null;
@@ -341,8 +344,8 @@ public class Task {
 
     public Map<String, String> getIssueValuesMap() throws ParsingException, IOException {
         Map<String, String> out = new HashMap<String, String>();
-        Document xml = Task.getConnection().loadUrl(this.getGraphUri());
-        Model taskGraph = TaskUpdater.getTaskGraphFromDocument(xml, this.getIssueUri());
+        Document xmlResp = Task.getConnection().loadUrl(this.getGraphUri());
+        Model taskGraph = TaskUpdater.getTaskGraphFromDocument(xmlResp, this.getIssueUri());
         StmtIterator stmts = taskGraph.listStatements();
         assert (taskGraph.size() == 1);
         String resp = null;
@@ -361,6 +364,82 @@ public class Task {
         return out;
     }
 
+    public void rebuildXml(int maximum) {
+        Element root = new Element("task");
+        root.addAttribute(new Attribute("id", this.getId()));
+
+        if (this.getTaskType() != null) {
+            Element taskTypeElem = new Element("task-type");
+            taskTypeElem.addAttribute(new Attribute("task-type", this.getTaskType()));
+            root.appendChild(taskTypeElem);
+        }
+
+        if (this.getGraphUri() != null) {
+            Element graphUriElem = new Element("graph-uri");
+            graphUriElem.addAttribute(new Attribute("graph-uri", this.getGraphUri()));
+            root.appendChild(graphUriElem);
+        }
+
+        if (this.getIssueUri() != null) {
+            Element issueUriElem = new Element("issue-uri");
+            issueUriElem.addAttribute(new Attribute("issue-uri", this.getIssueUri()));
+            root.appendChild(issueUriElem);
+        }
+
+        try {
+            String issuePred = this.getIssuePredicate();
+            if (issuePred != null) {
+                Element propertyElem = new Element("property");
+                propertyElem.addAttribute(new Attribute("property", issuePred));
+                root.appendChild(propertyElem);
+            }
+
+            Map<String, String> brokenValueMap = this.getIssueValuesMap();
+            if (brokenValueMap != null) {
+                Element brokenValueElem = new Element("broken-value");
+
+                if (brokenValueMap.containsKey("datatype")) {
+                    brokenValueElem.addAttribute(
+                            new Attribute("datatype", brokenValueMap.get("datatype")));
+                }
+                
+                if (brokenValueMap.containsKey("value")) {
+                    brokenValueElem.appendChild(brokenValueMap.get("value"));
+                    root.appendChild(brokenValueElem);
+                }
+            }
+
+            ArrayList<String> exampleData = this.getExampleData(maximum);
+            if (exampleData != null && !(exampleData.isEmpty())) {
+                Element exampleDataElem = new Element("example-data");
+
+                for (String example : exampleData) {
+                    Element exElem = new Element("li");
+                    exElem.appendChild(example);
+                    exampleDataElem.appendChild(exElem);
+                }
+
+                root.appendChild(exampleDataElem);
+            }
+
+        } catch (ParsingException e) {
+            // Log
+        } catch (IOException e) {
+            // Log
+        } catch (URISyntaxException e) {
+            // Log
+        } catch (SAXException e) {
+            // Log
+        }
+
+        Document doc = new Document(root);
+        this.xml = doc;
+    }
+
+    public void rebuildXml() {
+        this.rebuildXml(5);
+    }
+
     // TODO: javaDoc this
     public JSONObject toJSON()
             throws ParsingException, IOException, SAXException, URISyntaxException, JSONException {
@@ -374,6 +453,10 @@ public class Task {
         json.put("example", this.getExampleData(5));
         json.put("brokenValue", this.getIssueValuesMap());
         return json;
+    }
+
+    public Document toXML() {
+        return this.xml;
     }
 
     @Override

@@ -29,11 +29,12 @@ public class ById {
     public Response getXml(@PathParam("id") String reqId)
             throws IOException, SAXException, ParsingException {
         Connection conn = ApplicationSettings.getConnection();
+        Task.setConnection(conn);
         TaskSelector ts = new TaskSelector(conn);
 
         /* Handle requests for specific tasks by ID using get.xq */
         try {
-            Document doc = ts.byId(reqId);
+            Document doc = Task.byId(reqId).toXML();
             return Support.respondIfNotEmpty(doc);
         } catch (IOException e) {
             return Response.serverError().build();

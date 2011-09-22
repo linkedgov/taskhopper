@@ -178,17 +178,9 @@ public class TaskUpdater {
         /* Remove the references from the document graph. */
         model = TaskUpdater.removePotentiallyIncorrect(model, taskId);
 
-        /* Now update the XML: write us a new main element. */
-        ByteArrayOutputStream rdfOutStream = new ByteArrayOutputStream();
-        model.write(rdfOutStream, "RDF/XML-ABBREV");
-        model.close();
-
-        Builder builder = new Builder();
-        Document rdfOut =
-                builder.build(new ByteArrayInputStream(rdfOutStream.toByteArray()));
-
         /* Merge the RDF graph back into document in place of the original main
          * element. */
+        Document rdfOut = RDFToXOM.convertToXOM(model);
         root.getFirstChildElement("main").removeChildren();
         root.getFirstChildElement("main").insertChild(rdfOut.getRootElement().copy(), 0);
 

@@ -284,7 +284,8 @@ public class Task {
             throws ParsingException, IOException {
         Task.checkConnection();
         Document input = Task.getConnection().loadUrl(this.getGraphUri());
-        Document output = TaskUpdater.nullifyTask(input, this.getId());
+        Document output = TaskUpdater.nullifyTask(input, this.getIssueUri());
+        boolean resp = Task.connection.putDocument(output, this.getGraphUri());
         return output;
     }
 

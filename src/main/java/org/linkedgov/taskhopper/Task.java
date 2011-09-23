@@ -153,7 +153,7 @@ public class Task {
      * Gets a task from the database by ID.
      *
      * @param taskId The ID of the task.
-     * @return Document
+     * @return Task
      * @throws IOException
      * @throws SAXException
      * @throws ParsingException
@@ -163,10 +163,37 @@ public class Task {
         Task.checkConnection();
         Document xml = Task.getConnection().loadDocument("get.xq?id=" + taskId, null);
         Task t = Task.xmlToTask(xml);
-        t.xml = xml;
-        t.rebuildXml();
+        t.rebuildXml(5);
         return t;
     }
+
+    /**
+     * Gets a task from the database randomly.
+     *
+     * @return Task
+     * @throws IOException
+     * @throws SAXException
+     * @throws ParsingException
+     */
+    public static Task random() throws IOException, SAXException, ParsingException {
+        Document xml = Task.connection.loadDocument("get_random.xq", null);
+        Task t = Task.xmlToTask(xml);
+        t.xml = xml;
+        t.rebuildXml(5);
+        return t;
+    }
+
+    public static Task randomByType(String type)
+            throws IOException, SAXException, ParsingException, URISyntaxException {
+        URIBuilder uri = new URIBuilder("random_by_type.xq");
+        uri.addQueryParam("type", type);
+        Document xml = Task.connection.loadDocument(uri);
+        Task t = Task.xmlToTask(xml);
+        t.xml = xml;
+        t.rebuildXml(5);
+        return t;
+    }
+
 
     /**
      * Turn XML task document into Task.
@@ -183,6 +210,7 @@ public class Task {
         String aId = task.getAttribute("id").getValue();
         Task t = new Task(aTaskType, aIssueUri, aGraphUri);
         t.setId(aId);
+        t.xml = xml;
         return t;
     }
 
@@ -272,7 +300,8 @@ public class Task {
             throws ParsingException, IOException {
         Task.checkConnection();
         Document input = Task.getConnection().loadUrl(this.getGraphUri());
-        Document output = TaskUpdater.editValue(input, this.getTaskType(), value, null);
+        Document output = TaskUpdater.editValue(input, this.getIssueUri(), value, null);
+        boolean resp = Task.connection.putDocument(output, this.getGraphUri());
         return output;
     }
 
@@ -328,7 +357,6 @@ public class Task {
         Document xmlResp = Task.getConnection().loadUrl(this.getGraphUri());
         Model taskGraph = TaskUpdater.getTaskGraphFromDocument(xmlResp, this.getIssueUri());
         StmtIterator stmts = taskGraph.listStatements();
-        assert (taskGraph.size() == 1);
         Property predicate = null;
         while (stmts.hasNext()) {
             Statement stmt = (Statement) stmts.next();

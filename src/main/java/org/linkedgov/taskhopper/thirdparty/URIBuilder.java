@@ -198,7 +198,6 @@ public class URIBuilder implements Cloneable {
 		return this.base.getPath();
 	}
 
-	/* TODO null/ zero-size check if this is ever made public */
 	protected URIBuilder setQueryNVP( List<NameValuePair> nvp ) throws URISyntaxException {
 		/* Passing the query string in the URI constructor will
 		 * double-escape query parameters and goober things up.  So we have

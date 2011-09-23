@@ -5,15 +5,18 @@ import com.hp.hpl.jena.rdf.model.Literal;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.Property;
+import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.Statement;
 import com.hp.hpl.jena.rdf.model.StmtIterator;
+import com.hp.hpl.jena.shared.LockMRSW;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.Map;
+import java.util.concurrent.locks.Lock;
 import nu.xom.Builder;
 import nu.xom.Document;
 import nu.xom.Element;
@@ -163,14 +166,9 @@ public class TaskUpdater {
             Literal replacementValueWrapped = model.createTypedLiteral(
                     replacementValue, existingDatatype);
 
-            /* changeObject mutates the graph! The word 'change' kind of
-             * hints at that, but it is still potentially surprising.
-             * Given what we are intending to do with the statement,
-             * this is an unnecessary side-effect, but we are going to
-             * be getting rid of the contents of the taskGraph anyway.
-             */
+            Statement newStmt = model.createStatement(stmt.getSubject(), stmt.getPredicate(), replacementValueWrapped);
+            //taskGraph.remove(stmt);
 
-            Statement newStmt = stmt.changeObject(replacementValueWrapped);
             /* Add to the document graph rather than the task graph. */
             model.add(newStmt);
         }
@@ -182,6 +180,7 @@ public class TaskUpdater {
         /* Merge the RDF graph back into document in place of the original main
          * element. */
         Document rdfOut = RDFToXOM.convertToXOM(model);
+        model.close();
         root.getFirstChildElement("main").removeChildren();
         root.getFirstChildElement("main").insertChild(rdfOut.getRootElement().copy(), 0);
 

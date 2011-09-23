@@ -300,7 +300,7 @@ public class Task {
             throws ParsingException, IOException {
         Task.checkConnection();
         Document input = Task.getConnection().loadUrl(this.getGraphUri());
-        Document output = TaskUpdater.editValue(input, this.getTaskType(), value, null);
+        Document output = TaskUpdater.editValue(input, this.getIssueUri(), value, null);
         return output;
     }
 

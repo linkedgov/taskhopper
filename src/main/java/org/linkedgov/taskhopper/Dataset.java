@@ -139,7 +139,7 @@ public class Dataset {
         URIBuilder builder = new URIBuilder("http://localhost:8080/");
         builder.setHost(this.getConnection().getUrl());
         builder.setPort(this.getConnection().getPort());
-        builder.setPath("/exist/rest/db/linkedgov-meta/paged_item_query.xq");
+        builder.setPath("/exist/rest/db/linkedgov-meta/taskhopper/paged_item_query.xq");
         builder.addQueryParam("collection", this.getId());
         builder.addQueryParam("start", start);
         builder.addQueryParam("limit", limit);

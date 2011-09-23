@@ -153,7 +153,7 @@ public class Task {
      * Gets a task from the database by ID.
      *
      * @param taskId The ID of the task.
-     * @return Document
+     * @return Task
      * @throws IOException
      * @throws SAXException
      * @throws ParsingException
@@ -164,9 +164,37 @@ public class Task {
         Document xml = Task.getConnection().loadDocument("get.xq?id=" + taskId, null);
         Task t = Task.xmlToTask(xml);
         t.xml = xml;
-        t.rebuildXml();
+        t.rebuildXml(5);
         return t;
     }
+
+    /**
+     * Gets a task from the database randomly.
+     *
+     * @return Task
+     * @throws IOException
+     * @throws SAXException
+     * @throws ParsingException
+     */
+    public static Task random() throws IOException, SAXException, ParsingException {
+        Document xml = Task.connection.loadDocument("get_random.xq", null);
+        Task t = Task.xmlToTask(xml);
+        t.xml = xml;
+        t.rebuildXml(5);
+        return t;
+    }
+
+    public static Task randomByType(String type)
+            throws IOException, SAXException, ParsingException, URISyntaxException {
+        URIBuilder uri = new URIBuilder("random_by_type.xq");
+        uri.addQueryParam("type", type);
+        Document xml = Task.connection.loadDocument(uri);
+        Task t = Task.xmlToTask(xml);
+        t.xml = xml;
+        t.rebuildXml(5);
+        return t;
+    }
+
 
     /**
      * Turn XML task document into Task.

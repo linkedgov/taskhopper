@@ -112,7 +112,7 @@ public class ById {
             @FormParam("value") String value,
             @QueryParam("callback") @DefaultValue("callback") String callback) {
         Connection conn = ApplicationSettings.getConnection();
-        TaskSelector ts = new TaskSelector(conn);
+        Task.setConnection(conn);
 
         try {
             if (action.equals("edit")) {

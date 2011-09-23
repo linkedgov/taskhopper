@@ -13,7 +13,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
-import java.util.Map;
+import java.util.logging.Logger;
 import nu.xom.Builder;
 import nu.xom.Document;
 import nu.xom.Element;
@@ -21,9 +21,11 @@ import nu.xom.Node;
 import nu.xom.Nodes;
 import nu.xom.ParsingException;
 import nu.xom.ValidityException;
+import org.linkedgov.taskhopper.support.RDFToXOM;
 
 public class TaskUpdater {
 
+    private static Logger log = Logger.getLogger(TaskUpdater.class.getName());
     private Connection connection;
 
     // TODO: javaDoc this constructor
@@ -42,21 +44,6 @@ public class TaskUpdater {
     public TaskUpdater(Connection conn) {
         this.connection = conn;
     }
-
-    /* TODO: method for modifying one of the issues (by issue URI) and then
-     * modifying the graph */
-    public void update(Task task, Map<String, String> values) {
-        if (values.containsKey("null") && values.get("null").equals("true")) {
-            // we need to update the graph to reflect a null value
-        }
-    }
-
-    public void updateById(String id) {
-    }
-
-    public void merge() {
-    }
-    /* TODO: servlet for serving the above */
 
     /**
      * Method to modify document to mark a value from a task as null.
@@ -92,17 +79,9 @@ public class TaskUpdater {
         /* Remove potentiallyIncorrect statements from graph. */
         model = TaskUpdater.removePotentiallyIncorrect(model, taskId);
 
-        /* I/O jiggerypokery to move data from Jena back to XML document. */
-        ByteArrayOutputStream rdfOutStream = new ByteArrayOutputStream();
-        model.write(rdfOutStream, "RDF/XML-ABBREV");
-        model.close();
-
-        Builder builder = new Builder();
-        Document rdfOut =
-                builder.build(new ByteArrayInputStream(rdfOutStream.toByteArray()));
-
         /* Merge the RDF graph back into document in place of the original main
          * element. */
+        Document rdfOut = RDFToXOM.convertToXOM(model);
         root.getFirstChildElement("main").removeChildren();
         root.getFirstChildElement("main").insertChild(rdfOut.getRootElement().copy(), 0);
 
@@ -142,6 +121,8 @@ public class TaskUpdater {
 
 
         Model taskGraph = TaskUpdater.getTaskGraphFromDocument(document, taskId);
+
+        TaskUpdater.log.info("TaskID: " + taskId);
         StmtIterator stmts = taskGraph.listStatements();
         while (stmts.hasNext()) {
             Statement stmt = (Statement) stmts.next();

@@ -105,7 +105,7 @@ public class ById {
     }
 
     @POST
-    @Produces({"application/json", "application/json"})
+    @Produces({"application/json", "application/javascript"})
     public Response updateJson(
             @PathParam("id") String reqId,
             @FormParam("action") String action,

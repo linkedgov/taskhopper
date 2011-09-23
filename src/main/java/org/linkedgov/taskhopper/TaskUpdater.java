@@ -21,6 +21,7 @@ import nu.xom.Node;
 import nu.xom.Nodes;
 import nu.xom.ParsingException;
 import nu.xom.ValidityException;
+import org.linkedgov.taskhopper.support.RDFToXOM;
 
 public class TaskUpdater {
 

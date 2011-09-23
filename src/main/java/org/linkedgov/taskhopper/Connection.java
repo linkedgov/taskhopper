@@ -1,5 +1,6 @@
 package org.linkedgov.taskhopper;
 
+import java.io.UnsupportedEncodingException;
 import org.linkedgov.taskhopper.thirdparty.URIBuilder;
 import java.io.IOException;
 import java.io.InputStream;
@@ -11,6 +12,8 @@ import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPut;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
@@ -218,5 +221,19 @@ public class Connection {
         Builder parser = new Builder();
         Document doc = parser.build(is);
         return doc;
+    }
+
+    public boolean putDocument(Document xml, String url)
+            throws UnsupportedEncodingException, IOException, ParsingException {
+        HttpPut put = new HttpPut(url);
+        put.addHeader("Content-Type", "application/xml");
+        StringEntity ent = new StringEntity(xml.toXML());
+        put.setEntity(ent);
+        HttpResponse response = this.client.execute(put);
+        if (response.getStatusLine().getStatusCode() == 201) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }

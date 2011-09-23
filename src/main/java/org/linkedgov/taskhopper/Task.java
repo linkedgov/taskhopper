@@ -163,7 +163,6 @@ public class Task {
         Task.checkConnection();
         Document xml = Task.getConnection().loadDocument("get.xq?id=" + taskId, null);
         Task t = Task.xmlToTask(xml);
-        t.xml = xml;
         t.rebuildXml(5);
         return t;
     }
@@ -211,6 +210,7 @@ public class Task {
         String aId = task.getAttribute("id").getValue();
         Task t = new Task(aTaskType, aIssueUri, aGraphUri);
         t.setId(aId);
+        t.xml = xml;
         return t;
     }
 
@@ -301,6 +301,7 @@ public class Task {
         Task.checkConnection();
         Document input = Task.getConnection().loadUrl(this.getGraphUri());
         Document output = TaskUpdater.editValue(input, this.getIssueUri(), value, null);
+        boolean resp = Task.connection.putDocument(output, this.getGraphUri());
         return output;
     }
 
@@ -356,7 +357,6 @@ public class Task {
         Document xmlResp = Task.getConnection().loadUrl(this.getGraphUri());
         Model taskGraph = TaskUpdater.getTaskGraphFromDocument(xmlResp, this.getIssueUri());
         StmtIterator stmts = taskGraph.listStatements();
-        assert (taskGraph.size() == 1);
         Property predicate = null;
         while (stmts.hasNext()) {
             Statement stmt = (Statement) stmts.next();

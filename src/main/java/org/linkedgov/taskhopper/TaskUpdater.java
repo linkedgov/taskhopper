@@ -167,7 +167,6 @@ public class TaskUpdater {
                     replacementValue, existingDatatype);
 
             Statement newStmt = model.createStatement(stmt.getSubject(), stmt.getPredicate(), replacementValueWrapped);
-            //taskGraph.remove(stmt);
 
             /* Add to the document graph rather than the task graph. */
             model.add(newStmt);

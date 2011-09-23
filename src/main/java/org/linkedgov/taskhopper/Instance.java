@@ -16,12 +16,24 @@ import org.linkedgov.taskhopper.support.RDFToJSON;
 public class Instance {
     private Document xml;
 
+    /**
+     * Creates an Instance object from XML (returned from the database).
+     *
+     * @param xml
+     * @return an Instance object
+     */
     public static Instance fromDocument(Document xml) {
         Instance instance = new Instance();
         instance.xml = xml;
         return instance;
     }
 
+    /**
+     * Returns true if there is no "empty" element in the doucment,
+     * returns false otherwise.
+     *
+     * @return whether the document has any content
+     */
     public boolean hasContent() {
         if (this.xml == null) {
             return false;
@@ -31,6 +43,15 @@ public class Instance {
         return (empties.size() == 0);
     }
 
+    /**
+     * Returns the data as a JSON object.
+     *
+     * Contains the same data as in the XML but in JSON.
+     *
+     * @return JSON object.
+     * @throws IOException
+     * @throws JSONException
+     */
     public JSONObject toJSON() throws IOException, JSONException {
         JSONObject out = new JSONObject();
         JSONArray issues = new JSONArray();
@@ -71,6 +92,17 @@ public class Instance {
         return out;
     }
 
+    /**
+     * Returns JSON with padding (JSONP).
+     *
+     * JSONP is JSON wrapped with prefixed function name.
+     * Used to avoid cross-domain Ajax policies in web browsers.
+     *
+     * @param callback String used as padding function name
+     * @return JSONP object
+     * @throws IOException
+     * @throws JSONException
+     */
     public JSONWithPadding toJSONP(String callback) throws IOException, JSONException {
         return new JSONWithPadding(this.toJSON(), callback);
     }
@@ -79,6 +111,11 @@ public class Instance {
         return this.xml;
     }
 
+    /**
+     * Converts from XOM to W3C DOM (used by Apache Jersey to return XML).
+     *
+     * @return W3C DOM Document object.
+     */
     public org.w3c.dom.Document toW3CDOMDocument() {
         try {
             return DOMConverter.convert(this.xml,

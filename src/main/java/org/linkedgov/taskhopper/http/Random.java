@@ -10,12 +10,10 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
-import nu.xom.Document;
 import nu.xom.ParsingException;
 import org.codehaus.jettison.json.JSONException;
 import org.linkedgov.taskhopper.Connection;
 import org.linkedgov.taskhopper.Task;
-import org.linkedgov.taskhopper.TaskSelector;
 import org.xml.sax.SAXException;
 
 @Path("/task/random")
@@ -24,8 +22,7 @@ public class Random {
     @GET
     @Produces("application/xml")
     public Response getXml(
-            @DefaultValue("") @QueryParam("type") String typeUrl
-        ) {
+            @DefaultValue("") @QueryParam("type") String typeUrl) {
 
         Connection conn = ApplicationSettings.getConnection();
         Task.setConnection(conn);
@@ -33,12 +30,22 @@ public class Random {
         try {
             if (typeUrl.equals("") || typeUrl == null) {
                 Task t = Task.random();
-                org.w3c.dom.Document out = Support.xomToDom(t.toXML());
-                return Response.ok(out).build();
+                if (t == null) {
+                    // return 404 Not Found if there are no tasks left!
+                    return Response.status(Response.Status.NOT_FOUND).build();
+                } else {
+                    org.w3c.dom.Document out = Support.xomToDom(t.toXML());
+                    return Response.ok(out).build();
+                }
             } else {
                 Task t = Task.randomByType(typeUrl);
-                org.w3c.dom.Document out = Support.xomToDom(t.toXML());
-                return Response.ok(out).build();
+                if (t == null) {
+                    // return 404 Not Found if there are no tasks left!
+                    return Response.status(Response.Status.NOT_FOUND).build();
+                } else {
+                    org.w3c.dom.Document out = Support.xomToDom(t.toXML());
+                    return Response.ok(out).build();
+                }
             }
         } catch (IOException e) {
             return Response.serverError().build();
@@ -85,5 +92,4 @@ public class Random {
             return Response.serverError().build();
         }
     }
-
 }

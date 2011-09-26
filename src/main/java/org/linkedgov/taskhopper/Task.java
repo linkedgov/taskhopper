@@ -177,10 +177,14 @@ public class Task {
      */
     public static Task random() throws IOException, SAXException, ParsingException {
         Document xml = Task.connection.loadDocument("get_random.xq", null);
-        Task t = Task.xmlToTask(xml);
-        t.xml = xml;
-        t.rebuildXml(5);
-        return t;
+        if (xml.getRootElement().getChildElements().size() == 0) {
+            return null;
+        } else {
+            Task t = Task.xmlToTask(xml);
+            t.xml = xml;
+            t.rebuildXml(5);
+            return t;
+        }
     }
 
     public static Task randomByType(String type)
@@ -188,12 +192,15 @@ public class Task {
         URIBuilder uri = new URIBuilder("random_by_type.xq");
         uri.addQueryParam("type", type);
         Document xml = Task.connection.loadDocument(uri);
-        Task t = Task.xmlToTask(xml);
-        t.xml = xml;
-        t.rebuildXml(5);
-        return t;
+        if (xml.getRootElement().getChildElements().size() == 0) {
+            return null;
+        } else {
+            Task t = Task.xmlToTask(xml);
+            t.xml = xml;
+            t.rebuildXml(5);
+            return t;
+        }
     }
-
 
     /**
      * Turn XML task document into Task.

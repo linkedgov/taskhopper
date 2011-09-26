@@ -6,6 +6,8 @@ import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.Statement;
 import com.hp.hpl.jena.rdf.model.StmtIterator;
 import com.hp.hpl.jena.rdf.model.RDFNode;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.linkedgov.taskhopper.thirdparty.URIBuilder;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -310,6 +312,9 @@ public class Task {
         Document input = Task.getConnection().loadUrl(this.getGraphUri());
         Document output = TaskUpdater.editValue(input, this.getIssueUri(), value, null);
         boolean resp = Task.connection.putDocument(output, this.getGraphUri());
+        if (resp == true) {
+            this.removeFromHopper();
+        }
         return output;
     }
 
@@ -474,6 +479,19 @@ public class Task {
 
     public void rebuildXml() {
         this.rebuildXml(5);
+    }
+
+    public void removeFromHopper() throws ConnectionNotFoundException {
+        Task.checkConnection();
+        try {
+            Task.connection.loadDocument("get.xq?id=" + this.getId(), null);
+        } catch (IOException ex) {
+            Logger.getLogger(Task.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SAXException ex) {
+            Logger.getLogger(Task.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ParsingException ex) {
+            Logger.getLogger(Task.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     // TODO: javaDoc this

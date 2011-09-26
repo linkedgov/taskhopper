@@ -481,16 +481,19 @@ public class Task {
         this.rebuildXml(5);
     }
 
-    public void removeFromHopper() throws ConnectionNotFoundException {
+    public Document removeFromHopper() throws ConnectionNotFoundException {
         Task.checkConnection();
+        Document out = null;
         try {
-            Task.connection.loadDocument("get.xq?id=" + this.getId(), null);
+            Document xmlResp = Task.connection.loadDocument("delete.xq?id=" + this.getId(), null);
         } catch (IOException ex) {
             Logger.getLogger(Task.class.getName()).log(Level.SEVERE, null, ex);
         } catch (SAXException ex) {
             Logger.getLogger(Task.class.getName()).log(Level.SEVERE, null, ex);
         } catch (ParsingException ex) {
             Logger.getLogger(Task.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            return out;
         }
     }
 

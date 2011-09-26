@@ -163,12 +163,17 @@ public class Dataset {
         int foundValues = 0;
         int docsProcessed = 0;
         HashSet set = new HashSet<String>();
-        while (foundValues < limit) {
+        while (foundValues <= limit) {
             int callLimit = 20;
             if (limit < 20) {
                 callLimit = limit;
             }
-            ArrayList<String> apiResults = this.getInstanceListing(docsProcessed, callLimit);
+            int max = Math.max(docsProcessed, foundValues);
+            int start = 0;
+            if (docsProcessed != 0) {
+                start = docsProcessed + 1;
+            }
+            ArrayList<String> apiResults = this.getInstanceListing(start, callLimit);
             for (String result : apiResults) {
                 URIBuilder builder = new URIBuilder("http://localhost:8080/");
                 builder.setHost(this.getConnection().getUrl());
@@ -185,7 +190,6 @@ public class Dataset {
                         set.add(value);
                         foundValues += 1;
                     }
-                    stmt.getObject().isLiteral();
                 }
                 docsProcessed += 1;
             }

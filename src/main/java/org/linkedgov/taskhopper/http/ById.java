@@ -48,7 +48,14 @@ public class ById {
     @GET
     @Produces({"application/javascript", "application/json"})
     public Response getJson(@PathParam("id") String reqId,
+            @QueryParam("method") String method,
+            @QueryParam("action") String action,
+            @QueryParam("value") String value,
             @QueryParam("callback") @DefaultValue("callback") String callback) {
+
+        if (method != null && method.toUpperCase().equals("POST")) {
+            return this.updateJson(reqId, action, value, callback);
+        }
 
         Connection conn = ApplicationSettings.getConnection();
         Task.setConnection(conn);

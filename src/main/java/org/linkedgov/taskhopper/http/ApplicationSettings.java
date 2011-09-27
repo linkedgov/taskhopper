@@ -6,6 +6,9 @@ import javax.servlet.ServletContextEvent;
 import org.linkedgov.taskhopper.Connection;
 
 public class ApplicationSettings implements javax.servlet.ServletContextListener {
+    public static final String needsAnExpert =
+            "http://linkedgov.org/schema/task-types/needs-an-expert";
+
     // <editor-fold defaultstate="collapsed" desc="static String serverHostName;">
     private static String serverHostName = "localhost";
 

@@ -313,7 +313,7 @@ public class Task {
         Document output = TaskUpdater.editValue(input, this.getIssueUri(), value, null);
         boolean resp = Task.connection.putDocument(output, this.getGraphUri());
         if (resp == true) {
-            this.removeFromHopper();
+            boolean removed = this.removeFromHopper();
         }
         return output;
     }
@@ -481,20 +481,25 @@ public class Task {
         this.rebuildXml(5);
     }
 
-    public Document removeFromHopper() throws ConnectionNotFoundException {
+    public boolean removeFromHopper() throws ConnectionNotFoundException {
         Task.checkConnection();
-        Document out = null;
+        boolean out = false;
         try {
-            Document xmlResp = Task.connection.loadDocument("delete.xq?id=" + this.getId(), null);
+            Logger.getLogger(Task.class.getName()).info("running delete on: " + this.getId());
+            Document xmlResp = Task.connection.duplicate().
+                    loadDocument("delete.xq?id=" + this.getId(), null);
+            Logger.getLogger(Task.class.getName()).info("response: " + xmlResp.toXML());
+            if (xmlResp.getRootElement().getChildElements().size() == 0) {
+                out = true;
+            }
         } catch (IOException ex) {
             Logger.getLogger(Task.class.getName()).log(Level.SEVERE, null, ex);
         } catch (SAXException ex) {
             Logger.getLogger(Task.class.getName()).log(Level.SEVERE, null, ex);
         } catch (ParsingException ex) {
             Logger.getLogger(Task.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            return out;
         }
+        return out;
     }
 
     // TODO: javaDoc this

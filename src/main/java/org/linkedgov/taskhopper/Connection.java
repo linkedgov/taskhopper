@@ -150,6 +150,15 @@ public class Connection {
         this.setAuthenticating(false);
     }
 
+    public Connection duplicate() {
+        Connection conn = new Connection(this.getUrl(), this.getPort());
+        conn.username = this.username;
+        conn.password = this.password;
+        conn.authenticationCallback();
+        conn.client = new DefaultHttpClient();
+        return conn;
+    }
+
     // TODO: javaDoc this method
     public Document loadUrl(String url) throws ParsingException, IOException {
         HttpGet get = new HttpGet(url);

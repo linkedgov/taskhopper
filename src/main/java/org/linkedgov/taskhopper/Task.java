@@ -295,6 +295,28 @@ public class Task {
         Document input = Task.getConnection().loadUrl(this.getGraphUri());
         Document output = TaskUpdater.nullifyTask(input, this.getIssueUri());
         boolean resp = Task.connection.putDocument(output, this.getGraphUri());
+        if (resp == true) {
+            boolean removed = this.removeFromHopper();
+        }
+        return output;
+    }
+
+    /**
+     * Calls TaskUpdater.markAsOkay to mark data as okay.
+     *
+     * @return
+     * @throws ParsingException
+     * @throws IOException
+     */
+    public Document okay()
+            throws ParsingException, IOException {
+        Task.checkConnection();
+        Document input = Task.getConnection().loadUrl(this.getGraphUri());
+        Document output = TaskUpdater.markAsOkay(input, this.getIssueUri());
+        boolean resp = Task.connection.putDocument(output, this.getGraphUri());
+        if (resp == true) {
+            boolean removed = this.removeFromHopper();
+        }
         return output;
     }
 

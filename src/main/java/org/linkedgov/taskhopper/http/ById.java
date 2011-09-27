@@ -99,6 +99,10 @@ public class ById {
                 Task task = Task.byId(reqId);
                 Document doc = task.nullify();
                 return Support.respondIfNotEmpty(doc);
+            } else if (action.equals("okay")) {
+                Task task = Task.byId(reqId);
+                Document doc = task.okay();
+                return Support.respondIfNotEmpty(doc);
             } else {
                 return Response.noContent().build();
             }
@@ -134,6 +138,15 @@ public class ById {
             } else if (action.equals("null")) {
                 Task task = Task.byId(reqId);
                 Document doc = task.nullify();
+                Instance inst = Instance.fromDocument(doc);
+                if (callback == null || callback.equals("")) {
+                    return Response.ok(inst.toJSON()).build();
+                } else {
+                    return Response.ok(inst.toJSONP(callback)).build();
+                }
+            } else if (action.equals("okay")) {
+                Task task = Task.byId(reqId);
+                Document doc = task.okay();
                 Instance inst = Instance.fromDocument(doc);
                 if (callback == null || callback.equals("")) {
                     return Response.ok(inst.toJSON()).build();

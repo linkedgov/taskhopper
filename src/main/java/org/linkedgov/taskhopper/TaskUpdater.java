@@ -92,6 +92,49 @@ public class TaskUpdater {
     }
 
     /**
+     * Resolves a task by moving the data from the task graph to the issue graph.
+     *
+     * @param document
+     * @param taskId
+     * @return a modified document with the task graph removed and the main graph updated.
+     * @throws UnsupportedEncodingException
+     * @throws ParsingException
+     * @throws ValidityException
+     * @throws IOException
+     */
+    public static Document markAsOkay(Document document, String taskId)
+            throws UnsupportedEncodingException, ParsingException,
+            ValidityException, IOException {
+        Element root = document.getRootElement();
+        Model model = TaskUpdater.getMainGraphFromDocument(document);
+        Model taskGraph = TaskUpdater.getTaskGraphFromDocument(document, taskId);
+        StmtIterator stmts = taskGraph.listStatements();
+        while (stmts.hasNext()) {
+            Statement stmt = (Statement) stmts.next();
+            Statement newStmt = model.createStatement(
+                    stmt.getSubject(), stmt.getPredicate(), stmt.getObject());
+            model.add(newStmt);
+        }
+
+        /* We are done with the TaskGraph, so let's close it. */
+        taskGraph.close();
+        /* Remove the references from the document graph. */
+        model = TaskUpdater.removePotentiallyIncorrect(model, taskId);
+
+        /* Merge the RDF graph back into document in place of the original main
+         * element. */
+        Document rdfOut = RDFToXOM.convertToXOM(model);
+        model.close();
+        root.getFirstChildElement("main").removeChildren();
+        root.getFirstChildElement("main").insertChild(rdfOut.getRootElement().copy(), 0);
+
+        /* Finally, detach the task element from the document. */
+        TaskUpdater.getTaskElementFromDocument(document, taskId).getParent().detach();
+
+        return document;
+    }
+
+    /**
      * Resolves a task by editing the value of a literal and then merges that
      * graph into the main graph, the removes the issue from the document and
      * saves the document left at the end into the database.
@@ -119,9 +162,6 @@ public class TaskUpdater {
          */
         Element root = document.getRootElement();
         Model model = TaskUpdater.getMainGraphFromDocument(document);
-
-
-
         Model taskGraph = TaskUpdater.getTaskGraphFromDocument(document, taskId);
 
         TaskUpdater.log.info("TaskID: " + taskId);

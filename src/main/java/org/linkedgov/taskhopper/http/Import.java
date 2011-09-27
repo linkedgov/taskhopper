@@ -30,6 +30,7 @@ public class Import {
     public Response importData(@QueryParam("url") String url) {
         try {
             Connection conn = ApplicationSettings.getConnection();
+            Task.setConnection(conn);
             TaskSelector ts = new TaskSelector(conn);
             String decodedUrl = URLDecoder.decode(url, "UTF-8");
             ArrayList<Task> tasks = ts.importIssues(decodedUrl);

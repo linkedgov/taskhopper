@@ -53,22 +53,6 @@ public class Connection {
     public void setPort(Integer port) {
         this.port = port;
     }// </editor-fold>
-    // <editor-fold defaultstate="collapsed" desc="DefaultHttpClient client;">
-    private DefaultHttpClient client;
-
-    /**
-     * @return the client
-     */
-    public HttpClient getClient() {
-        return client;
-    }
-
-    /**
-     * @param client the client to set
-     */
-    public void setClient(DefaultHttpClient client) {
-        this.client = client;
-    }//</editor-fold>
     // <editor-fold defaultstate="collapsed" desc="String username;">
     private String username;
 
@@ -84,7 +68,6 @@ public class Connection {
      */
     public void setUsername(String username) {
         this.username = username;
-        this.authenticationCallback();
     } // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="String password;">
     private String password;
@@ -101,62 +84,26 @@ public class Connection {
      */
     public void setPassword(String password) {
         this.password = password;
-        this.authenticationCallback();
     }
     // </editor-fold>
-    // <editor-fold defaultstate="collapsed" desc="boolean authenticating;">
-    private boolean authenticating;
 
     /**
-     * @return whether the HTTP request are being authenticated 
+     * @return the client
      */
-    public boolean isAuthenticating() {
-        return authenticating;
-    }
-
-    /**
-     * @param authenticating the authenticating to set
-     */
-    public void setAuthenticating(boolean authenticating) {
-        this.authenticating = authenticating;
-    } //</editor-fold>
-
-    /**
-     * authenticationCallback is called after the username or password
-     * is updated. If both username and password have been set, it sets
-     * the credentials with the HTTP Client (this.client) and modifies
-     * the authenticating method to true.
-     *
-     * Note: this.authenticating and the authentication callback
-     * don't check to see if the username and password work, but
-     * this is for database access rather than for use by end users.
-     */
-    private void authenticationCallback() {
+    public HttpClient getClient() {
+        DefaultHttpClient http = new DefaultHttpClient();
         if (this.username != null && this.password != null) {
-            this.client.getCredentialsProvider().setCredentials(
+            http.getCredentialsProvider().setCredentials(
                     new AuthScope(this.url, this.port),
                     new UsernamePasswordCredentials(this.username, this.password));
-            this.setAuthenticating(true);
-        } else {
-            this.setAuthenticating(false);
         }
+        return http;
     }
 
     // TODO: javaDoc this method
     public Connection(String url, Integer port) {
         this.setUrl(url);
         this.setPort(port);
-        this.client = new DefaultHttpClient();
-        this.setAuthenticating(false);
-    }
-
-    public Connection duplicate() {
-        Connection conn = new Connection(this.getUrl(), this.getPort());
-        conn.username = this.username;
-        conn.password = this.password;
-        conn.authenticationCallback();
-        conn.client = new DefaultHttpClient();
-        return conn;
     }
 
     // TODO: javaDoc this method
@@ -238,7 +185,7 @@ public class Connection {
         put.addHeader("Content-Type", "application/xml");
         StringEntity ent = new StringEntity(xml.toXML());
         put.setEntity(ent);
-        HttpResponse response = this.client.execute(put);
+        HttpResponse response = this.getClient().execute(put);
         if (response.getStatusLine().getStatusCode() == 201) {
             return true;
         } else {

@@ -508,7 +508,7 @@ public class Task {
         boolean out = false;
         try {
             Logger.getLogger(Task.class.getName()).info("running delete on: " + this.getId());
-            Document xmlResp = Task.connection.duplicate().
+            Document xmlResp = Task.connection.
                     loadDocument("delete.xq?id=" + this.getId(), null);
             Logger.getLogger(Task.class.getName()).info("response: " + xmlResp.toXML());
             if (xmlResp.getRootElement().getChildElements().size() == 0) {

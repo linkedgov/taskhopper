@@ -320,6 +320,24 @@ public class Task {
         return output;
     }
 
+    public Document referToExpert()
+            throws ParsingException, IOException, URISyntaxException, SAXException {
+        Task.checkConnection();
+        Document input = Task.getConnection().loadUrl(this.getGraphUri());
+        Document output = TaskUpdater.referToExpert(input, this.getIssueUri());
+        boolean resp = Task.connection.putDocument(output, this.getGraphUri());
+        /* No need to call removeFromHopper as the XQuery to reimport the
+         * task should do the job. And if it fails, it's probably safer to
+         * have two tasks in the task list. */
+        TaskSelector ts = new TaskSelector(Task.getConnection());
+        ArrayList<Task> tasks = ts.importIssues(this.getGraphUri());
+        for (Task task : tasks) {
+           Logger.getLogger(Task.class.getName()).info(task.toString());
+           task.create();
+        }
+        return output;
+    }
+
     /**
      * Calls TaskUpdater.editValue to change the value in a graph.
      *
@@ -465,7 +483,7 @@ public class Task {
                     brokenValueElem.addAttribute(
                             new Attribute("datatype", brokenValueMap.get("datatype")));
                 }
-                
+
                 if (brokenValueMap.containsKey("value")) {
                     brokenValueElem.appendChild(brokenValueMap.get("value"));
                     root.appendChild(brokenValueElem);

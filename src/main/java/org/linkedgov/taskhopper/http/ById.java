@@ -103,6 +103,10 @@ public class ById {
                 Task task = Task.byId(reqId);
                 Document doc = task.okay();
                 return Support.respondIfNotEmpty(doc);
+            } else if (action.equals("refer")) {
+                Task task = Task.byId(reqId);
+                Document doc = task.referToExpert();
+                return Support.respondIfNotEmpty(doc);
             } else {
                 return Response.noContent().build();
             }
@@ -111,6 +115,8 @@ public class ById {
         } catch (SAXException e) {
             return Response.serverError().build();
         } catch (ParsingException e) {
+            return Response.serverError().build();
+        } catch (URISyntaxException e) {
             return Response.serverError().build();
         }
     }
@@ -153,6 +159,15 @@ public class ById {
                 } else {
                     return Response.ok(inst.toJSONP(callback)).build();
                 }
+            } else if (action.equals("refer")) {
+                Task task = Task.byId(reqId);
+                Document doc = task.referToExpert();
+                Instance inst = Instance.fromDocument(doc);
+                if (callback == null || callback.equals("")) {
+                    return Response.ok(inst.toJSON()).build();
+                } else {
+                    return Response.ok(inst.toJSONP(callback)).build();
+                }
             } else {
                 return Response.noContent().build();
             }
@@ -163,6 +178,8 @@ public class ById {
         } catch (SAXException e) {
             return Response.serverError().build();
         } catch (ParsingException e) {
+            return Response.serverError().build();
+        } catch (URISyntaxException e) {
             return Response.serverError().build();
         }
     }

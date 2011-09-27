@@ -206,6 +206,17 @@ public class TaskUpdater {
         return document;
     }
 
+    public static Document referToExpert(Document document, String taskId) {
+        Element root = document.getRootElement();
+        Element taskRDF = TaskUpdater.getTaskElementFromDocument(document, taskId);
+        Element task = (Element) taskRDF.getParent();
+        Attribute taskType = task.getAttribute("task-type");
+        taskType.setLocalName("original-task-type");
+        task.addAttribute(new Attribute("task-type",
+                ApplicationSettings.needsAnExpert));
+        return document;
+    }
+
     /**
      * Takes a linkedgov document and returns the main graph from it as a Jena
      * model.

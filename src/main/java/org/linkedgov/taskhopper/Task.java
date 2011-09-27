@@ -19,6 +19,7 @@ import nu.xom.Document;
 import nu.xom.Nodes;
 import nu.xom.Element;
 import nu.xom.ParsingException;
+import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONObject;
 import org.codehaus.jettison.json.JSONException;
 import org.xml.sax.SAXException;
@@ -188,6 +189,45 @@ public class Task {
             return t;
         }
     }
+    
+    public static Document randomWrappedXml() {
+        Document xml = new Document(new Element("rsp"));
+        try {
+            Task t = Task.random();
+            if (t != null) {
+                xml.appendChild(t.toXML());
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(Task.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SAXException ex) {
+            Logger.getLogger(Task.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ParsingException ex) {
+            Logger.getLogger(Task.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return xml;
+    }
+    
+    public static JSONArray randomWrappedJSON() {
+        JSONArray json = new JSONArray();
+        Task t;
+        try {
+            t = Task.random();
+            if (t != null) {
+                json.put(t.toJSON());
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(Task.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SAXException ex) {
+            Logger.getLogger(Task.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ParsingException ex) {
+            Logger.getLogger(Task.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (URISyntaxException ex) {
+            Logger.getLogger(Task.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (JSONException ex) {
+            Logger.getLogger(Task.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return json;
+    }
 
     public static Task randomByType(String type)
             throws IOException, SAXException, ParsingException, URISyntaxException {
@@ -202,6 +242,44 @@ public class Task {
             t.rebuildXml(5);
             return t;
         }
+    }
+
+    public static Document randomByTypeWrappedXml(String type)
+    {
+        Document xml = new Document(new Element("rsp"));
+        try {
+            Task t = Task.randomByType(type);
+            xml.appendChild(t.toXML());
+        } catch (IOException ex) {
+            Logger.getLogger(Task.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SAXException ex) {
+            Logger.getLogger(Task.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ParsingException ex) {
+            Logger.getLogger(Task.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (URISyntaxException ex) {
+            Logger.getLogger(Task.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return xml;
+    }
+
+    public static JSONArray randomByTypeWrappedJson(String type)
+    {
+        JSONArray json = new JSONArray();
+        try {
+            Task t = Task.randomByType(type);
+            json.put(t.toJSON());
+        } catch (IOException ex) {
+            Logger.getLogger(Task.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SAXException ex) {
+            Logger.getLogger(Task.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ParsingException ex) {
+            Logger.getLogger(Task.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (URISyntaxException ex) {
+            Logger.getLogger(Task.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (JSONException ex) {
+            Logger.getLogger(Task.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return json;
     }
 
     /**

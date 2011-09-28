@@ -162,7 +162,6 @@ public class TaskUpdater {
         Model model = TaskUpdater.getMainGraphFromDocument(document);
         Model taskGraph = TaskUpdater.getTaskGraphFromDocument(document, taskId);
 
-        TaskUpdater.log.info("TaskID: " + taskId);
         StmtIterator stmts = taskGraph.listStatements();
         while (stmts.hasNext()) {
             Statement stmt = (Statement) stmts.next();

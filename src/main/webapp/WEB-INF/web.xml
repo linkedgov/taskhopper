@@ -1,6 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
     <display-name>LinkedGov TaskHopper</display-name>
+    <filter>
+        <filter-name>JSONPCallbackNameSecurityFilter</filter-name>
+        <filter-class>org.linkedgov.taskhopper.http.JSONPCallbackNameSecurityFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>JSONPCallbackNameSecurityFilter</filter-name>
+        <servlet-name>Jersey</servlet-name>
+        <dispatcher>REQUEST</dispatcher>
+    </filter-mapping>
     <listener>
         <description>
             ApplicationSettings loads settings from web.xml when the server starts.
@@ -63,7 +72,8 @@
         <env-entry-type>java.lang.String</env-entry-type>
         <env-entry-value/>
     </env-entry>
-<init-param>
+    <init-param>
          <param-name>com.sun.jersey.spi.container.ContainerRequestFilters</param-name>
          <param-value>foo.MyUriConnegFilter</param-value>
-     </init-param></web-app>
+    </init-param>
+</web-app>

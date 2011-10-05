@@ -335,27 +335,7 @@ public class Task {
         Document xmlResp = Task.connection.loadDocument(uri);
         return xmlResp;
     }
-
-    /**
-     * Saves the task. If it isn't already in the database, it'll create a new
-     * record. If it is, it'll update the record.
-     *
-     * @throws URISyntaxException
-     * @throws IOException
-     * @throws SAXException
-     * @throws ParsingException
-     */
-    public void save(Connection conn)
-            throws URISyntaxException, IOException, SAXException, ParsingException {
-        Task.checkConnection();
-
-        if (this.inDatabase == true) {
-            this.update(conn);
-        } else {
-            this.create();
-        }
-    }
-
+    
     /**
      * Calls TaskUpdater.nullifyTask to mark a task as nullified.
      *

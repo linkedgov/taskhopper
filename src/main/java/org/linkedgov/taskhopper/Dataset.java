@@ -12,6 +12,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import nu.xom.Document;
 import nu.xom.Element;
 import nu.xom.Nodes;
@@ -145,9 +147,42 @@ public class Dataset {
         return output;
     }
 
-    private int total = 0;
-    public int getTotal() {
-        return this.total;
+    private int cachedInstanceCount = 0;
+    private boolean cachedInstanceCountLoaded = false;
+    /**
+     * @return Number of instances in the dataset.
+     */
+    public int getInstanceCount() {
+        if (this.cachedInstanceCountLoaded == false) {
+            return this.loadInstanceCount();
+        } else {
+            return this.cachedInstanceCount;
+        }
+    }
+
+    public int loadInstanceCount() {
+        int out = 0;
+
+        try {
+            URIBuilder builder = new URIBuilder("http://localhost:8080/");
+            builder.setHost(this.getConnection().getUrl());
+            builder.setPort(this.getConnection().getPort());
+            builder.setPath("/exist/rest/db/linkedgov-meta/taskhopper/instance_count.xq");
+            builder.addQueryParam("collection", this.getId());
+            Document doc = this.getConnection().loadUrl(builder.toURI().toString());
+            out =
+                Integer.parseInt(doc.getRootElement().getAttribute("count").getValue());
+            this.cachedInstanceCount = out;
+            this.cachedInstanceCountLoaded = true;
+        } catch (ParsingException ex) {
+            Logger.getLogger(Dataset.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (URISyntaxException ex) {
+            Logger.getLogger(Dataset.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(Dataset.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return out;
     }
 
     public ArrayList<String> getInstanceListing(int start, int limit) throws URISyntaxException, ParsingException, IOException, SAXException {
@@ -161,7 +196,7 @@ public class Dataset {
         Document doc = this.getConnection().loadUrl(builder.toURI().toString());
         int count =
                 Integer.parseInt(doc.getRootElement().getAttribute("count").getValue());
-        this.total = count;
+        this.cachedInstanceCount = count;
         Nodes resources = doc.query("/rsp/li");
 
         ArrayList<String> out = new ArrayList<String>();
@@ -208,7 +243,7 @@ public class Dataset {
                 }
                 docsProcessed += 1;
             }
-            if (docsProcessed == this.total) {
+            if (docsProcessed == this.cachedInstanceCount) {
                 break;
             }
         }

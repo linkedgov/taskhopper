@@ -10,6 +10,12 @@ public class Validation {
     /**
      * Checks that a JSONP callback is a valid JavaScript identifier.
      *
+     * A valid JSONP callback is a JavaScript identifier:
+     * 1. Segments are split using "."
+     * 2. The first character of a segment must be a-z, A-Z, $ or _
+     * 3. Subsequent characters in a segment must be a-z, A-Z, $, _ or 0-9.
+     * 4. The full name of the identifier cannot be a JavaScript keyword.
+     *
      * See http://stackoverflow.com/questions/1661197/valid-characters-for-javascript-variable-names
      * and http://tav.espians.com/sanitising-jsonp-callback-identifiers-for-security.html
      * for details on JSONP callback validation.
@@ -30,13 +36,16 @@ public class Validation {
             "while", "with"};
 
         for (String jsKeyword : jsKeywords) {
-            if (callback.matches(jsKeyword)) {
+            if (callback.equals(jsKeyword)) {
                 return false;
             }
         }
-
-        if (!callback.matches("^[$_\\p{L}][$_\\p{L}\\p{Mn}\\p{Mc}\\p{Nd}\\p{Pc}\u200C\u200D\\.]*+$")) {
-            return false;
+        
+        String[] segments = callback.split("\\.");
+        for (String segment : segments) {
+            if (!segment.matches("^[a-zA-Z_$][a-zA-Z0-9_$]*$")) {
+                return false;
+            }
         }
 
         return true;

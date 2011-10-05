@@ -1,12 +1,10 @@
 package org.linkedgov.taskhopper.http;
 
 import java.io.IOException;
-import java.util.logging.Logger;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
-import javax.servlet.ServletOutputStream;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletResponse;
@@ -14,6 +12,10 @@ import org.linkedgov.taskhopper.support.Validation;
 
 /**
  * Filter to throw out JSONP requests with dodgy callback names.
+ *
+ * Validation takes place with Validation.checkSanityOfJSONPCallback
+ *
+ * If the validation fails, send back a 400 error with message.
  *
  * @author tom
  */
@@ -34,7 +36,7 @@ public class JSONPCallbackNameSecurityFilter implements Filter {
             } else {
                 HttpServletResponse httpResponse = (HttpServletResponse) response;
                 httpResponse.sendError(httpResponse.SC_BAD_REQUEST,
-                        "JSON callback name should smell like valid JavaScript identifier");
+                        "JSON callback name should be a valid JavaScript identifier and use only ASCII characters.");
                 chain.doFilter(request, httpResponse);
             }
         } else {

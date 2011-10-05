@@ -19,6 +19,7 @@ import org.linkedgov.taskhopper.Connection;
 import org.linkedgov.taskhopper.Instance;
 import org.linkedgov.taskhopper.Task;
 import org.linkedgov.taskhopper.TaskSelector;
+import org.linkedgov.taskhopper.support.Validation;
 import org.xml.sax.SAXException;
 
 @Path("/task/{id: [0-9]+}")
@@ -59,6 +60,10 @@ public class ById {
 
         Connection conn = ApplicationSettings.getConnection();
         Task.setConnection(conn);
+
+        if (!Validation.checkSanityOfJSONPCallback(callback)) {
+            return Response.noContent().entity("Invalid JSONP callback name.").build();
+        }
 
         try {
             Task task = Task.byId(reqId);
@@ -131,7 +136,9 @@ public class ById {
         Connection conn = ApplicationSettings.getConnection();
         Task.setConnection(conn);
 
+
         try {
+            // Handle "Edit this task".
             if (action.equals("edit")) {
                 Task task = Task.byId(reqId);
                 Document doc = task.edit(value);
@@ -141,6 +148,7 @@ public class ById {
                 } else {
                     return Response.ok(inst.toJSONP(callback)).build();
                 }
+            // Handle "nullify".
             } else if (action.equals("null")) {
                 Task task = Task.byId(reqId);
                 Document doc = task.nullify();
@@ -150,6 +158,7 @@ public class ById {
                 } else {
                     return Response.ok(inst.toJSONP(callback)).build();
                 }
+            // Handle "okay".
             } else if (action.equals("okay")) {
                 Task task = Task.byId(reqId);
                 Document doc = task.okay();
@@ -159,6 +168,7 @@ public class ById {
                 } else {
                     return Response.ok(inst.toJSONP(callback)).build();
                 }
+            // Handle "refer data to expert".
             } else if (action.equals("refer")) {
                 Task task = Task.byId(reqId);
                 Document doc = task.referToExpert();

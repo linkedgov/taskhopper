@@ -88,7 +88,9 @@ public class Connection {
     // </editor-fold>
 
     /**
-     * @return the client
+     * Creates and returns a new <code>DefaultHttpClient</code> using the current settings (authentication etc.).
+     *
+     * @return HttpClient
      */
     public HttpClient getClient() {
         DefaultHttpClient http = new DefaultHttpClient();
@@ -100,13 +102,23 @@ public class Connection {
         return http;
     }
 
-    // TODO: javaDoc this method
-    public Connection(String url, Integer port) {
-        this.setUrl(url);
+    /**
+     * Create <code>Connection</code> from address and port.
+     *
+     * @param address The hostname of the eXist server (e.g. localhost).
+     * @param port The port number of the eXist server (e.g. 8080).
+     */
+    public Connection(String address, Integer port) {
+        this.setUrl(address);
         this.setPort(port);
     }
 
-    // TODO: javaDoc this method
+    /**
+     * Loads XML from a URL and returns it as a XOM <code>Document</code> object.
+     *
+     * @param url A valid URL (e.g. "http://example.org")
+     * @return A XOM <code>Document</code> object containing the document loaded.
+     */
     public Document loadUrl(String url) throws ParsingException, IOException {
         HttpGet get = new HttpGet(url);
         HttpResponse response = this.getClient().execute(get);
@@ -178,7 +190,17 @@ public class Connection {
         Document doc = parser.build(is);
         return doc;
     }
-
+    
+    /**
+     * Puts an XML <code>Document</code> into the database.
+     *
+     * @param xml A XOM <code>Document</code>.
+     * @param url URL to PUT the document to.
+     * @return boolean Whether the document was PUT without issue.
+     * @throws UnsupportedEncodingException
+     * @throws IOException
+     * @throws ParsingException
+     */
     public boolean putDocument(Document xml, String url)
             throws UnsupportedEncodingException, IOException, ParsingException {
         HttpPut put = new HttpPut(url);

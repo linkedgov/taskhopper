@@ -86,7 +86,7 @@ public class TaskUpdaterTest extends TestCase {
 //        fail("The test case is a prototype.");
 //    }
     /**
-     * Test of getMainElementFromDocument method, of class TaskUpdater.
+     * Test of getMainElementFromDocument method, and nullifyTask for single issue.
      */
     public void testGetMainElementFromDocument() throws Exception {
         System.out.println("getMainGraphFromDocument");
@@ -119,13 +119,12 @@ public class TaskUpdaterTest extends TestCase {
 
         Model issueOne = TaskUpdater.getTaskGraphFromDocument(document, issueId);
         assertEquals(1, issueOne.size());
-
-//        assertEquals(expResult, result);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
     }
 
 
+    /**
+     * Test nullifyTask with multiple issues.
+     */
     public void testMultipleIssuesInDocumentNullify() throws Exception {
         String doc = "<document>" +
                 "<dataset href=\"http://linkedgov.org/data/dwp-electricity-use/\" " +

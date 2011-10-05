@@ -36,7 +36,12 @@ public class TaskSelector {
         this.connection = conn;
     }// </editor-fold>
 
-    // TODO: javaDoc this method
+    /**
+     * Creates a <code>TaskSelector</code> and a new <code>Connection</code>.
+     *
+     * @param address The address of the eXist server (e.g. localhost)
+     * @param port The port number of the eXist server (e.g. 8080)
+     */
     public TaskSelector(String address, Integer port) {
         if (address == null) {
             throw new NullPointerException("Address must be set.");
@@ -48,7 +53,11 @@ public class TaskSelector {
         this.connection = newConn;
     }
 
-    // TODO: javaDoc this method
+    /**
+     * Creates a TaskSelector from an existing <code>Connection</code>.
+     *
+     * @param conn <code>Connection</code> to an eXist server.
+     */
     public TaskSelector(Connection conn) {
         this.connection = conn;
     }
@@ -205,5 +214,4 @@ public class TaskSelector {
 
         return tasks;
     }
-    /* TODO: servlet function to serve the above up. */
 }

@@ -301,10 +301,6 @@ public class Task {
         return t;
     }
 
-    public void update(Connection conn) {
-        // TODO: implement update
-    }
-
     /**
      * Creates the task in the database.
      *
@@ -618,7 +614,15 @@ public class Task {
         return out;
     }
 
-    // TODO: javaDoc this
+    /**
+     * Returns a description of the task object as a <code>JSONObject</code>.
+     *
+     * Within the JSON object, the URIs of the graph, issue and task type are present as well
+     * as the URI of the property. Example data, if available, is also included, as is the
+     * broken value and details about the dataset.
+     *
+     * @return A JSONObject representing the task.
+     */
     public JSONObject toJSON()
             throws ParsingException, IOException, SAXException, URISyntaxException, JSONException {
         JSONObject json = new JSONObject();

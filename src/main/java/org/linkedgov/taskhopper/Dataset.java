@@ -25,14 +25,14 @@ public class Dataset {
     private String title;
 
     /**
-     * @return the title
+     * @return the title of the dataset (e.g. "Schools")
      */
     public String getTitle() {
         return title;
     }
 
     /**
-     * @param title the title to set
+     * @param title the title to set the dataset to
      */
     public void setTitle(String title) {
         this.title = title;
@@ -41,14 +41,14 @@ public class Dataset {
     private String url;
 
     /**
-     * @return the url
+     * @return the URL of the dataset (e.g. "http://data.linkedgov.org/schools")
      */
     public String getUrl() {
         return url;
     }
 
     /**
-     * @param url the url to set
+     * @param url the URL to set the dataset to
      */
     public void setUrl(String url) {
         this.url = url;
@@ -57,29 +57,38 @@ public class Dataset {
     private String id;
 
     /**
-     * @return the ID
+     * @return the ID of the dataset (e.g. "schools")
      */
     public String getId() {
         return id;
     }
 
     /**
-     * @param id the ID of the dataset
+     * @param id the ID to set the dataset to
      */
     public void setId(String id) {
         this.id = id;
     } // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Connection connection;">
     private Connection connection;
-
+    
+    /**
+     * @param conn The <code>Connection</code> to the eXist server.
+     */
     public void setConnection(Connection conn) {
         this.connection = conn;
     }
-
+    
+    /**
+     * @return The <code>Connection</code> to the eXist server.
+     */
     public Connection getConnection() {
         return this.connection;
     }
-
+    
+    /**
+     * @return True if the connection is set, false otherwise.
+     */
     public boolean hasConnection() {
         if (this.getConnection() == null) {
             return false;
@@ -91,6 +100,7 @@ public class Dataset {
     /**
      * Checks to see if a connection is available.
      * If not, throw <code>ConectionNotFoundException</code>.
+     * 
      * @throws ConnectionNotFoundException
      */
     private void checkConnection() throws ConnectionNotFoundException {
@@ -100,7 +110,12 @@ public class Dataset {
         }
     }
     // </editor-fold>
-
+    
+    /**
+     * @param title The title of the dataset (e.g. "Schools")
+     * @param url The URL of the dataset (e.g. "http://data.linkedgov.org/schools") which lists all the instances.
+     * @param id The short ID of the dataset (e.g. "schools")
+     */
     public Dataset(String title, String url, String id) {
         this.setTitle(title);
         this.setUrl(url);

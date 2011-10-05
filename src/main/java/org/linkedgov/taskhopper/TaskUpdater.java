@@ -28,7 +28,12 @@ public class TaskUpdater {
     private static Logger log = Logger.getLogger(TaskUpdater.class.getName());
     private Connection connection;
 
-    // TODO: javaDoc this constructor
+    /**
+     * Creates TaskUpdater and Connection.
+     *
+     * @param address The hostname of the eXist server (e.g. "localhost")
+     * @param port Port of the eXist server (e.g. 8080).
+     */
     public TaskUpdater(String address, Integer port) {
         if (address == null) {
             throw new NullPointerException("Address must be set.");
@@ -40,7 +45,11 @@ public class TaskUpdater {
         this.connection = newConn;
     }
 
-    // TODO: javaDoc this constructor
+    /**
+     * Creates TaskUpdater from existing Connection
+     *
+     * @param conn A <code>Connection</code> to an eXist server.
+     */
     public TaskUpdater(Connection conn) {
         this.connection = conn;
     }

@@ -34,7 +34,6 @@ public class Random {
                 return Response.ok(out).build();
             }
         } else {
-            // TODO: create randomByTypeWrappedXml
             Document xml = Task.randomByTypeWrappedXml(typeUrl);
             if (xml == null) {
                 // return 404 Not Found if there are no tasks left!

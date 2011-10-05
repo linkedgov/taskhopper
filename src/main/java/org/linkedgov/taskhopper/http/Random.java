@@ -9,7 +9,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import nu.xom.Document;
-import org.codehaus.jettison.json.JSONArray;
+import org.codehaus.jettison.json.JSONObject;
 import org.linkedgov.taskhopper.Connection;
 import org.linkedgov.taskhopper.Task;
 
@@ -54,7 +54,7 @@ public class Random {
         Connection conn = ApplicationSettings.getConnection();
         Task.setConnection(conn);
 
-        JSONArray json;
+        JSONObject json;
         if (typeUrl.equals("") || typeUrl == null) {
             json = Task.randomWrappedJSON();
         } else {

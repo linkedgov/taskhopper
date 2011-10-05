@@ -207,7 +207,8 @@ public class Task {
         return xml;
     }
     
-    public static JSONArray randomWrappedJSON() {
+    public static JSONObject randomWrappedJSON() {
+        JSONObject out = new JSONObject();
         JSONArray json = new JSONArray();
         Task t;
         try {
@@ -215,6 +216,7 @@ public class Task {
             if (t != null) {
                 json.put(t.toJSON());
             }
+            out.put("rsp", json);
         } catch (IOException ex) {
             Logger.getLogger(Task.class.getName()).log(Level.SEVERE, null, ex);
         } catch (SAXException ex) {
@@ -226,7 +228,7 @@ public class Task {
         } catch (JSONException ex) {
             Logger.getLogger(Task.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return json;
+        return out;
     }
 
     public static Task randomByType(String type)
@@ -262,12 +264,14 @@ public class Task {
         return xml;
     }
 
-    public static JSONArray randomByTypeWrappedJson(String type)
+    public static JSONObject randomByTypeWrappedJson(String type)
     {
+        JSONObject out = new JSONObject();
         JSONArray json = new JSONArray();
         try {
             Task t = Task.randomByType(type);
             json.put(t.toJSON());
+            out.put("rsp", out);
         } catch (IOException ex) {
             Logger.getLogger(Task.class.getName()).log(Level.SEVERE, null, ex);
         } catch (SAXException ex) {
@@ -279,7 +283,7 @@ public class Task {
         } catch (JSONException ex) {
             Logger.getLogger(Task.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return json;
+        return out;
     }
 
     /**

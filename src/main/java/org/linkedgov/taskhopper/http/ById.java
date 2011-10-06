@@ -37,6 +37,10 @@ public class ById {
         try {
             Document doc = Task.byId(reqId).toXML();
             return Support.respondIfNotEmpty(doc);
+        } catch (NullPointerException e) {
+            return Response.status(404)
+                    .entity("<rsp><error>Task not found.</error></rsp>")
+                    .build();
         } catch (IOException e) {
             return Response.serverError().build();
         } catch (SAXException e) {

@@ -166,8 +166,12 @@ public class Task {
         Task.checkConnection();
         Document xml = Task.getConnection().loadDocument("get.xq?id=" + taskId, null);
         Task t = Task.xmlToTask(xml);
-        t.rebuildXml(5);
-        return t;
+        if (t != null) {
+            t.rebuildXml(5);
+            return t;
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -295,16 +299,20 @@ public class Task {
      * @return Task instance.
      */
     public static Task xmlToTask(Document xml) {
-        Element root = xml.getRootElement();
-        Element task = root.getFirstChildElement("task");
-        String aTaskType = task.getFirstChildElement("task-type").getAttribute("href").getValue();
-        String aGraphUri = task.getFirstChildElement("graph-uri").getAttribute("href").getValue();
-        String aIssueUri = task.getFirstChildElement("issue-uri").getAttribute("href").getValue();
-        String aId = task.getAttribute("id").getValue();
-        Task t = new Task(aTaskType, aIssueUri, aGraphUri);
-        t.setId(aId);
-        t.xml = xml;
-        return t;
+        try {
+            Element root = xml.getRootElement();
+            Element task = root.getFirstChildElement("task");
+            String aTaskType = task.getFirstChildElement("task-type").getAttribute("href").getValue();
+            String aGraphUri = task.getFirstChildElement("graph-uri").getAttribute("href").getValue();
+            String aIssueUri = task.getFirstChildElement("issue-uri").getAttribute("href").getValue();
+            String aId = task.getAttribute("id").getValue();
+            Task t = new Task(aTaskType, aIssueUri, aGraphUri);
+            t.setId(aId);
+            t.xml = xml;
+            return t;
+        } catch(NullPointerException e) {
+            return null;
+        }
     }
 
     /**
@@ -380,6 +388,15 @@ public class Task {
         return output;
     }
 
+    /**
+     * Marks a task as needing referral to an expert.
+     *
+     * @return
+     * @throws ParsingException
+     * @throws IOException
+     * @throws URISyntaxException
+     * @throws SAXException
+     */
     public Document referToExpert()
             throws ParsingException, IOException, URISyntaxException, SAXException {
         Task.checkConnection();
@@ -624,7 +641,14 @@ public class Task {
     }
 
     public Document toXML() {
-        return this.xml;
+        if (this.xml != null) {
+            return this.xml;
+        } else {
+            Element elem = new Element("rsp");
+            Element empty = new Element("empty");
+            elem.appendChild(empty);
+            return new Document(elem);
+        }
     }
 
     @Override

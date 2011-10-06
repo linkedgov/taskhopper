@@ -270,8 +270,10 @@ public class Task {
         JSONArray json = new JSONArray();
         try {
             Task t = Task.randomByType(type);
-            json.put(t.toJSON());
-            out.put("rsp", out);
+            if (t != null) {
+                json.put(t.toJSON());
+            }
+            out.put("rsp", json);
         } catch (IOException ex) {
             Logger.getLogger(Task.class.getName()).log(Level.SEVERE, null, ex);
         } catch (SAXException ex) {

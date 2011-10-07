@@ -90,6 +90,7 @@ public class TaskUpdaterTest extends TestCase {
      */
     public void testGetMainElementFromDocument() throws Exception {
         System.out.println("getMainGraphFromDocument");
+        // setup document.
         String doc = "<document>" +
                 "<dataset href=\"http://linkedgov.org/data/dwp-electricity-use/\" " +
                 "title=\"Electricity use by the DWP\" id=\"dwp-electricity-use\" />" +
@@ -105,18 +106,25 @@ public class TaskUpdaterTest extends TestCase {
         Builder builder = new Builder();
         Document document = builder.build(doc, "");
         Elements elems = document.getRootElement().getChildElements("issue");
+        // test that the XML library works, that we have issues in the document.
         assertEquals(true, elems.get(0) != null);
 
+        // test that our XPath works.
         String issueId = "http://linkedgov.org/data/dwp-electricity-use/1/issue/1";
         String query = String.format("//issue[@uri = '%s']", issueId);
         Nodes nodes = document.query(query);
         assertEquals((Element) nodes.get(0), elems.get(0));
 
+        // test that we can retrieve a Jena graph from the document and that it has
+        // two statements: the date and the reference to the potentially incorrect data.
         Model main = TaskUpdater.getMainGraphFromDocument(document);
         assertEquals(2, main.size());
 
+        // run the document through nullify process, which should remove the reference
+        // to the potentially incorrect data.
         Document out = TaskUpdater.nullifyTask((Document) document.copy(), issueId);
 
+        // TODO: surely this should be checking the new main graph of the document!?
         Model issueOne = TaskUpdater.getTaskGraphFromDocument(document, issueId);
         assertEquals(1, issueOne.size());
     }
@@ -124,6 +132,11 @@ public class TaskUpdaterTest extends TestCase {
 
     /**
      * Test nullifyTask with multiple issues.
+     * 
+     * This test is to ensure that after you run a nullify against a graph with
+     * two statements (one being the issue, another being data without issue),
+     * that the returned document should contain only one issue and the remaining
+     * graph contains only one statement.
      */
     public void testMultipleIssuesInDocumentNullify() throws Exception {
         String doc = "<document>" +
@@ -144,6 +157,8 @@ public class TaskUpdaterTest extends TestCase {
         assertEquals(2, document.query("//issue").size());
         Document out = TaskUpdater.nullifyTask((Document) document.copy(), issueId);
         assertEquals(1, out.query("//issue").size());
+        Model mainGraph = TaskUpdater.getMainGraphFromDocument(out);
+        assertEquals(1, mainGraph.size());
     }
 
     /**

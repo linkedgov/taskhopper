@@ -23,6 +23,12 @@ import org.linkedgov.taskhopper.TaskSelector;
 import org.linkedgov.taskhopper.support.Validation;
 import org.xml.sax.SAXException;
 
+/**
+ * Retrieves tasks by ID and returns as XML or JSON, and accepts updates to
+ * tasks.
+ *
+ * @author tom
+ */
 @Path("/task/{id: [0-9]+}")
 public class ById {
 

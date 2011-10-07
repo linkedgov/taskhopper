@@ -24,6 +24,11 @@ import org.codehaus.jettison.json.JSONObject;
 import org.codehaus.jettison.json.JSONException;
 import org.xml.sax.SAXException;
 
+/**
+ * Data model for tasks: creates, updates, extracts data from, fixes etc.
+ *
+ * @author tom
+ */
 public class Task {
     // <editor-fold defaultstate="collapsed" desc="String id;">
 

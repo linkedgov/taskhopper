@@ -23,6 +23,11 @@ import nu.xom.ValidityException;
 import org.linkedgov.taskhopper.http.ApplicationSettings;
 import org.linkedgov.taskhopper.support.RDFToXOM;
 
+/**
+ * Collection of static methods for modifying instance documents to fix tasks.
+ *
+ * @author tom
+ */
 public class TaskUpdater {
 
     private static Logger log = Logger.getLogger(TaskUpdater.class.getName());

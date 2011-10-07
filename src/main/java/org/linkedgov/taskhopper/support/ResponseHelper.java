@@ -11,7 +11,7 @@ import nu.xom.converters.DOMConverter;
 import org.codehaus.jettison.json.JSONObject;
 
 /**
- * Provides useful utility methods in constructing and sending responses.
+ * Provides utility methods in constructing and sending responses.
  *
  * @author tom
  */

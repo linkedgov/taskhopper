@@ -23,6 +23,11 @@ import org.linkedgov.taskhopper.TaskSelector;
 import org.linkedgov.taskhopper.Task;
 import org.xml.sax.SAXException;
 
+/**
+ * Imports issues into taskhopper from instance data.
+ *
+ * @author tom
+ */
 @Path("/task/import")
 public class Import {
 

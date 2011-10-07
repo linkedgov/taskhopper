@@ -14,6 +14,11 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 
+/**
+ * Wraps access to tasks in the database.
+ *
+ * @author tom
+ */
 public class TaskSelector {
     // TODO: perhaps spin this out into an XML or Java properties file
     public static final String potentiallyIncorrectUri =

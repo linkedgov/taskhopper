@@ -13,6 +13,13 @@ import org.codehaus.jettison.json.JSONObject;
 import org.codehaus.jettison.json.JSONArray;
 import org.linkedgov.taskhopper.support.RDFToJSON;
 
+/**
+ * An instance (row, essentially) of data in a dataset.
+ *
+ * Class provides convenience methods for converting to JSON etc.
+ *
+ * @author tom
+ */
 public class Instance {
     private Document xml;
 

@@ -18,6 +18,11 @@ import org.linkedgov.taskhopper.Task;
 import org.linkedgov.taskhopper.Instance;
 import org.xml.sax.SAXException;
 
+/**
+ * Adds an individual new task.
+ *
+ * @author tom
+ */
 @Path("/task/new")
 public class Input {
 

@@ -1,7 +1,7 @@
 package org.linkedgov.taskhopper.support;
 
 /**
- * Provides a variety of validations including JSONP callback validation.
+ * Provides validations including JSONP callback validation.
  *
  * @author tom
  */

@@ -21,6 +21,11 @@ import nu.xom.ParsingException;
 import org.linkedgov.taskhopper.thirdparty.URIBuilder;
 import org.xml.sax.SAXException;
 
+/**
+ * Hold information about datasets and extract metadata from database.
+ *
+ * @author tom
+ */
 public class Dataset {
     // <editor-fold defaultstate="collapsed" desc="String title;">
 
@@ -129,7 +134,7 @@ public class Dataset {
 
     /**
      * Returns a HashMap of the dataset object, suitable for JSON output
-     * with JSON.simple.
+     * with JSON output.
      *
      * @return HashMap with title and URL of dataset.
      */
@@ -147,8 +152,16 @@ public class Dataset {
         return output;
     }
 
+    /**
+     * Holds the number of instances in this dataset.
+     */
     private int cachedInstanceCount = 0;
+
+    /**
+     * Whether or not the instance count has been loaded from the database.
+     */
     private boolean cachedInstanceCountLoaded = false;
+    
     /**
      * @return Number of instances in the dataset.
      */
@@ -160,6 +173,11 @@ public class Dataset {
         }
     }
 
+    /**
+     * Loads the instance count from the database.
+     *
+     * @return int the number of instances in the dataset.
+     */
     public int loadInstanceCount() {
         int out = 0;
 
@@ -185,7 +203,19 @@ public class Dataset {
         return out;
     }
 
+    /**
+     * Gets a list of instances in a dataset (up to the <code>limit</code>).
+     *
+     * @param start The number of records to skip (equivalent to OFFSET in SQL).
+     * @param limit The total number of records to retrieve
+     * @return array of URLs of instances.
+     * @throws URISyntaxException
+     * @throws ParsingException
+     * @throws IOException
+     * @throws SAXException
+     */
     public ArrayList<String> getInstanceListing(int start, int limit) throws URISyntaxException, ParsingException, IOException, SAXException {
+        /* Construct URL. */
         URIBuilder builder = new URIBuilder("http://localhost:8080/");
         builder.setHost(this.getConnection().getUrl());
         builder.setPort(this.getConnection().getPort());
@@ -193,12 +223,15 @@ public class Dataset {
         builder.addQueryParam("collection", this.getId());
         builder.addQueryParam("start", start);
         builder.addQueryParam("limit", limit);
+
+        /* Retrieve data from the database. */
         Document doc = this.getConnection().loadUrl(builder.toURI().toString());
         int count =
                 Integer.parseInt(doc.getRootElement().getAttribute("count").getValue());
         this.cachedInstanceCount = count;
         Nodes resources = doc.query("/rsp/li");
 
+        /* Parse the data from the XML and output as an array. */
         ArrayList<String> out = new ArrayList<String>();
         for (int i = 0; i < resources.size(); i++) {
             Element elem = (Element) resources.get(i);
@@ -208,6 +241,17 @@ public class Dataset {
         return out;
     }
 
+    /**
+     * Get valid example data from instances in the database up to a certain <code>limit</code>.
+     *
+     * @param property The URI of the property you wish to retrieve.
+     * @param limit Total number of examples to retrieve.
+     * @return list of example strings
+     * @throws URISyntaxException
+     * @throws ParsingException
+     * @throws IOException
+     * @throws SAXException
+     */
     public ArrayList<String> getExampleData(String property, int limit)
             throws URISyntaxException, ParsingException, IOException, SAXException {
         int foundValues = 0;

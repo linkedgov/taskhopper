@@ -34,7 +34,7 @@ public class Problem {
     
     @GET
     @Produces({"application/javascript", "application/json"})
-    public Response getJsonp(
+    public Response getJson(
             @QueryParam("callback") @DefaultValue("callback") String callback) {
         JSONObject out = new JSONObject();
         try {

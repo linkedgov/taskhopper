@@ -5,6 +5,11 @@ import javax.naming.NamingException;
 import javax.servlet.ServletContextEvent;
 import org.linkedgov.taskhopper.Connection;
 
+/**
+ * Loads connection settings to database from web.xml upon startup.
+ *
+ * @author tom
+ */
 public class ApplicationSettings implements javax.servlet.ServletContextListener {
     public static final String needsAnExpert =
             "http://linkedgov.org/schema/task-types/needs-an-expert";

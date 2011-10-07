@@ -36,11 +36,13 @@ public class RDFToJSONTest extends TestCase {
                 "<dc:title>Example resource</dc:title>\n" +
                 "</rdf:Description>\n" +
                 "</rdf:RDF>\n";
+        
         // parse into XOM document
         Builder builder = new Builder();
         Document doc = builder.build(rdfEx, "");
         Element xml = doc.getRootElement();
-        // defining the output of the parser.
+        
+        // defining the expected output of the parser.
         JSONObject expValue = new JSONObject();
         expValue.put("value", "Example resource");
         expValue.put("type", "literal");
@@ -50,6 +52,7 @@ public class RDFToJSONTest extends TestCase {
         expProperty.put("http://purl.org/dc/elements/1.1/title", expValueArray);
         JSONObject expResult = new JSONObject();
         expResult.put("http://example.org/1", expProperty);
+        
         // do transform, check result
         JSONObject result = RDFToJSON.rdfXmlToJson(xml);
         assertEquals(expResult.toString(), result.toString());

@@ -36,53 +36,6 @@ public class TaskUpdaterTest extends TestCase {
     protected void tearDown() throws Exception {
         super.tearDown();
     }
-
-    /**
-     * Test of update method, of class TaskUpdater.
-     */
-//    public void testUpdate() {
-//        System.out.println("update");
-//        Task task = null;
-//        Map<String, String> values = null;
-//        TaskUpdater instance = null;
-//        instance.update(task, values);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-    /**
-     * Test of updateById method, of class TaskUpdater.
-     */
-//    public void testUpdateById() {
-//        System.out.println("updateById");
-//        String id = "";
-//        TaskUpdater instance = null;
-//        instance.updateById(id);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-    /**
-     * Test of merge method, of class TaskUpdater.
-     */
-//    public void testMerge() {
-//        System.out.println("merge");
-//        TaskUpdater instance = null;
-//        instance.merge();
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-    /**
-     * Test of nullifyTask method, of class TaskUpdater.
-     */
-//    public void testNullifyTask() throws Exception {
-//        System.out.println("nullifyTask");
-//        Document document = null;
-//        String taskId = "";
-//        Document expResult = null;
-//        Document result = TaskUpdater.nullifyTask(document, taskId);
-//        assertEquals(expResult, result);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
     
     /**
      * Test of editValue method, of class TaskUpdater.

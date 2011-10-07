@@ -133,8 +133,7 @@ public class Dataset {
     }
 
     /**
-     * Returns a HashMap of the dataset object, suitable for JSON output
-     * with JSON output.
+     * Returns a HashMap of the dataset object, suitable for JSON output.
      *
      * @return HashMap with title and URL of dataset.
      */

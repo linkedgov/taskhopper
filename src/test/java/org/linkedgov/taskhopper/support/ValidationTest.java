@@ -3,6 +3,7 @@ package org.linkedgov.taskhopper.support;
 import junit.framework.TestCase;
 
 /**
+ * Unit tests for the JSONP callback sanity check.
  *
  * @author tom
  */
@@ -25,8 +26,8 @@ public class ValidationTest extends TestCase {
     /**
      * Test of checkSanityOfJSONPCallback method, of class Validation.
      */
-    public void testSanitiseJSONPCallback() {
-        System.out.println("sanitiseJSONPCallback");
+    public void testcheckSanityOfJSONPCallback() {
+        System.out.println("checkSanityJSONPCallback");
         assertTrue("hello", Validation.checkSanityOfJSONPCallback("hello"));
         assertFalse("alert()", Validation.checkSanityOfJSONPCallback("alert()"));
         assertFalse("a-b", Validation.checkSanityOfJSONPCallback("a-b"));

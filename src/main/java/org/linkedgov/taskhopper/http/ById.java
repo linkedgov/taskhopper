@@ -95,7 +95,7 @@ public class ById {
         try {
             Task task = Task.byId(reqId);
             if (task != null) {
-                return ResponseHelper.JsonOrJsonp(task.toJSON(), callback);
+                return ResponseHelper.jsonOrJsonp(task.toJSON(), callback);
             } else {
                 return notFoundJson();
             }
@@ -194,7 +194,7 @@ public class ById {
                 } else {
                     Document doc = task.edit(value);
                     Instance inst = Instance.fromDocument(doc);
-                    return ResponseHelper.JsonOrJsonp(inst.toJSON(), callback);
+                    return ResponseHelper.jsonOrJsonp(inst.toJSON(), callback);
                 }
                 // Handle "nullify".
             } else if (action.equals("null")) {
@@ -205,7 +205,7 @@ public class ById {
                 } else {
                     Document doc = task.nullify();
                     Instance inst = Instance.fromDocument(doc);
-                    return ResponseHelper.JsonOrJsonp(inst.toJSON(), callback);
+                    return ResponseHelper.jsonOrJsonp(inst.toJSON(), callback);
                 }
                 // Handle "okay".
             } else if (action.equals("okay")) {
@@ -216,7 +216,7 @@ public class ById {
                 } else {
                     Document doc = task.okay();
                     Instance inst = Instance.fromDocument(doc);
-                    return ResponseHelper.JsonOrJsonp(inst.toJSON(), callback);
+                    return ResponseHelper.jsonOrJsonp(inst.toJSON(), callback);
                 }
                 // Handle "refer data to expert".
             } else if (action.equals("refer")) {
@@ -227,7 +227,7 @@ public class ById {
                 } else {
                     Document doc = task.referToExpert();
                     Instance inst = Instance.fromDocument(doc);
-                    return ResponseHelper.JsonOrJsonp(inst.toJSON(), callback);
+                    return ResponseHelper.jsonOrJsonp(inst.toJSON(), callback);
                 }
             } else {
                 return Response.noContent().build();

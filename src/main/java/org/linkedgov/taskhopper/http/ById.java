@@ -37,9 +37,7 @@ public class ById {
     /**
      * Gets XML description of task with the ID.
      *
-     * Uses get.xq
-     *
-     * @param reqId
+     * @param reqId ID of the task
      * @return XML description of task.
      */
     @GET
@@ -66,8 +64,6 @@ public class ById {
 
     /**
      * Gets JSON/JSONP description of task with the ID.
-     *
-     * Uses get.xq
      *
      * If the method query parameter is set to POST, the rest
      * of the query is passed to the POST method (<code>updateJson</code>).
@@ -96,10 +92,6 @@ public class ById {
 
         Connection conn = ApplicationSettings.getConnection();
         Task.setConnection(conn);
-
-        if (!Validation.checkSanityOfJSONPCallback(callback)) {
-            return Response.noContent().entity("Invalid JSONP callback name.").build();
-        }
 
         try {
             Task task = Task.byId(reqId);

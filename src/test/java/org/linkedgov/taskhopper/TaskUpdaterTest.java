@@ -124,9 +124,9 @@ public class TaskUpdaterTest extends TestCase {
         // to the potentially incorrect data.
         Document out = TaskUpdater.nullifyTask((Document) document.copy(), issueId);
 
-        // TODO: surely this should be checking the new main graph of the document!?
-        Model issueOne = TaskUpdater.getTaskGraphFromDocument(document, issueId);
-        assertEquals(1, issueOne.size());
+        // checks to see if the main graph is only one statement now
+        Model mainGraphAfterUpdate = TaskUpdater.getMainGraphFromDocument(out);
+        assertEquals(1, mainGraphAfterUpdate.size());
     }
 
 

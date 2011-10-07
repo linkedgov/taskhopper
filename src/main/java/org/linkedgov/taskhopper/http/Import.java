@@ -1,5 +1,6 @@
 package org.linkedgov.taskhopper.http;
 
+import org.linkedgov.taskhopper.support.ResponseHelper;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
@@ -67,7 +68,7 @@ public class Import {
 
             /* Write output. */
             Document outputDoc = new Document(root);
-            return Support.respondIfNotEmpty(outputDoc);
+            return ResponseHelper.respondIfNotEmpty(outputDoc);
         } catch (UnsupportedEncodingException ex) {
             Logger.getLogger(Import.class.getName()).log(Level.SEVERE, null, ex);
             return Response.serverError().build();

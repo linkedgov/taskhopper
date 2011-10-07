@@ -1,5 +1,6 @@
 package org.linkedgov.taskhopper.http;
 
+import org.linkedgov.taskhopper.support.ResponseHelper;
 import com.sun.jersey.api.json.JSONWithPadding;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
@@ -30,7 +31,7 @@ public class Random {
                 // return 404 Not Found if there are no tasks left!
                 return Response.status(Response.Status.NOT_FOUND).build();
             } else {
-                org.w3c.dom.Document out = Support.xomToDom(doc);
+                org.w3c.dom.Document out = ResponseHelper.xomToDom(doc);
                 return Response.ok(out).build();
             }
         } else {
@@ -39,7 +40,7 @@ public class Random {
                 // return 404 Not Found if there are no tasks left!
                 return Response.status(Response.Status.NOT_FOUND).build();
             } else {
-                org.w3c.dom.Document out = Support.xomToDom(xml);
+                org.w3c.dom.Document out = ResponseHelper.xomToDom(xml);
                 return Response.ok(out).build();
             }
         }

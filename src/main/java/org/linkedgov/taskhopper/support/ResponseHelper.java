@@ -1,4 +1,4 @@
-package org.linkedgov.taskhopper.http;
+package org.linkedgov.taskhopper.support;
 
 import com.sun.jersey.api.json.JSONWithPadding;
 import javax.ws.rs.core.Response;
@@ -10,7 +10,12 @@ import nu.xom.Elements;
 import nu.xom.converters.DOMConverter;
 import org.codehaus.jettison.json.JSONObject;
 
-public class Support {
+/**
+ * Provides useful utility methods in constructing and sending responses.
+ *
+ * @author tom
+ */
+public class ResponseHelper {
 
     public static Response JSONOrJSONP(JSONObject json, String callback) {
         if (callback == null || callback.equals("")) {
@@ -42,8 +47,7 @@ public class Support {
         if (isDocumentEmpty(doc)) {
             return Response.status(Response.Status.NOT_FOUND).build();
         } else {
-            return Response.ok(Support.xomToDom(doc)).build();
+            return Response.ok(ResponseHelper.xomToDom(doc)).build();
         }
     }
-
 }

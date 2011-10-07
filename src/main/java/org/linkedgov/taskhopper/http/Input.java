@@ -1,5 +1,6 @@
 package org.linkedgov.taskhopper.http;
 
+import org.linkedgov.taskhopper.support.ResponseHelper;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -55,7 +56,7 @@ public class Input {
             }
             Document doc = new Document(root);
             Instance inst = Instance.fromDocument(doc);
-            org.w3c.dom.Document out = Support.xomToDom(doc);
+            org.w3c.dom.Document out = ResponseHelper.xomToDom(doc);
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity(inst.toW3CDOMDocument()).build();
         }
@@ -67,7 +68,7 @@ public class Input {
             TaskSelector ts = new TaskSelector(conn);
             Task task = new Task(taskType, issueUri, graphUri);
             Document dbResponse = task.create();
-            return Support.respondIfNotEmpty(dbResponse);
+            return ResponseHelper.respondIfNotEmpty(dbResponse);
         } catch (IOException e) {
             return Response.serverError().build();
         } catch (SAXException e) {

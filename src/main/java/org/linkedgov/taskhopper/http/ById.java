@@ -1,6 +1,6 @@
 package org.linkedgov.taskhopper.http;
 
-import com.sun.jersey.api.json.JSONWithPadding;
+import org.linkedgov.taskhopper.support.ResponseHelper;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import javax.ws.rs.DefaultValue;
@@ -36,7 +36,7 @@ public class ById {
         /* Handle requests for specific tasks by ID using get.xq */
         try {
             Document doc = Task.byId(reqId).toXML();
-            return Support.respondIfNotEmpty(doc);
+            return ResponseHelper.respondIfNotEmpty(doc);
         } catch (NullPointerException e) {
             return notFoundXml();
         } catch (IOException e) {
@@ -70,7 +70,7 @@ public class ById {
         try {
             Task task = Task.byId(reqId);
             if (task != null) {
-                return Support.JSONOrJSONP(task.toJSON(), callback);
+                return ResponseHelper.JSONOrJSONP(task.toJSON(), callback);
             } else {
                 return notFoundJson();
             }
@@ -100,19 +100,19 @@ public class ById {
             if (action.equals("edit")) {
                 Task task = Task.byId(reqId);
                 Document doc = task.edit(value);
-                return Support.respondIfNotEmpty(doc);
+                return ResponseHelper.respondIfNotEmpty(doc);
             } else if (action.equals("null")) {
                 Task task = Task.byId(reqId);
                 Document doc = task.nullify();
-                return Support.respondIfNotEmpty(doc);
+                return ResponseHelper.respondIfNotEmpty(doc);
             } else if (action.equals("okay")) {
                 Task task = Task.byId(reqId);
                 Document doc = task.okay();
-                return Support.respondIfNotEmpty(doc);
+                return ResponseHelper.respondIfNotEmpty(doc);
             } else if (action.equals("refer")) {
                 Task task = Task.byId(reqId);
                 Document doc = task.referToExpert();
-                return Support.respondIfNotEmpty(doc);
+                return ResponseHelper.respondIfNotEmpty(doc);
             } else {
                 return Response.noContent().build();
             }
@@ -147,7 +147,7 @@ public class ById {
                 } else {
                     Document doc = task.edit(value);
                     Instance inst = Instance.fromDocument(doc);
-                    return Support.JSONOrJSONP(inst.toJSON(), callback);
+                    return ResponseHelper.JSONOrJSONP(inst.toJSON(), callback);
                 }
                 // Handle "nullify".
             } else if (action.equals("null")) {
@@ -157,7 +157,7 @@ public class ById {
                 } else {
                     Document doc = task.nullify();
                     Instance inst = Instance.fromDocument(doc);
-                    return Support.JSONOrJSONP(inst.toJSON(), callback);
+                    return ResponseHelper.JSONOrJSONP(inst.toJSON(), callback);
                 }
                 // Handle "okay".
             } else if (action.equals("okay")) {
@@ -167,7 +167,7 @@ public class ById {
                 } else {
                     Document doc = task.okay();
                     Instance inst = Instance.fromDocument(doc);
-                    return Support.JSONOrJSONP(inst.toJSON(), callback);
+                    return ResponseHelper.JSONOrJSONP(inst.toJSON(), callback);
                 }
                 // Handle "refer data to expert".
             } else if (action.equals("refer")) {
@@ -177,7 +177,7 @@ public class ById {
                 } else {
                     Document doc = task.referToExpert();
                     Instance inst = Instance.fromDocument(doc);
-                    return Support.JSONOrJSONP(inst.toJSON(), callback);
+                    return ResponseHelper.JSONOrJSONP(inst.toJSON(), callback);
                 }
             } else {
                 return Response.noContent().build();

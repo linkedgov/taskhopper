@@ -1,16 +1,15 @@
 package org.linkedgov.taskhopper.http;
 
+import org.linkedgov.taskhopper.support.ResponseHelper;
 import com.sun.jersey.api.json.JSONWithPadding;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
-import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import nu.xom.Document;
 import nu.xom.Element;
-import nu.xom.ParsingException;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
@@ -23,7 +22,7 @@ public class Problem {
         Element ok = new Element("ok");
         root.appendChild(ok);
         Document out = new Document(root);
-        return Support.respondIfNotEmpty(out);
+        return ResponseHelper.respondIfNotEmpty(out);
     }
     
     @GET

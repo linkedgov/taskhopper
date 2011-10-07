@@ -34,6 +34,14 @@ public class ById {
 
     private Logger log = Logger.getLogger(ById.class.getName());
 
+    /**
+     * Gets XML description of task with the ID.
+     *
+     * Uses get.xq
+     *
+     * @param reqId
+     * @return XML description of task.
+     */
     @GET
     @Produces("application/xml")
     public Response getXml(@PathParam("id") String reqId)
@@ -42,7 +50,6 @@ public class ById {
         Task.setConnection(conn);
         TaskSelector ts = new TaskSelector(conn);
 
-        /* Handle requests for specific tasks by ID using get.xq */
         try {
             Document doc = Task.byId(reqId).toXML();
             return ResponseHelper.respondIfNotEmpty(doc);
@@ -57,6 +64,22 @@ public class ById {
         }
     }
 
+    /**
+     * Gets JSON/JSONP description of task with the ID.
+     *
+     * Uses get.xq
+     *
+     * If the method query parameter is set to POST, the rest
+     * of the query is passed to the POST method (<code>updateJson</code>).
+     * This is so that JSONP users can send data back using <code>GET</code>.
+     *
+     * @param reqId ID of the task
+     * @param method to allow JSONP hack to simulate POST
+     * @param action to allow JSONP hack: passed to POST method
+     * @param value to allow JSONP hack: passed to POST method
+     * @param callback JSONP callback
+     * @return JSON/JSONP (unless fake-POST).
+     */
     @GET
     @Produces({"application/javascript", "application/json"})
     public Response getJson(@PathParam("id") String reqId,
@@ -98,6 +121,14 @@ public class ById {
         }
     }
 
+    /**
+     * Accepts a response modifying the data (edit, null, okay or refer) and completes a task.
+     *
+     * @param reqId ID of the task
+     * @param action name of the action being done
+     * @param value data that replaces the existing data
+     * @return XML representation of the instance
+     */
     @POST
     @Produces("application/xml")
     public Response update(
@@ -108,18 +139,22 @@ public class ById {
         TaskSelector ts = new TaskSelector(conn);
 
         try {
+            // Handle "Edit this task".
             if (action.equals("edit")) {
                 Task task = Task.byId(reqId);
                 Document doc = task.edit(value);
                 return ResponseHelper.respondIfNotEmpty(doc);
+            // Handle "nullify".
             } else if (action.equals("null")) {
                 Task task = Task.byId(reqId);
                 Document doc = task.nullify();
                 return ResponseHelper.respondIfNotEmpty(doc);
+            // Handle "okay"
             } else if (action.equals("okay")) {
                 Task task = Task.byId(reqId);
                 Document doc = task.okay();
                 return ResponseHelper.respondIfNotEmpty(doc);
+            // Handle "refer data to expert".
             } else if (action.equals("refer")) {
                 Task task = Task.byId(reqId);
                 Document doc = task.referToExpert();
@@ -138,6 +173,15 @@ public class ById {
         }
     }
 
+     /**
+     * Accepts a response modifying the data (edit, null, okay or refer) and completes a task.
+     * 
+     * @param reqId ID of the task
+     * @param action name of the action being done
+     * @param value data that replaces the existing data
+     * @param callback JSONP callback
+     * @return JSON representation of the instance
+     */
     @POST
     @Produces({"application/json", "application/javascript"})
     public Response updateJson(
@@ -213,10 +257,16 @@ public class ById {
         }
     }
 
+    /**
+     * @return 404 response in XML.
+     */
     public Response notFoundXml() {
         return Response.status(404).entity("<rsp><error>No task with that ID.</error></rsp>").build();
     }
 
+    /**
+     * @return 404 response in JSON.
+     */
     public Response notFoundJson() {
         return Response.status(404).entity("{\"rsp\": {\"error\": \"No task with that ID.\"}}").build();
     }

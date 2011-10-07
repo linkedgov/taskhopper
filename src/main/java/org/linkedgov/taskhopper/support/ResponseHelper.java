@@ -17,7 +17,7 @@ import org.codehaus.jettison.json.JSONObject;
  */
 public class ResponseHelper {
 
-    public static Response JSONOrJSONP(JSONObject json, String callback) {
+    public static Response jsonOrJsonp(JSONObject json, String callback) {
         if (callback == null || callback.equals("")) {
             return Response.ok(json).build();
         } else {

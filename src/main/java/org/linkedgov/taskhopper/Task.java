@@ -198,7 +198,8 @@ public class Task {
             return t;
         }
     }
-    
+
+    // TODO: javadoc
     public static Document randomWrappedXml() {
         Document xml = new Document(new Element("rsp"));
         try {
@@ -215,7 +216,8 @@ public class Task {
         }
         return xml;
     }
-    
+
+    // TODO: javadoc
     public static JSONObject randomWrappedJSON() {
         JSONObject out = new JSONObject();
         JSONArray json = new JSONArray();
@@ -240,6 +242,7 @@ public class Task {
         return out;
     }
 
+    // TODO: javadoc
     public static Task randomByType(String type)
             throws IOException, SAXException, ParsingException, URISyntaxException {
         URIBuilder uri = new URIBuilder("random_by_type.xq");
@@ -255,6 +258,7 @@ public class Task {
         }
     }
 
+    // TODO: javadoc
     public static Document randomByTypeWrappedXml(String type)
     {
         Document xml = new Document(new Element("rsp"));
@@ -273,6 +277,7 @@ public class Task {
         return xml;
     }
 
+    // TODO: javadoc
     public static JSONObject randomByTypeWrappedJson(String type)
     {
         JSONObject out = new JSONObject();
@@ -476,6 +481,7 @@ public class Task {
         return dataset;
     }
 
+    // TODO: javaDoc
     public ArrayList<String> getExampleData(int maximum)
             throws ParsingException, IOException, URISyntaxException, SAXException {
         Dataset dataset = this.getDataset();
@@ -503,11 +509,13 @@ public class Task {
         return predicate.getURI();
     }
 
+    // TODO: javadoc
     public String getBrokenValue() throws ParsingException, IOException {
         Map<String, String> issueValues = this.getIssueValuesMap();
         return issueValues.get("value");
     }
 
+    // TODO: javadoc
     public Map<String, String> getIssueValuesMap() throws ParsingException, IOException {
         Map<String, String> out = new HashMap<String, String>();
         Document xmlResp = Task.getConnection().loadUrl(this.getGraphUri());
@@ -530,6 +538,7 @@ public class Task {
         return out;
     }
 
+    // TODO: javadoc
     public void rebuildXml(int maximum) {
         Element root = new Element("task");
         root.addAttribute(new Attribute("id", this.getId()));
@@ -602,10 +611,12 @@ public class Task {
         this.xml = doc;
     }
 
+    // TODO: javadoc
     public void rebuildXml() {
         this.rebuildXml(5);
     }
 
+    // TODO: javadoc
     public boolean removeFromHopper() throws ConnectionNotFoundException {
         Task.checkConnection();
         boolean out = false;
@@ -648,6 +659,7 @@ public class Task {
         return json;
     }
 
+    // TODO: javadoc
     public Document toXML() {
         if (this.xml != null) {
             return this.xml;

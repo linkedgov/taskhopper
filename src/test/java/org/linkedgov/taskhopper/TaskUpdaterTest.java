@@ -8,6 +8,12 @@ import nu.xom.Element;
 import nu.xom.Elements;
 import nu.xom.Nodes;
 
+/**
+ * Tests for the TaskUpdater static functions: these modify instance documents
+ * based on task input completion (the tests don't write to the database though).
+ *
+ * @author tom
+ */
 public class TaskUpdaterTest extends TestCase {
     public String doc;
 

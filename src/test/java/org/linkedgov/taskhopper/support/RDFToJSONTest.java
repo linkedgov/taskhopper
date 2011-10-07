@@ -7,6 +7,11 @@ import nu.xom.Element;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONObject;
 
+/**
+ * Test case to see if the RDF/XML to RDF/JSON works.
+ *
+ * @author tom
+ */
 public class RDFToJSONTest extends TestCase {
     
     public RDFToJSONTest(String testName) {

@@ -11,6 +11,7 @@ import org.linkedgov.taskhopper.Connection;
  * @author tom
  */
 public class ApplicationSettings implements javax.servlet.ServletContextListener {
+    // TODO: extract, put in web.xml
     public static final String needsAnExpert =
             "http://linkedgov.org/schema/task-types/needs-an-expert";
 

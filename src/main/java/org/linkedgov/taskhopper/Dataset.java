@@ -182,9 +182,11 @@ public class Dataset {
         int out = 0;
 
         try {
+            // TODO: get rid of hard-coded URLs throughout
             URIBuilder builder = new URIBuilder("http://localhost:8080/");
             builder.setHost(this.getConnection().getUrl());
             builder.setPort(this.getConnection().getPort());
+            // TODO: put XQueries into config file
             builder.setPath("/exist/rest/db/linkedgov-meta/taskhopper/instance_count.xq");
             builder.addQueryParam("collection", this.getId());
             Document doc = this.getConnection().loadUrl(builder.toURI().toString());

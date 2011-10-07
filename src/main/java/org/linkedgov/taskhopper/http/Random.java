@@ -80,6 +80,7 @@ public class Random {
         } else {
             json = Task.randomByTypeWrappedJson(typeUrl);
         }
+        // TODO: use ResponseHelper
         if (callback == null || callback.equals("")) {
             return Response.ok(json).build();
         } else {

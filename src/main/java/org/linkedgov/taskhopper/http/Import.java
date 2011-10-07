@@ -26,6 +26,8 @@ import org.xml.sax.SAXException;
 /**
  * Imports issues into taskhopper from instance data.
  *
+ * TODO: expand
+ *
  * @author tom
  */
 @Path("/task/import")

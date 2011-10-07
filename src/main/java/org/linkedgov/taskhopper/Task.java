@@ -459,6 +459,9 @@ public class Task {
             title = datasetElem.getAttribute("title");
             datasetId = datasetElem.getAttribute("id");
         }
+        // TODO: see whether we need to use the default constructor here.
+        // if not, we can get rid of the default constructor and only use
+        // the full constructor.
         Dataset dataset = new Dataset();
         if (href != null) {
             dataset.setUrl(href.getValue());

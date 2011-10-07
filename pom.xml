@@ -102,7 +102,6 @@
   </dependencies>
   
   <!-- build plugins -->
-  <!-- TODO: set version number to remove warning in build -->
   <build>
     <plugins>
       <plugin>

@@ -38,9 +38,7 @@ public class ById {
             Document doc = Task.byId(reqId).toXML();
             return Support.respondIfNotEmpty(doc);
         } catch (NullPointerException e) {
-            return Response.status(404)
-                    .entity("<rsp><error>Task not found.</error></rsp>")
-                    .build();
+            return notFoundXml();
         } catch (IOException e) {
             return Response.serverError().build();
         } catch (SAXException e) {
@@ -71,11 +69,15 @@ public class ById {
 
         try {
             Task task = Task.byId(reqId);
-            if (callback == null || callback.equals("")) {
-                return Response.ok(task.toJSON()).build();
+            if (task != null) {
+                if (callback == null || callback.equals("")) {
+                    return Response.ok(task.toJSON()).build();
+                } else {
+                    JSONWithPadding json = new JSONWithPadding(task.toJSON(), callback);
+                    return Response.ok(json).build();
+                }
             } else {
-                JSONWithPadding json = new JSONWithPadding(task.toJSON(), callback);
-                return Response.ok(json).build();
+                return notFoundXml();
             }
         } catch (SAXException e) {
             return Response.serverError().build();
@@ -145,46 +147,64 @@ public class ById {
             // Handle "Edit this task".
             if (action.equals("edit")) {
                 Task task = Task.byId(reqId);
-                Document doc = task.edit(value);
-                Instance inst = Instance.fromDocument(doc);
-                if (callback == null || callback.equals("")) {
-                    return Response.ok(inst.toJSON()).build();
+                if (task == null) {
+                    return notFoundJson();
                 } else {
-                    return Response.ok(inst.toJSONP(callback)).build();
+                    Document doc = task.edit(value);
+                    Instance inst = Instance.fromDocument(doc);
+                    if (callback == null || callback.equals("")) {
+                        return Response.ok(inst.toJSON()).build();
+                    } else {
+                        return Response.ok(inst.toJSONP(callback)).build();
+                    }
                 }
-            // Handle "nullify".
+                // Handle "nullify".
             } else if (action.equals("null")) {
                 Task task = Task.byId(reqId);
-                Document doc = task.nullify();
-                Instance inst = Instance.fromDocument(doc);
-                if (callback == null || callback.equals("")) {
-                    return Response.ok(inst.toJSON()).build();
+                if (task == null) {
+                    return notFoundJson();
                 } else {
-                    return Response.ok(inst.toJSONP(callback)).build();
+                    Document doc = task.nullify();
+                    Instance inst = Instance.fromDocument(doc);
+                    if (callback == null || callback.equals("")) {
+                        return Response.ok(inst.toJSON()).build();
+                    } else {
+                        return Response.ok(inst.toJSONP(callback)).build();
+                    }
                 }
-            // Handle "okay".
+                // Handle "okay".
             } else if (action.equals("okay")) {
                 Task task = Task.byId(reqId);
-                Document doc = task.okay();
-                Instance inst = Instance.fromDocument(doc);
-                if (callback == null || callback.equals("")) {
-                    return Response.ok(inst.toJSON()).build();
+                if (task == null) {
+                    return notFoundJson();
                 } else {
-                    return Response.ok(inst.toJSONP(callback)).build();
+                    Document doc = task.okay();
+                    Instance inst = Instance.fromDocument(doc);
+                    if (callback == null || callback.equals("")) {
+                        return Response.ok(inst.toJSON()).build();
+                    } else {
+                        return Response.ok(inst.toJSONP(callback)).build();
+                    }
                 }
-            // Handle "refer data to expert".
+                // Handle "refer data to expert".
             } else if (action.equals("refer")) {
                 Task task = Task.byId(reqId);
-                Document doc = task.referToExpert();
-                Instance inst = Instance.fromDocument(doc);
-                if (callback == null || callback.equals("")) {
-                    return Response.ok(inst.toJSON()).build();
+                if (task == null) {
+                    return notFoundJson();
                 } else {
-                    return Response.ok(inst.toJSONP(callback)).build();
+                    Document doc = task.referToExpert();
+                    Instance inst = Instance.fromDocument(doc);
+                    if (callback == null || callback.equals("")) {
+                        return Response.ok(inst.toJSON()).build();
+                    } else {
+                        return Response.ok(inst.toJSONP(callback)).build();
+                    }
                 }
             } else {
                 return Response.noContent().build();
             }
+        } catch (NullPointerException e) {
+            return null;
         } catch (IOException e) {
             return Response.serverError().build();
         } catch (JSONException e) {
@@ -196,5 +216,17 @@ public class ById {
         } catch (URISyntaxException e) {
             return Response.serverError().build();
         }
+    }
+
+    public Response notFoundXml() {
+        return Response.status(404)
+                .entity("<rsp><error>No task with that ID.</error></rsp>")
+                .build();
+    }
+
+    public Response notFoundJson() {
+        return Response.status(404)
+                .entity("{\"rsp\": {\"error\": \"No task with that ID.\"}}")
+                .build();
     }
 }

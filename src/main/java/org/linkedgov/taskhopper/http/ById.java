@@ -3,6 +3,7 @@ package org.linkedgov.taskhopper.http;
 import org.linkedgov.taskhopper.support.ResponseHelper;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.logging.Logger;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
@@ -24,6 +25,8 @@ import org.xml.sax.SAXException;
 
 @Path("/task/{id: [0-9]+}")
 public class ById {
+
+    private Logger log = Logger.getLogger(ById.class.getName());
 
     @GET
     @Produces("application/xml")
@@ -57,7 +60,7 @@ public class ById {
             @QueryParam("callback") @DefaultValue("callback") String callback) {
 
         /* JSONP hack: because JSONP cannot POST, we simulate POST
-           with GET. */
+        with GET. */
         if (method != null && method.toUpperCase().equals("POST")) {
             return this.updateJson(reqId, action, value, callback);
         }
@@ -145,6 +148,7 @@ public class ById {
             if (action.equals("edit")) {
                 Task task = Task.byId(reqId);
                 if (task == null) {
+                    log.info("Task not found: " + reqId);
                     return notFoundJson();
                 } else {
                     Document doc = task.edit(value);
@@ -155,6 +159,7 @@ public class ById {
             } else if (action.equals("null")) {
                 Task task = Task.byId(reqId);
                 if (task == null) {
+                    log.info("Task not found: " + reqId);
                     return notFoundJson();
                 } else {
                     Document doc = task.nullify();
@@ -165,6 +170,7 @@ public class ById {
             } else if (action.equals("okay")) {
                 Task task = Task.byId(reqId);
                 if (task == null) {
+                    log.info("Task not found: " + reqId);
                     return notFoundJson();
                 } else {
                     Document doc = task.okay();
@@ -175,6 +181,7 @@ public class ById {
             } else if (action.equals("refer")) {
                 Task task = Task.byId(reqId);
                 if (task == null) {
+                    log.info("Task not found: " + reqId);
                     return notFoundJson();
                 } else {
                     Document doc = task.referToExpert();
@@ -185,7 +192,8 @@ public class ById {
                 return Response.noContent().build();
             }
         } catch (NullPointerException e) {
-            return null;
+            log.info("NullPointerException in ById.java: " + e);
+            return Response.serverError().build();
         } catch (IOException e) {
             return Response.serverError().build();
         } catch (JSONException e) {
@@ -200,14 +208,10 @@ public class ById {
     }
 
     public Response notFoundXml() {
-        return Response.status(404)
-                .entity("<rsp><error>No task with that ID.</error></rsp>")
-                .build();
+        return Response.status(404).entity("<rsp><error>No task with that ID.</error></rsp>").build();
     }
 
     public Response notFoundJson() {
-        return Response.status(404)
-                .entity("{\"rsp\": {\"error\": \"No task with that ID.\"}}")
-                .build();
+        return Response.status(404).entity("{\"rsp\": {\"error\": \"No task with that ID.\"}}").build();
     }
 }

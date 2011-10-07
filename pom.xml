@@ -7,6 +7,8 @@
   <version>1.0-SNAPSHOT</version>
   <name>Taskhopper</name>
   <url>http://maven.apache.org</url>
+  
+  <!-- define repositories -->
   <repositories>
     <repository>
       <id>OpenJena</id>
@@ -24,6 +26,8 @@
       </snapshots>
     </repository>
   </repositories>
+  
+  <!-- define dependencies -->
   <dependencies>
     <dependency>
       <groupId>javax.servlet</groupId>
@@ -63,7 +67,7 @@
       <artifactId>jena</artifactId>
       <version>2.6.4</version>
       <exclusions>
-        <!-- http://jira.codehaus.org/browse/MXMLBEANS-13 -->
+        <!-- Excluded per http://jira.codehaus.org/browse/MXMLBEANS-13 -->
         <exclusion>
           <artifactId>xmlbeans-jsr173-api</artifactId>
           <groupId>xmlbeans</groupId>
@@ -96,6 +100,9 @@
       <version>1.9.1</version>
     </dependency>
   </dependencies>
+  
+  <!-- build plugins -->
+  <!-- TODO: set version number to remove warning in build -->
   <build>
     <plugins>
       <plugin>
@@ -124,6 +131,8 @@
     </plugins>
     <finalName>taskhopper</finalName>
   </build>
+  
+  <!-- properties -->
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <netbeans.hint.deploy.server>J2EE</netbeans.hint.deploy.server>

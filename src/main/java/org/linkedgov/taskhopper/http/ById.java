@@ -20,7 +20,6 @@ import org.linkedgov.taskhopper.Connection;
 import org.linkedgov.taskhopper.Instance;
 import org.linkedgov.taskhopper.Task;
 import org.linkedgov.taskhopper.TaskSelector;
-import org.linkedgov.taskhopper.support.Validation;
 import org.xml.sax.SAXException;
 
 /**

@@ -19,6 +19,11 @@ import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.xml.sax.SAXException;
 
+/**
+ * Stores details for and provides convenience methods for connecting to the eXist database.
+ *
+ * @author tom
+ */
 public class Connection {
     // <editor-fold defaultstate="collapsed" desc="String url;">
 

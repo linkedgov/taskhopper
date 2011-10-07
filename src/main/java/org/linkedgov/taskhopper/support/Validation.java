@@ -24,6 +24,10 @@ public class Validation {
      * @return
      */
     public static boolean checkSanityOfJSONPCallback(String callback) {
+        if (callback.length() > 512) {
+            return false;
+        }
+        
         String[] jsKeywords = {"abstract", "boolean", "break", "byte", "case",
             "catch", "char", "class", "const", "continue", "debugger",
             "default", "delete", "do", "double", "else", "enum", "export",

@@ -48,5 +48,18 @@ public class ValidationTest extends TestCase {
 
         // This is a Unicode representation of an ASCII character, so should be fine.
         assertTrue("\u0062", Validation.checkSanityOfJSONPCallback("\u0062"));
+
+        // Super-long callback names aren't valid either.
+        String superLong = "thisisasuperlongandveryevilcallbacknamewhichwedonotlike" +
+                "thisisasuperlongandveryevilcallbacknamewhichwedonotlike" +
+                "thisisasuperlongandveryevilcallbacknamewhichwedonotlike" +
+                "thisisasuperlongandveryevilcallbacknamewhichwedonotlike" +
+                "thisisasuperlongandveryevilcallbacknamewhichwedonotlike" +
+                "thisisasuperlongandveryevilcallbacknamewhichwedonotlike" +
+                "thisisasuperlongandveryevilcallbacknamewhichwedonotlike" +
+                "thisisasuperlongandveryevilcallbacknamewhichwedonotlike" +
+                "thisisasuperlongandveryevilcallbacknamewhichwedonotlike" +
+                "thisisasuperlongandveryevilcallbacknamewhichwedonotlike";
+        assertFalse("over 512 character callback name", Validation.checkSanityOfJSONPCallback(superLong));
     }
 }

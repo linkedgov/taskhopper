@@ -4,7 +4,9 @@ import javax.ws.rs.core.*;
 import com.sun.jersey.api.core.*;
 
 /**
- * Defines media types provided by the TaskHopper.
+ * Defines media types provided by the TaskHopper. This is used for content
+ * negotiation: so you can use .xml, .json or .js extensions to get back
+ * those types of content even if you are unable to send an Accept: header.
  *
  * @author tom
  */

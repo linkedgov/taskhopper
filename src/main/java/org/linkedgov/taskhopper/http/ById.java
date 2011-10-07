@@ -56,6 +56,8 @@ public class ById {
             @QueryParam("value") String value,
             @QueryParam("callback") @DefaultValue("callback") String callback) {
 
+        /* JSONP hack: because JSONP cannot POST, we simulate POST
+           with GET. */
         if (method != null && method.toUpperCase().equals("POST")) {
             return this.updateJson(reqId, action, value, callback);
         }

@@ -13,6 +13,13 @@ import nu.xom.Element;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
+/**
+ * If during a game or other API usage, the user encounters a problem,
+ * they can send a simple GET ping back to /task/problem to notify us
+ * that there is a problem.
+ *
+ * @author tom
+ */
 @Path("/task/problem")
 public class Problem {
     @GET

@@ -14,9 +14,21 @@ import org.codehaus.jettison.json.JSONObject;
 import org.linkedgov.taskhopper.Connection;
 import org.linkedgov.taskhopper.Task;
 
+/**
+ * Resource class exposing random tasks: /task/random
+ *
+ * @author tom
+ */
 @Path("/task/random")
 public class Random {
 
+    /**
+     * Gets XML description of a random task, or a
+     * random task selected by type.
+     *
+     * @param typeUrl URL of the task type selected.
+     * @return XML description of task
+     */
     @GET
     @Produces("application/xml")
     public Response getXml(
@@ -46,6 +58,13 @@ public class Random {
         }
     }
 
+     /**
+     * Gets JSON/JSONP description of a random task, or a
+     * random task selected by type.
+     *
+     * @param typeUrl URL of the task type selected.
+     * @return JSON/JSONP description of task
+     */
     @GET
     @Produces({"application/javascript", "application/json"})
     public Response getJson(@PathParam("id") String reqId,

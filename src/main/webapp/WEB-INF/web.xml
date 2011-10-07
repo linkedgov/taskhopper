@@ -72,8 +72,4 @@
         <env-entry-type>java.lang.String</env-entry-type>
         <env-entry-value/>
     </env-entry>
-    <init-param>
-         <param-name>com.sun.jersey.spi.container.ContainerRequestFilters</param-name>
-         <param-value>foo.MyUriConnegFilter</param-value>
-    </init-param>
 </web-app>

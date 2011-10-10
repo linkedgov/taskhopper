@@ -214,7 +214,8 @@ public class Task {
         try {
             Task t = Task.random();
             if (t != null) {
-                xml.appendChild(t.toXML());
+                Element root = (Element) t.toXML().getRootElement().copy();
+                xml.getRootElement().appendChild(root);
             }
         } catch (IOException ex) {
             Task.log(ex);
@@ -285,7 +286,8 @@ public class Task {
         Document xml = new Document(new Element("rsp"));
         try {
             Task t = Task.randomByType(type);
-            xml.appendChild(t.toXML());
+            Element root = (Element) t.toXML().getRootElement().copy();
+            xml.getRootElement().appendChild(root);
         } catch (IOException ex) {
             Task.log(ex);
         } catch (SAXException ex) {

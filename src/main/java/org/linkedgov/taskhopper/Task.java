@@ -487,23 +487,12 @@ public class Task {
         Attribute datasetId = null;
         for (int i = 0; i < datasetElems.size(); i++) {
             Element datasetElem = (Element) datasetElems.get(i);
-            href = datasetElem.getAttribute("href");
             title = datasetElem.getAttribute("title");
+            href = datasetElem.getAttribute("href");
             datasetId = datasetElem.getAttribute("id");
         }
-        // TODO: see whether we need to use the default constructor here.
-        // if not, we can get rid of the default constructor and only use
-        // the full constructor.
-        Dataset dataset = new Dataset();
-        if (href != null) {
-            dataset.setUrl(href.getValue());
-        }
-        if (title != null) {
-            dataset.setTitle(title.getValue());
-        }
-        if (datasetId != null) {
-            dataset.setId(datasetId.getValue());
-        }
+        Dataset dataset = new Dataset(title.getValue(),
+            href.getValue(), datasetId.getValue());
         dataset.setConnection(Task.getConnection());
         return dataset;
     }

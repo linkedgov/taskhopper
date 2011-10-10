@@ -129,9 +129,6 @@ public class Dataset {
         this.setId(id);
     }
 
-    public Dataset() {
-    }
-
     /**
      * Returns a HashMap of the dataset object, suitable for JSON output.
      *

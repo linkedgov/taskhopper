@@ -35,7 +35,7 @@ public class Task {
     private String id;
 
     /**
-     * @return the id
+     * @return the id of the task
      */
     public String getId() {
         return id;
@@ -51,14 +51,14 @@ public class Task {
     private String taskType;
 
     /**
-     * @return the taskType
+     * @return URI of the task type.
      */
     public String getTaskType() {
         return taskType;
     }
 
     /**
-     * @param taskType the taskType to set
+     * @param taskType URI of the task type.
      */
     public void setTaskType(String taskType) {
         this.taskType = taskType;
@@ -74,7 +74,7 @@ public class Task {
     }
 
     /**
-     * @param issueUri the issueUri to set
+     * @param issueUri URI of the issue.
      */
     public void setIssueUri(String issueUri) {
         this.issueUri = issueUri;
@@ -83,14 +83,14 @@ public class Task {
     private String graphUri;
 
     /**
-     * @return the graphUri
+     * @return URI of the graph (and the document).
      */
     public String getGraphUri() {
         return graphUri;
     }
 
     /**
-     * @param graphUri the graphUri to set
+     * @param graphUri URI of the graph (and the document).
      */
     public void setGraphUri(String graphUri) {
         this.graphUri = graphUri;
@@ -127,6 +127,7 @@ public class Task {
     /**
      * Checks to see if a connection is available.
      * If not, throw <code>ConectionNotFoundException</code>.
+     *
      * @throws ConnectionNotFoundException
      */
     private static void checkConnection() throws ConnectionNotFoundException {
@@ -544,15 +545,29 @@ public class Task {
         return issueValues.get("value");
     }
 
-    // TODO: javadoc
+    /**
+     * Get map containing the value and datatype of the object represented in the issue graph.
+     *
+     * The returned value doesn't necessarily match the specified type. The type returned is
+     * the type the data should be rather than the type the data actually is.
+     *
+     * If there is no data in the issue graph (or there is data but the object of the statement
+     * is not a literal), it will return an empty map.
+     *
+     * @return map with two values: type (String: an XSD type URI) and value (String)
+     */
     public Map<String, String> getIssueValuesMap() throws ParsingException, IOException {
         Map<String, String> out = new HashMap<String, String>();
         Document xmlResp = Task.getConnection().loadUrl(this.getGraphUri());
+
+        /* Retrieve the task graph from the document */
         Model taskGraph = TaskUpdater.getTaskGraphFromDocument(xmlResp, this.getIssueUri());
-        StmtIterator stmts = taskGraph.listStatements();
-        assert (taskGraph.size() == 1);
         String resp = null;
         String datatype = null;
+
+        /* Iterate through (what should be a single statement) graph. */
+        // assert (taskGraph.size() == 1);
+        StmtIterator stmts = taskGraph.listStatements();
         while (stmts.hasNext()) {
             Statement stmt = (Statement) stmts.next();
             RDFNode object = stmt.getObject();

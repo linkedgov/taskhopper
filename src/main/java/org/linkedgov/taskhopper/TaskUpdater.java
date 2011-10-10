@@ -219,7 +219,13 @@ public class TaskUpdater {
         return document;
     }
 
-    // TODO: javadoc
+    /**
+     * Updates document to refer task to an expert.
+     *
+     * @param document XML representation of the task
+     * @param taskID URL of the task
+     * @return XML representation of the task with the issue marked as needing an expert.
+     */
     public static Document referToExpert(Document document, String taskId) {
         Element root = document.getRootElement();
         Element taskRDF = TaskUpdater.getTaskElementFromDocument(document, taskId);

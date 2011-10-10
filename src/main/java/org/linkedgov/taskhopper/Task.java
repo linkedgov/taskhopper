@@ -30,6 +30,10 @@ import org.xml.sax.SAXException;
  * @author tom
  */
 public class Task {
+    private static Logger logger = Logger.getLogger(Task.class.getName());
+    private static void log(Exception ex) {
+        Task.logger.log(Level.SEVERE, null, ex);
+    }
     // <editor-fold defaultstate="collapsed" desc="String id;">
 
     private String id;
@@ -213,11 +217,11 @@ public class Task {
                 xml.appendChild(t.toXML());
             }
         } catch (IOException ex) {
-            Logger.getLogger(Task.class.getName()).log(Level.SEVERE, null, ex);
+            Task.log(ex);
         } catch (SAXException ex) {
-            Logger.getLogger(Task.class.getName()).log(Level.SEVERE, null, ex);
+            Task.log(ex);
         } catch (ParsingException ex) {
-            Logger.getLogger(Task.class.getName()).log(Level.SEVERE, null, ex);
+            Task.log(ex);
         }
         return xml;
     }
@@ -238,15 +242,15 @@ public class Task {
             }
             out.put("rsp", json);
         } catch (IOException ex) {
-            Logger.getLogger(Task.class.getName()).log(Level.SEVERE, null, ex);
+            Task.log(ex);
         } catch (SAXException ex) {
-            Logger.getLogger(Task.class.getName()).log(Level.SEVERE, null, ex);
+            Task.log(ex);
         } catch (ParsingException ex) {
-            Logger.getLogger(Task.class.getName()).log(Level.SEVERE, null, ex);
+            Task.log(ex);
         } catch (URISyntaxException ex) {
-            Logger.getLogger(Task.class.getName()).log(Level.SEVERE, null, ex);
+            Task.log(ex);
         } catch (JSONException ex) {
-            Logger.getLogger(Task.class.getName()).log(Level.SEVERE, null, ex);
+            Task.log(ex);
         }
         return out;
     }
@@ -283,13 +287,13 @@ public class Task {
             Task t = Task.randomByType(type);
             xml.appendChild(t.toXML());
         } catch (IOException ex) {
-            Logger.getLogger(Task.class.getName()).log(Level.SEVERE, null, ex);
+            Task.log(ex);
         } catch (SAXException ex) {
-            Logger.getLogger(Task.class.getName()).log(Level.SEVERE, null, ex);
+            Task.log(ex);
         } catch (ParsingException ex) {
-            Logger.getLogger(Task.class.getName()).log(Level.SEVERE, null, ex);
+            Task.log(ex);
         } catch (URISyntaxException ex) {
-            Logger.getLogger(Task.class.getName()).log(Level.SEVERE, null, ex);
+            Task.log(ex);
         }
         return xml;
     }
@@ -310,15 +314,15 @@ public class Task {
             }
             out.put("rsp", json);
         } catch (IOException ex) {
-            Logger.getLogger(Task.class.getName()).log(Level.SEVERE, null, ex);
+            Task.log(ex);
         } catch (SAXException ex) {
-            Logger.getLogger(Task.class.getName()).log(Level.SEVERE, null, ex);
+            Task.log(ex);
         } catch (ParsingException ex) {
-            Logger.getLogger(Task.class.getName()).log(Level.SEVERE, null, ex);
+            Task.log(ex);
         } catch (URISyntaxException ex) {
-            Logger.getLogger(Task.class.getName()).log(Level.SEVERE, null, ex);
+            Task.log(ex);
         } catch (JSONException ex) {
-            Logger.getLogger(Task.class.getName()).log(Level.SEVERE, null, ex);
+            Task.log(ex);
         }
         return out;
     }
@@ -653,14 +657,14 @@ public class Task {
                 root.appendChild(exampleDataElem);
             }
 
-        } catch (ParsingException e) {
-            // TODO: Log
-        } catch (IOException e) {
-            // TODO: Log
-        } catch (URISyntaxException e) {
-            // TODO: Log
-        } catch (SAXException e) {
-            // TODO: Log
+        } catch (ParsingException ex) {
+            Task.log(ex);
+        } catch (IOException ex) {
+            Task.log(ex);
+        } catch (URISyntaxException ex) {
+            Task.log(ex);
+        } catch (SAXException ex) {
+            Task.log(ex);
         }
 
         Document doc = new Document(root);
@@ -691,11 +695,11 @@ public class Task {
                 out = true;
             }
         } catch (IOException ex) {
-            Logger.getLogger(Task.class.getName()).log(Level.SEVERE, null, ex);
+            Task.log(ex);
         } catch (SAXException ex) {
-            Logger.getLogger(Task.class.getName()).log(Level.SEVERE, null, ex);
+            Task.log(ex);
         } catch (ParsingException ex) {
-            Logger.getLogger(Task.class.getName()).log(Level.SEVERE, null, ex);
+            Task.log(ex);
         }
         return out;
     }

@@ -26,7 +26,7 @@ import org.xml.sax.SAXException;
 /**
  * Imports issues into taskhopper from instance data.
  *
- * TODO: expand
+ * For each row in a dataset, pass the URL to <code>/task/import<code> and it will import all the issues from those documents into the task hopper.
  *
  * @author tom
  */

@@ -199,7 +199,11 @@ public class Task {
         }
     }
 
-    // TODO: javadoc
+    /**
+     * Returns a random task wrapped in <code>rsp</code> element.
+     *
+     * @return Document an XML document containing an individual task wrapped.
+     */
     public static Document randomWrappedXml() {
         Document xml = new Document(new Element("rsp"));
         try {
@@ -217,7 +221,11 @@ public class Task {
         return xml;
     }
 
-    // TODO: javadoc
+    /**
+     * Returns a random task wrapped in a JSON object.
+     *
+     * @return JSONObject a JSON document containing an individual task wrapped.
+     */
     public static JSONObject randomWrappedJSON() {
         JSONObject out = new JSONObject();
         JSONArray json = new JSONArray();
@@ -242,7 +250,11 @@ public class Task {
         return out;
     }
 
-    // TODO: javadoc
+    /**
+     * Get random task from database selected by type.
+     *
+     * @return Task a random task selected by type or null if no task available
+     */
     public static Task randomByType(String type)
             throws IOException, SAXException, ParsingException, URISyntaxException {
         URIBuilder uri = new URIBuilder("random_by_type.xq");
@@ -258,7 +270,11 @@ public class Task {
         }
     }
 
-    // TODO: javadoc
+    /**
+     * Get random task from database selected by type and wrap in XML response.
+     *
+     * @return Document an XML document containing a task if one is available
+     */
     public static Document randomByTypeWrappedXml(String type)
     {
         Document xml = new Document(new Element("rsp"));
@@ -277,7 +293,11 @@ public class Task {
         return xml;
     }
 
-    // TODO: javadoc
+    /**
+     * Get random task from database selected by type and wrap in JSON response.
+     *
+     * @return JSONObject a JSON object containing a task if one is available
+     */
     public static JSONObject randomByTypeWrappedJson(String type)
     {
         JSONObject out = new JSONObject();
@@ -481,7 +501,12 @@ public class Task {
         return dataset;
     }
 
-    // TODO: javaDoc
+    /**
+     * Gets valid example data from the dataset that the task is a member of, up to a certain maximum.
+     *
+     * @param maximum the maximum number of example entries you want
+     * @return a list of the example data
+     */
     public ArrayList<String> getExampleData(int maximum)
             throws ParsingException, IOException, URISyntaxException, SAXException {
         Dataset dataset = this.getDataset();
@@ -509,7 +534,11 @@ public class Task {
         return predicate.getURI();
     }
 
-    // TODO: javadoc
+    /**
+     * Gets broken value from the document.
+     *
+     * @return String value of the broken value.
+     */
     public String getBrokenValue() throws ParsingException, IOException {
         Map<String, String> issueValues = this.getIssueValuesMap();
         return issueValues.get("value");
@@ -538,23 +567,32 @@ public class Task {
         return out;
     }
 
-    // TODO: javadoc
+    /**
+     * Rebuilds XML representation of the issue from the object.
+     *
+     * The response can then be retrieved using <code>toXML</code>
+     *
+     * @param maximum Maximum number of example values to return.
+     */
     public void rebuildXml(int maximum) {
         Element root = new Element("task");
         root.addAttribute(new Attribute("id", this.getId()));
 
+        // Add task type.
         if (this.getTaskType() != null) {
             Element taskTypeElem = new Element("task-type");
             taskTypeElem.addAttribute(new Attribute("task-type", this.getTaskType()));
             root.appendChild(taskTypeElem);
         }
 
+        // Add graph URI.
         if (this.getGraphUri() != null) {
             Element graphUriElem = new Element("graph-uri");
             graphUriElem.addAttribute(new Attribute("graph-uri", this.getGraphUri()));
             root.appendChild(graphUriElem);
         }
 
+        // Add issue URI.
         if (this.getIssueUri() != null) {
             Element issueUriElem = new Element("issue-uri");
             issueUriElem.addAttribute(new Attribute("issue-uri", this.getIssueUri()));
@@ -562,6 +600,7 @@ public class Task {
         }
 
         try {
+            // Add issue predicate.
             String issuePred = this.getIssuePredicate();
             if (issuePred != null) {
                 Element propertyElem = new Element("property");
@@ -569,6 +608,7 @@ public class Task {
                 root.appendChild(propertyElem);
             }
 
+            // Add broken value.
             Map<String, String> brokenValueMap = this.getIssueValuesMap();
             if (brokenValueMap != null) {
                 Element brokenValueElem = new Element("broken-value");
@@ -584,6 +624,7 @@ public class Task {
                 }
             }
 
+            // Add example data array.
             ArrayList<String> exampleData = this.getExampleData(maximum);
             if (exampleData != null && !(exampleData.isEmpty())) {
                 Element exampleDataElem = new Element("example-data");
@@ -598,25 +639,33 @@ public class Task {
             }
 
         } catch (ParsingException e) {
-            // Log
+            // TODO: Log
         } catch (IOException e) {
-            // Log
+            // TODO: Log
         } catch (URISyntaxException e) {
-            // Log
+            // TODO: Log
         } catch (SAXException e) {
-            // Log
+            // TODO: Log
         }
 
         Document doc = new Document(root);
         this.xml = doc;
     }
 
-    // TODO: javadoc
+    /**
+     * Rebuild XML with a default number of example data (5).
+     */
     public void rebuildXml() {
         this.rebuildXml(5);
     }
 
-    // TODO: javadoc
+    /**
+     * Removes the task from the task hopper.
+     *
+     * Uses delete.xq.
+     *
+     * @return true if removed properly from database, false otherwise.
+     */
     public boolean removeFromHopper() throws ConnectionNotFoundException {
         Task.checkConnection();
         boolean out = false;
@@ -659,7 +708,11 @@ public class Task {
         return json;
     }
 
-    // TODO: javadoc
+    /**
+     * Returns task as XML.
+     *
+     * @return Task as XML document.
+     */
     public Document toXML() {
         if (this.xml != null) {
             return this.xml;

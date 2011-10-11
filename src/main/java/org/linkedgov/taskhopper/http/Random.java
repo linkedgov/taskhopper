@@ -13,6 +13,7 @@ import nu.xom.Document;
 import org.codehaus.jettison.json.JSONObject;
 import org.linkedgov.taskhopper.Connection;
 import org.linkedgov.taskhopper.Task;
+import org.linkedgov.taskhopper.support.ResponseHelper;
 
 /**
  * Resource class exposing random tasks: /task/random
@@ -80,12 +81,7 @@ public class Random {
         } else {
             json = Task.randomByTypeWrappedJson(typeUrl);
         }
-        // TODO: use ResponseHelper
-        if (callback == null || callback.equals("")) {
-            return Response.ok(json).build();
-        } else {
-            JSONWithPadding jsonp = new JSONWithPadding(json, callback);
-            return Response.ok(jsonp).build();
-        }
+
+        return ResponseHelper.jsonOrJsonp(json, callback);
     }
 }

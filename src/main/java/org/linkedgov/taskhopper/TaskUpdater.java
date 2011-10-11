@@ -77,13 +77,8 @@ public class TaskUpdater {
          * XML document and removing the reference to the task from
          * the main RDF document. */
         Element root = document.getRootElement();
-        // TODO: switch to getTaskElementFromDocument.
-        String taskQuery = String.format("//issue[@uri = '%s']", taskId);
-        Nodes taskElems = root.query(taskQuery);
-        for (int i = 0; i < taskElems.size(); i++) {
-            Node task = taskElems.get(i);
-            task.detach();
-        }
+        Element taskElem = TaskUpdater.getTaskElementFromDocument(document, taskId);
+        taskElem.getParent().detach();
 
         /* Now modify the RDF graph to remove the statement of the form
          * <subject> <potentiallyIncorrect> <issueId> . */

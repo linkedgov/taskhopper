@@ -87,7 +87,7 @@
         <!--
             URI of the needs an expert predicate.
         -->
-        <env-env-entry-type>java.lang.String</env-env-entry-type>
+        <env-entry-type>java.lang.String</env-entry-type>
         <env-entry-value>http://linkedgov.org/schema/task-types/needs-an-expert</env-entry-value>
     </env-entry>
 </web-app>

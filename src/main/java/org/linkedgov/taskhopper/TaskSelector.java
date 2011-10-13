@@ -21,9 +21,6 @@ import java.util.ArrayList;
  * @author tom
  */
 public class TaskSelector {
-    // TODO: perhaps spin this out into an XML or Java properties file
-    public static final String potentiallyIncorrectUri =
-            "http://linkedgov.org/schema/potentiallyIncorrect";
     
     // <editor-fold defaultstate="collapsed" desc="Connection conn;">
 

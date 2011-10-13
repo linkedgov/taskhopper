@@ -178,10 +178,7 @@ public class Dataset {
         int out = 0;
 
         try {
-            // TODO: get rid of hard-coded URLs throughout
-            URIBuilder builder = new URIBuilder("http://localhost:8080/");
-            builder.setHost(this.getConnection().getUrl());
-            builder.setPort(this.getConnection().getPort());
+            URIBuilder builder = this.getConnection().getURIBuilder();
             // TODO: put XQueries into config file
             builder.setPath("/exist/rest/db/linkedgov-meta/taskhopper/instance_count.xq");
             builder.addQueryParam("collection", this.getId());
@@ -214,9 +211,7 @@ public class Dataset {
      */
     public ArrayList<String> getInstanceListing(int start, int limit) throws URISyntaxException, ParsingException, IOException, SAXException {
         /* Construct URL. */
-        URIBuilder builder = new URIBuilder("http://localhost:8080/");
-        builder.setHost(this.getConnection().getUrl());
-        builder.setPort(this.getConnection().getPort());
+        URIBuilder builder = this.getConnection().getURIBuilder();
         builder.setPath("/exist/rest/db/linkedgov-meta/taskhopper/paged_item_query.xq");
         builder.addQueryParam("collection", this.getId());
         builder.addQueryParam("start", start);
@@ -267,9 +262,7 @@ public class Dataset {
             }
             ArrayList<String> apiResults = this.getInstanceListing(start, callLimit);
             for (String result : apiResults) {
-                URIBuilder builder = new URIBuilder("http://localhost:8080/");
-                builder.setHost(this.getConnection().getUrl());
-                builder.setPort(this.getConnection().getPort());
+                URIBuilder builder = this.getConnection().getURIBuilder();
                 builder.setPath("/exist/rest" + result);
                 Document xml = this.getConnection().loadUrl(builder.toURI().toString());
                 Model model = TaskUpdater.getMainGraphFromDocument(xml);

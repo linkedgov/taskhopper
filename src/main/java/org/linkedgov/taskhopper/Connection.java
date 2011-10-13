@@ -5,6 +5,9 @@ import org.linkedgov.taskhopper.thirdparty.URIBuilder;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import nu.xom.Builder;
 import nu.xom.Document;
 import nu.xom.ParsingException;
@@ -17,6 +20,7 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
+import org.linkedgov.taskhopper.thirdparty.URIBuilder;
 import org.xml.sax.SAXException;
 
 // TODO: might be an idea to ensure the HTTP client is thread safe.
@@ -106,6 +110,23 @@ public class Connection {
                     new UsernamePasswordCredentials(this.username, this.password));
         }
         return http;
+    }
+
+    /**
+     * Creates a <code>URIBuilder</code> based on the settings in the Connection.
+     *
+     * @return a preconfigured URIBuilder
+     */
+    public URIBuilder getURIBuilder() {
+        try {
+            URIBuilder builder = new URIBuilder("http://" + this.getUrl() + ":" + this.getPort());
+            builder.setHost(this.getUrl());
+            builder.setPort(this.getPort());
+            return builder;
+        } catch(URISyntaxException ex) {
+            Logger.getLogger(TaskUpdater.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
     }
 
     /**

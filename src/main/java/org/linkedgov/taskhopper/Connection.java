@@ -23,7 +23,6 @@ import org.apache.http.auth.UsernamePasswordCredentials;
 import org.linkedgov.taskhopper.thirdparty.URIBuilder;
 import org.xml.sax.SAXException;
 
-// TODO: might be an idea to ensure the HTTP client is thread safe.
 /**
  * Stores details for and provides convenience methods for connecting to the eXist database.
  *

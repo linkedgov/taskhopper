@@ -63,8 +63,10 @@ public class Instance {
         JSONObject out = new JSONObject();
         JSONArray issues = new JSONArray();
         Elements elems = xml.getRootElement().getChildElements();
+
         for (int i = 0; i < elems.size(); i++) {
             Element elem = elems.get(i);
+
             if (elem.getLocalName().equals("dataset")) {
                 JSONObject dataset = new JSONObject();
                 dataset.putOpt("href", elem.getAttribute("href").getValue());
@@ -74,6 +76,7 @@ public class Instance {
                     out.put("dataset", dataset);
                 }
             }
+
             if (elem.getLocalName().equals("main")) {
                 JSONObject mainGraph = new JSONObject();
                 JSONObject mainGraphSerialization = RDFToJSON.rdfXmlToJson(
@@ -81,6 +84,7 @@ public class Instance {
                 mainGraph.put("rdf", mainGraphSerialization);
                 out.put("main", mainGraph);
             }
+
             if (elem.getLocalName().equals("issue")) {
                 JSONObject issue = new JSONObject();
                 issue.putOpt("task-type", elem.getAttribute("task-type").getValue());
@@ -96,6 +100,7 @@ public class Instance {
         if (issues.length() > 1) {
             out.put("issues", issues);
         }
+        
         return out;
     }
 

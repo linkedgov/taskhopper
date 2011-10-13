@@ -46,12 +46,15 @@ public class TaskSelector {
      * @param port The port number of the eXist server (e.g. 8080)
      */
     public TaskSelector(String address, Integer port) {
+
         if (address == null) {
             throw new NullPointerException("Address must be set.");
         }
+
         if (port == null) {
             port = 8080;
         }
+
         Connection newConn = new Connection(address, port);
         this.connection = newConn;
     }
@@ -124,19 +127,6 @@ public class TaskSelector {
     }
 
     /**
-     * Gets tasks sorted by priority.
-     *
-     * @return Document
-     * @throws IOException
-     * @throws SAXException
-     * @throws ParsingException
-     */
-    public Document priority() throws IOException, SAXException, ParsingException {
-        Document xml = this.getConnection().loadDocument("priority.xq", null);
-        return xml;
-    }
-
-    /**
      * Creates a task in the database.
      *
      * @param taskType
@@ -152,16 +142,21 @@ public class TaskSelector {
      */
     public Document create(String taskType, String issueUri, String graphUri, String id)
             throws IOException, SAXException, ParsingException, URISyntaxException {
+
         Map<String, String> params = new HashMap<String, String>();
+
         if (issueUri != null && issueUri.length() > 0) {
             params.put("issue-uri", issueUri);
         }
+
         if (taskType != null && taskType.length() > 0) {
             params.put("task-type", taskType);
         }
+
         if (graphUri != null && graphUri.length() > 0) {
             params.put("graph-uri", graphUri);
         }
+
         if (id != null && id.length() > 0) {
             params.put("id", id);
         }
@@ -200,6 +195,7 @@ public class TaskSelector {
         Property incorrect = model.createProperty(ApplicationSettings.potentiallyIncorrectUri);
         StmtIterator stmts = model.listStatements((Resource) null, incorrect, (Resource) null);
         ArrayList<Task> tasks = new ArrayList<Task>();
+
         while(stmts.hasNext()) {
             Statement stmt = stmts.nextStatement();
             String issueUri = stmt.getObject().toString();
@@ -207,6 +203,7 @@ public class TaskSelector {
             /* for each issue, we need to retrieve the issue type */
             String issueUriXpath = String.format("issue[@uri = '%s']", issueUri);
             Nodes issuesByUri = root.query(issueUriXpath);
+
             if (issuesByUri.size() > 0) {
                 Element issue = (Element) issuesByUri.get(0);
                 String taskType = issue.getAttribute("task-type").getValue();

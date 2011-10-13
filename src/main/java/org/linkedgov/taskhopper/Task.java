@@ -34,6 +34,7 @@ public class Task {
     private static void log(Exception ex) {
         Task.logger.log(Level.SEVERE, null, ex);
     }
+
     // <editor-fold defaultstate="collapsed" desc="String id;">
 
     private String id;
@@ -154,9 +155,11 @@ public class Task {
         if (taskType != null) {
             this.setTaskType(taskType);
         }
+
         if (issueUri != null) {
             this.setIssueUri(issueUri);
         }
+
         if (graphUri != null) {
             this.setGraphUri(graphUri);
         }
@@ -173,9 +176,11 @@ public class Task {
      */
     public static Task byId(String taskId)
             throws IOException, SAXException, ParsingException, ConnectionNotFoundException {
+
         Task.checkConnection();
         Document xml = Task.getConnection().loadDocument("get.xq?id=" + taskId, null);
         Task t = Task.xmlToTask(xml);
+
         if (t != null) {
             t.rebuildXml(5);
             return t;
@@ -211,8 +216,10 @@ public class Task {
      */
     public static Document randomWrappedXml() {
         Document xml = new Document(new Element("rsp"));
+
         try {
             Task t = Task.random();
+
             if (t != null) {
                 Element root = (Element) t.toXML().getRootElement().copy();
                 xml.getRootElement().appendChild(root);
@@ -224,6 +231,7 @@ public class Task {
         } catch (ParsingException ex) {
             Task.log(ex);
         }
+
         return xml;
     }
 
@@ -236,11 +244,14 @@ public class Task {
         JSONObject out = new JSONObject();
         JSONArray json = new JSONArray();
         Task t;
+
         try {
             t = Task.random();
+
             if (t != null) {
                 json.put(t.toJSON());
             }
+
             out.put("rsp", json);
         } catch (IOException ex) {
             Task.log(ex);
@@ -253,6 +264,7 @@ public class Task {
         } catch (JSONException ex) {
             Task.log(ex);
         }
+
         return out;
     }
 
@@ -266,6 +278,7 @@ public class Task {
         URIBuilder uri = new URIBuilder("random_by_type.xq");
         uri.addQueryParam("type", type);
         Document xml = Task.connection.loadDocument(uri);
+
         if (xml.getRootElement().getChildElements().size() == 0) {
             return null;
         } else {
@@ -284,6 +297,7 @@ public class Task {
     public static Document randomByTypeWrappedXml(String type)
     {
         Document xml = new Document(new Element("rsp"));
+
         try {
             Task t = Task.randomByType(type);
             Element root = (Element) t.toXML().getRootElement().copy();
@@ -297,6 +311,7 @@ public class Task {
         } catch (URISyntaxException ex) {
             Task.log(ex);
         }
+
         return xml;
     }
 
@@ -309,6 +324,7 @@ public class Task {
     {
         JSONObject out = new JSONObject();
         JSONArray json = new JSONArray();
+
         try {
             Task t = Task.randomByType(type);
             if (t != null) {
@@ -326,6 +342,7 @@ public class Task {
         } catch (JSONException ex) {
             Task.log(ex);
         }
+
         return out;
     }
 
@@ -346,6 +363,7 @@ public class Task {
             Task t = new Task(aTaskType, aIssueUri, aGraphUri);
             t.setId(aId);
             t.xml = xml;
+
             return t;
         } catch(NullPointerException e) {
             return null;
@@ -396,13 +414,16 @@ public class Task {
      */
     public Document nullify()
             throws ParsingException, IOException {
+
         Task.checkConnection();
         Document input = Task.getConnection().loadUrl(this.getGraphUri());
         Document output = TaskUpdater.nullifyTask(input, this.getIssueUri());
         boolean resp = Task.connection.putDocument(output, this.getGraphUri());
+
         if (resp == true) {
             boolean removed = this.removeFromHopper();
         }
+
         return output;
     }
 
@@ -415,13 +436,16 @@ public class Task {
      */
     public Document okay()
             throws ParsingException, IOException {
+
         Task.checkConnection();
         Document input = Task.getConnection().loadUrl(this.getGraphUri());
         Document output = TaskUpdater.markAsOkay(input, this.getIssueUri());
         boolean resp = Task.connection.putDocument(output, this.getGraphUri());
+
         if (resp == true) {
             boolean removed = this.removeFromHopper();
         }
+
         return output;
     }
 
@@ -445,10 +469,12 @@ public class Task {
          * have two tasks in the task list. */
         TaskSelector ts = new TaskSelector(Task.getConnection());
         ArrayList<Task> tasks = ts.importIssues(this.getGraphUri());
+
         for (Task task : tasks) {
            Logger.getLogger(Task.class.getName()).info(task.toString());
            task.create();
         }
+
         return output;
     }
 
@@ -462,13 +488,16 @@ public class Task {
      */
     public Document edit(String value)
             throws ParsingException, IOException {
+
         Task.checkConnection();
         Document input = Task.getConnection().loadUrl(this.getGraphUri());
         Document output = TaskUpdater.editValue(input, this.getIssueUri(), value, null);
         boolean resp = Task.connection.putDocument(output, this.getGraphUri());
+
         if (resp == true) {
             boolean removed = this.removeFromHopper();
         }
+
         return output;
     }
 
@@ -485,15 +514,18 @@ public class Task {
         Attribute href = null;
         Attribute title = null;
         Attribute datasetId = null;
+
         for (int i = 0; i < datasetElems.size(); i++) {
             Element datasetElem = (Element) datasetElems.get(i);
             title = datasetElem.getAttribute("title");
             href = datasetElem.getAttribute("href");
             datasetId = datasetElem.getAttribute("id");
         }
+
         Dataset dataset = new Dataset(title.getValue(),
             href.getValue(), datasetId.getValue());
         dataset.setConnection(Task.getConnection());
+
         return dataset;
     }
 
@@ -505,9 +537,11 @@ public class Task {
      */
     public ArrayList<String> getExampleData(int maximum)
             throws ParsingException, IOException, URISyntaxException, SAXException {
+
         Dataset dataset = this.getDataset();
         String issuePredicate = this.getIssuePredicate();
         ArrayList<String> out = dataset.getExampleData(issuePredicate, maximum);
+
         return out;
     }
 
@@ -523,10 +557,12 @@ public class Task {
         Model taskGraph = TaskUpdater.getTaskGraphFromDocument(xmlResp, this.getIssueUri());
         StmtIterator stmts = taskGraph.listStatements();
         Property predicate = null;
+
         while (stmts.hasNext()) {
             Statement stmt = (Statement) stmts.next();
             predicate = stmt.getPredicate();
         }
+
         return predicate.getURI();
     }
 
@@ -679,6 +715,7 @@ public class Task {
     public boolean removeFromHopper() throws ConnectionNotFoundException {
         Task.checkConnection();
         boolean out = false;
+
         try {
             Document xmlResp = Task.connection.
                     loadDocument("delete.xq?id=" + this.getId(), null);
@@ -692,6 +729,7 @@ public class Task {
         } catch (ParsingException ex) {
             Task.log(ex);
         }
+
         return out;
     }
 
@@ -706,6 +744,7 @@ public class Task {
      */
     public JSONObject toJSON()
             throws ParsingException, IOException, SAXException, URISyntaxException, JSONException {
+
         JSONObject json = new JSONObject();
         json.put("id", this.getId());
         json.put("graphUri", this.getGraphUri());
@@ -715,6 +754,7 @@ public class Task {
         json.put("dataset", this.getDataset().toMap());
         json.put("example", this.getExampleData(5));
         json.put("brokenValue", this.getIssueValuesMap());
+
         return json;
     }
 

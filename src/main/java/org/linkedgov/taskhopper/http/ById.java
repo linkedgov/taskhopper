@@ -185,7 +185,6 @@ public class ById {
 
 
         try {
-            // TODO: refactor to reduce crap
             // Handle "Edit this task".
             if (action.equals("edit")) {
                 Task task = Task.byId(reqId);

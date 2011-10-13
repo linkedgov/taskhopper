@@ -136,15 +136,19 @@ public class Dataset {
      */
     public Map<String, String> toMap() {
         Map<String, String> output = new HashMap<String, String>();
+
         if (this.getTitle() != null) {
             output.put("title", this.getTitle());
         }
+
         if (this.getUrl() != null) {
             output.put("url", this.getUrl());
         }
+
         if (this.getId() != null) {
             output.put("id", this.getId());
         }
+        
         return output;
     }
 
@@ -185,6 +189,7 @@ public class Dataset {
             Document doc = this.getConnection().loadUrl(builder.toURI().toString());
             out =
                 Integer.parseInt(doc.getRootElement().getAttribute("count").getValue());
+
             this.cachedInstanceCount = out;
             this.cachedInstanceCountLoaded = true;
         } catch (ParsingException ex) {
@@ -226,11 +231,13 @@ public class Dataset {
 
         /* Parse the data from the XML and output as an array. */
         ArrayList<String> out = new ArrayList<String>();
+
         for (int i = 0; i < resources.size(); i++) {
             Element elem = (Element) resources.get(i);
             String content = elem.getValue();
             out.add(content);
         }
+
         return out;
     }
 
@@ -247,20 +254,26 @@ public class Dataset {
      */
     public ArrayList<String> getExampleData(String property, int limit)
             throws URISyntaxException, ParsingException, IOException, SAXException {
+
         int foundValues = 0;
         int docsProcessed = 0;
         HashSet set = new HashSet<String>();
+
         while (foundValues <= limit) {
             int callLimit = 20;
+
             if (limit < 20) {
                 callLimit = limit;
             }
+
             int max = Math.max(docsProcessed, foundValues);
             int start = 0;
+
             if (docsProcessed != 0) {
                 start = docsProcessed + 1;
             }
             ArrayList<String> apiResults = this.getInstanceListing(start, callLimit);
+
             for (String result : apiResults) {
                 URIBuilder builder = this.getConnection().getURIBuilder();
                 builder.setPath("/exist/rest" + result);
@@ -278,6 +291,7 @@ public class Dataset {
                 }
                 docsProcessed += 1;
             }
+
             if (docsProcessed == this.cachedInstanceCount) {
                 break;
             }

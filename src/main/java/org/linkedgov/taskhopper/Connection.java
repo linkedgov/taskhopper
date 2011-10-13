@@ -103,11 +103,13 @@ public class Connection {
      */
     public HttpClient getClient() {
         DefaultHttpClient http = new DefaultHttpClient();
+
         if (this.username != null && this.password != null) {
             http.getCredentialsProvider().setCredentials(
                     new AuthScope(this.url, this.port),
                     new UsernamePasswordCredentials(this.username, this.password));
         }
+
         return http;
     }
 
@@ -150,6 +152,7 @@ public class Connection {
         HttpResponse response = this.getClient().execute(get);
         HttpEntity entity = response.getEntity();
         Document xml = Connection.readDocument(entity.getContent());
+
         return xml;
     }
 
@@ -164,9 +167,11 @@ public class Connection {
      */
     public Document loadDocument(String urlStub, String path)
             throws IOException, SAXException, ParsingException {
+
         if (path == null) {
             path = "/exist/rest/db/linkedgov-meta/taskhopper/";
         }
+
         HttpGet get = new HttpGet("http://" + this.getUrl() + ":"
                 + this.getPort() + path + urlStub);
         HttpResponse response = this.getClient().execute(get);
@@ -214,6 +219,7 @@ public class Connection {
     public static Document readDocument(InputStream is) throws ParsingException, IOException {
         Builder parser = new Builder();
         Document doc = parser.build(is);
+
         return doc;
     }
     
@@ -234,6 +240,7 @@ public class Connection {
         StringEntity ent = new StringEntity(xml.toXML());
         put.setEntity(ent);
         HttpResponse response = this.getClient().execute(put);
+
         if (response.getStatusLine().getStatusCode() == 201) {
             return true;
         } else {

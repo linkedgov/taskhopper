@@ -13,6 +13,7 @@ import org.linkedgov.taskhopper.Connection;
 public class ApplicationSettings implements javax.servlet.ServletContextListener {
     public static String needsAnExpert =
             "http://linkedgov.org/schema/task-types/needs-an-expert";
+
     public static String potentiallyIncorrectUri =
             "http://linkedgov.org/schema/potentiallyIncorrect";
 
@@ -57,11 +58,13 @@ public class ApplicationSettings implements javax.servlet.ServletContextListener
         if (ApplicationSettings.getServerHostName() != null) {
             Connection conn = new Connection(ApplicationSettings.getServerHostName(),
                     ApplicationSettings.getPort());
+
             if (ApplicationSettings.getUsername() != null &&
                     ApplicationSettings.getPassword() != null) {
                 conn.setUsername(ApplicationSettings.getUsername());
                 conn.setPassword(ApplicationSettings.getPassword());
             }
+
             return conn;
         } else {
             return null;

@@ -59,7 +59,7 @@ public class TaskUpdater {
     }
 
     /**
-     * Method to modify document to mark a value from a task as null.
+     * Modify document to mark a value from a task as null.
      *
      * @param document
      * @param taskId
@@ -98,22 +98,27 @@ public class TaskUpdater {
     }
 
     /**
-     * Resolves a task by moving the data from the task graph to the issue graph.
+     * Modify document to mark value as okay: effectively merging main and issue
+     * graph.
      *
      * @param document
-     * @param taskId
+     * @param issueId
      * @return a modified document with the task graph removed and the main graph updated.
      * @throws UnsupportedEncodingException
      * @throws ParsingException
      * @throws ValidityException
      * @throws IOException
      */
-    public static Document markAsOkay(Document document, String taskId)
+    public static Document markAsOkay(Document document, String issueId)
             throws UnsupportedEncodingException, ParsingException,
             ValidityException, IOException {
+
         Element root = document.getRootElement();
         Model model = TaskUpdater.getMainGraphFromDocument(document);
-        Model taskGraph = TaskUpdater.getTaskGraphFromDocument(document, taskId);
+        Model taskGraph = TaskUpdater.getTaskGraphFromDocument(document, issueId);
+        
+        /* Iterate through all statements in the task graph, copy them into
+         * main graph. */
         StmtIterator stmts = taskGraph.listStatements();
         while (stmts.hasNext()) {
             Statement stmt = (Statement) stmts.next();
@@ -125,7 +130,7 @@ public class TaskUpdater {
         /* We are done with the TaskGraph, so let's close it. */
         taskGraph.close();
         /* Remove the references from the document graph. */
-        model = TaskUpdater.removePotentiallyIncorrect(model, taskId);
+        model = TaskUpdater.removePotentiallyIncorrect(model, issueId);
 
         /* Merge the RDF graph back into document in place of the original main
          * element. */
@@ -134,8 +139,8 @@ public class TaskUpdater {
         root.getFirstChildElement("main").removeChildren();
         root.getFirstChildElement("main").insertChild(rdfOut.getRootElement().copy(), 0);
 
-        /* Finally, detach the task element from the document. */
-        TaskUpdater.getTaskElementFromDocument(document, taskId).getParent().detach();
+        /* Finally, remove the issue element from the document. */
+        TaskUpdater.getTaskElementFromDocument(document, issueId).getParent().detach();
 
         return document;
     }
@@ -163,8 +168,8 @@ public class TaskUpdater {
          * 
          * 1. the document graph is what is contained in <main />
          * 
-         * 2. the task graph is the named graph in a particular
-         *    <task />.
+         * 2. the issue graph is the named graph in a particular
+         *    <issue />.
          */
         Element root = document.getRootElement();
         Model model = TaskUpdater.getMainGraphFromDocument(document);
@@ -232,6 +237,21 @@ public class TaskUpdater {
     }
 
     /**
+     * Removes a potentially-incorrect attribute from the main model.
+     *
+     * @param model
+     * @param taskId
+     * @return
+     */
+    private static Model removePotentiallyIncorrect(Model model, String taskId) {
+        /* Now select "potentiallyIncorrect" property. */
+        Property incorrect = model.createProperty(ApplicationSettings.potentiallyIncorrectUri);
+        Resource taskIdResource = model.createResource(taskId);
+        model.removeAll((Resource) null, incorrect, taskIdResource);
+        return model;
+    }
+
+    /**
      * Takes a linkedgov document and returns the main graph from it as a Jena
      * model.
      *
@@ -245,26 +265,7 @@ public class TaskUpdater {
         Element mainDoc = root.getFirstChildElement("main");
         Element mainDocRDF = mainDoc.getFirstChildElement("RDF",
                 "http://www.w3.org/1999/02/22-rdf-syntax-ns#");
-        InputStream mainDocStream = new ByteArrayInputStream(
-                mainDocRDF.toXML().getBytes("UTF-8"));
-        Model model = ModelFactory.createDefaultModel();
-        model.read(mainDocStream, "");
-        return model;
-    }
-
-    /**
-     * Removes a potentially-incorrect attribute from the main model.
-     *
-     * @param model
-     * @param taskId
-     * @return
-     */
-    private static Model removePotentiallyIncorrect(Model model, String taskId) {
-        /* Now select "potentiallyIncorrect" property. */
-        Property incorrect = model.createProperty(ApplicationSettings.potentiallyIncorrectUri);
-        Resource taskIdResource = model.createResource(taskId);
-        model.removeAll((Resource) null, incorrect, taskIdResource);
-        return model;
+        return RDFToXOM.convertFromXOM(mainDocRDF);
     }
 
     /**

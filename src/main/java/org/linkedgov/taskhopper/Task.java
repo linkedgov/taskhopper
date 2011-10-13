@@ -427,7 +427,7 @@ public class Task {
     }
     
     /**
-     * Calls TaskUpdater.nullifyTask to mark a task as nullified.
+     * Nullifies the data in the database; removes task from taskhopper.
      *
      * @return Document containing the updated graph.
      * @throws ParsingException
@@ -448,7 +448,11 @@ public class Task {
     }
 
     /**
-     * Calls TaskUpdater.markAsOkay to mark data as okay.
+     * Marks data as okay in the database; removes task from taskhopper.
+     *
+     * When data is marked as okay, the value is moved in to the main
+     * graph without change. It is equivalent to using <code>edit</code>
+     * but submitting back the same value as given.
      *
      * @return
      * @throws ParsingException
@@ -499,8 +503,9 @@ public class Task {
     }
 
     /**
-     * Calls TaskUpdater.editValue to change the value in a graph.
-     *
+     * Modifies the incorrect value in the database to the supplied value;
+     * removes the task from the taskhopper (if successful).
+     * 
      * @param value
      * @return Document containing the updated graph.
      * @throws ParsingException

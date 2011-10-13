@@ -25,8 +25,41 @@ import org.codehaus.jettison.json.JSONException;
 import org.xml.sax.SAXException;
 
 /**
- * Data model for tasks: creates, updates, extracts data from, fixes etc.
+ * A task contains all the data necessary to give to a user in order to
+ * fix an issue in the data: this includes an ID, a task type (URI),
+ * an issue URI and a graph URI (which points to the individual data
+ * instance - i.e. the 'row' in spreadsheet/databaset terminology).
  *
+ * Inside tasks.xml, the tasks are of the form:
+ *
+ *  <pre>
+ *  {@code
+ *  <task id="1">
+ *      <task-type href="http://linkedgov.org/schema/task-types/float-error"/>
+ *      <graph-uri href="http://localhost:8080/exist/rest//db/linkedgov/dwp-electricity-use/1"/>
+ *      <issue-uri href="http://linkedgov.org/data/dwp-electricity-use/1/issue/1"/>
+ *   </task>
+ *  }
+ *  </pre>
+ *
+ * The task-type, graph-uri and issue-uri elements match up to the taskType,
+ * issueUri and graphUri properties of the Task object. The id attribute
+ * matches up with the id property.
+ *
+ * Storing a new task in the database is done through constructing
+ * a <code>Task</code> object and then using the <code>create</code> method.
+ *
+ * Modifying the tasks is done using the <code>nullify</code>, <code>okay</code>,
+ * <code>referToExpert</code> and <code>edit</code> methods.
+ *
+ * Each task is in a <code>Dataset</code> which can be accessed using <code>getDataset</code>.
+ *
+ * Once a task is done, to remove it from tasks.xml, call <code>removeFromHopper</code>.
+ *
+ * The output as served to the user of the task hopper is constructed by retrieving
+ * the broken value and example data from the database: this is done with the
+ * <code>getIssueValuesMap</code> method, as well as the <code>getExampleData</code> method.
+ * 
  * @author tom
  */
 public class Task {
@@ -72,7 +105,7 @@ public class Task {
     private String issueUri;
 
     /**
-     * @return the issueUri
+     * @return the issue URI
      */
     public String getIssueUri() {
         return issueUri;
@@ -106,6 +139,7 @@ public class Task {
      * inDatabase tells you whether the object is actually in the database or not.
      */
     private boolean inDatabase = false;
+
     /*
      * connection holds a Connection object which stores and makes calls to the database.
      *
@@ -117,28 +151,12 @@ public class Task {
         Task.connection = conn;
     }
 
-    public static Connection getConnection() {
-        return Task.connection;
-    }
-
-    public static boolean hasConnection() {
-        if (Task.getConnection() == null) {
-            return false;
-        } else {
-            return true;
-        }
-    }
-
-    /**
-     * Checks to see if a connection is available.
-     * If not, throw <code>ConectionNotFoundException</code>.
-     *
-     * @throws ConnectionNotFoundException
-     */
-    private static void checkConnection() throws ConnectionNotFoundException {
-        if (Task.getConnection() == null) {
+    public static Connection getConnection() throws ConnectionNotFoundException {
+        if (Task.connection == null) {
             throw new ConnectionNotFoundException(
                     "You need to set an connection by calling Task.setConnection()");
+        } else {
+            return Task.connection;
         }
     }
     // </editor-fold>
@@ -177,7 +195,6 @@ public class Task {
     public static Task byId(String taskId)
             throws IOException, SAXException, ParsingException, ConnectionNotFoundException {
 
-        Task.checkConnection();
         Document xml = Task.getConnection().loadDocument("get.xq?id=" + taskId, null);
         Task t = Task.xmlToTask(xml);
 
@@ -277,7 +294,7 @@ public class Task {
             throws IOException, SAXException, ParsingException, URISyntaxException {
         URIBuilder uri = new URIBuilder("random_by_type.xq");
         uri.addQueryParam("type", type);
-        Document xml = Task.connection.loadDocument(uri);
+        Document xml = Task.getConnection().loadDocument(uri);
 
         if (xml.getRootElement().getChildElements().size() == 0) {
             return null;
@@ -395,13 +412,17 @@ public class Task {
             params.put("graph-uri", this.getGraphUri());
         }
 
+<<<<<<< HEAD
         if (this.id != null && this.id.length() > 0) {
             params.put("id", this.id);
         }
 
         URIBuilder uri = new URIBuilder("new.xq");
+=======
+        URIBuilder uri = new URIBuilder(ApplicationSettings.xquery.get("new"));
+>>>>>>> c5d9f48... no longer submitting redundant task IDs
         uri.addQueryParams(params);
-        Document xmlResp = Task.connection.loadDocument(uri);
+        Document xmlResp = Task.getConnection().loadDocument(uri);
         return xmlResp;
     }
     
@@ -415,10 +436,9 @@ public class Task {
     public Document nullify()
             throws ParsingException, IOException {
 
-        Task.checkConnection();
         Document input = Task.getConnection().loadUrl(this.getGraphUri());
         Document output = TaskUpdater.nullifyTask(input, this.getIssueUri());
-        boolean resp = Task.connection.putDocument(output, this.getGraphUri());
+        boolean resp = Task.getConnection().putDocument(output, this.getGraphUri());
 
         if (resp == true) {
             boolean removed = this.removeFromHopper();
@@ -437,10 +457,9 @@ public class Task {
     public Document okay()
             throws ParsingException, IOException {
 
-        Task.checkConnection();
         Document input = Task.getConnection().loadUrl(this.getGraphUri());
         Document output = TaskUpdater.markAsOkay(input, this.getIssueUri());
-        boolean resp = Task.connection.putDocument(output, this.getGraphUri());
+        boolean resp = Task.getConnection().putDocument(output, this.getGraphUri());
 
         if (resp == true) {
             boolean removed = this.removeFromHopper();
@@ -460,10 +479,11 @@ public class Task {
      */
     public Document referToExpert()
             throws ParsingException, IOException, URISyntaxException, SAXException {
-        Task.checkConnection();
+
         Document input = Task.getConnection().loadUrl(this.getGraphUri());
         Document output = TaskUpdater.referToExpert(input, this.getIssueUri());
-        boolean resp = Task.connection.putDocument(output, this.getGraphUri());
+        boolean resp = Task.getConnection().putDocument(output, this.getGraphUri());
+
         /* No need to call removeFromHopper as the XQuery to reimport the
          * task should do the job. And if it fails, it's probably safer to
          * have two tasks in the task list. */
@@ -489,10 +509,9 @@ public class Task {
     public Document edit(String value)
             throws ParsingException, IOException {
 
-        Task.checkConnection();
         Document input = Task.getConnection().loadUrl(this.getGraphUri());
         Document output = TaskUpdater.editValue(input, this.getIssueUri(), value, null);
-        boolean resp = Task.connection.putDocument(output, this.getGraphUri());
+        boolean resp = Task.getConnection().putDocument(output, this.getGraphUri());
 
         if (resp == true) {
             boolean removed = this.removeFromHopper();
@@ -713,12 +732,18 @@ public class Task {
      * @return true if removed properly from database, false otherwise.
      */
     public boolean removeFromHopper() throws ConnectionNotFoundException {
-        Task.checkConnection();
         boolean out = false;
 
         try {
+<<<<<<< HEAD
             Document xmlResp = Task.connection.
                     loadDocument("delete.xq?id=" + this.getId(), null);
+=======
+            Document xmlResp = Task.getConnection().
+                    loadDocument(ApplicationSettings.xquery.get("delete") +
+                        "?id=" + this.getId(), null);
+
+>>>>>>> 967aa1b... removing checkConnection/hasConnection from Task
             if (xmlResp.getRootElement().getChildElements().size() == 0) {
                 out = true;
             }

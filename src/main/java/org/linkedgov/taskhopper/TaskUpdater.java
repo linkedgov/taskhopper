@@ -3,14 +3,11 @@ package org.linkedgov.taskhopper;
 import com.hp.hpl.jena.datatypes.RDFDatatype;
 import com.hp.hpl.jena.rdf.model.Literal;
 import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.Statement;
 import com.hp.hpl.jena.rdf.model.StmtIterator;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.logging.Logger;
 import nu.xom.Attribute;
@@ -279,11 +276,7 @@ public class TaskUpdater {
     public static Model getTaskGraphFromDocument(Document document, String taskId) throws UnsupportedEncodingException {
         Element taskRDF = TaskUpdater.getTaskElementFromDocument(document, taskId);
         if (taskRDF != null) {
-            InputStream mainDocStream = new ByteArrayInputStream(
-                    taskRDF.toXML().getBytes("UTF-8"));
-            Model model = ModelFactory.createDefaultModel();
-            model.read(mainDocStream, "");
-            return model;
+            return RDFToXOM.convertFromXOM(taskRDF);
         } else {
             return null;
         }

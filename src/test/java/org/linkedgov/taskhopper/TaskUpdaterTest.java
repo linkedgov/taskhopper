@@ -112,14 +112,12 @@ public class TaskUpdaterTest extends TestCase {
     /**
      * Test of getTaskGraphFromDocument method, of class TaskUpdater.
      */
-//    public void testGetTaskGraphFromDocument() throws Exception {
-//        System.out.println("getTaskGraphFromDocument");
-//        Document document = null;
-//        String taskId = "";
-//        Model expResult = null;
-//        Model result = TaskUpdater.getTaskGraphFromDocument(document, taskId);
-//        assertEquals(expResult, result);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
+    public void testGetTaskGraphFromDocument() throws Exception {
+          System.out.println("testGetTaskGraphFromDocument");
+          Builder builder = new Builder();
+          Document document = builder.build(this.doc, "");
+          String issueId = "http://linkedgov.org/data/dwp-electricity-use/1/issue/1";
+          Model result = TaskUpdater.getTaskGraphFromDocument(document, issueId);
+          assertEquals(1, result.size());
+    }
 }

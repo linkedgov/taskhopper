@@ -14,6 +14,8 @@ public class ApplicationSettings implements javax.servlet.ServletContextListener
     // TODO: extract, put in web.xml
     public static final String needsAnExpert =
             "http://linkedgov.org/schema/task-types/needs-an-expert";
+    public static String potentiallyIncorrectUri =
+            "http://linkedgov.org/schema/potentiallyIncorrect";
 
     // <editor-fold defaultstate="collapsed" desc="static String serverHostName;">
     private static String serverHostName = "localhost";
@@ -84,6 +86,7 @@ public class ApplicationSettings implements javax.servlet.ServletContextListener
         ApplicationSettings.port = (Integer) env.lookup("exist-port");
         ApplicationSettings.username = (String) env.lookup("exist-username");
         ApplicationSettings.password = (String) env.lookup("exist-password");
+        ApplicationSettings.potentiallyIncorrectUri = (String) env.lookup("uri.potentially-incorrect");
     }
 
     public void contextInitialized(ServletContextEvent sce) {

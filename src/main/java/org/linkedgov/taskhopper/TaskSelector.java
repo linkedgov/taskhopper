@@ -1,5 +1,6 @@
 package org.linkedgov.taskhopper;
 import com.hp.hpl.jena.rdf.model.*;
+import org.linkedgov.taskhopper.http.ApplicationSettings;
 import org.linkedgov.taskhopper.thirdparty.URIBuilder;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -199,7 +200,7 @@ public class TaskSelector {
         model.read(mainDocStream, "");
 
         /* Now select "potentiallyIncorrect" property. */
-        Property incorrect = model.createProperty(TaskSelector.potentiallyIncorrectUri);
+        Property incorrect = model.createProperty(ApplicationSettings.potentiallyIncorrectUri);
         StmtIterator stmts = model.listStatements((Resource) null, incorrect, (Resource) null);
         ArrayList<Task> tasks = new ArrayList<Task>();
         while(stmts.hasNext()) {

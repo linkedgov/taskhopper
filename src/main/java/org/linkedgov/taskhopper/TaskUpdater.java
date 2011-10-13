@@ -16,7 +16,6 @@ import java.util.logging.Logger;
 import nu.xom.Attribute;
 import nu.xom.Document;
 import nu.xom.Element;
-import nu.xom.Node;
 import nu.xom.Nodes;
 import nu.xom.ParsingException;
 import nu.xom.ValidityException;
@@ -262,7 +261,7 @@ public class TaskUpdater {
      */
     private static Model removePotentiallyIncorrect(Model model, String taskId) {
         /* Now select "potentiallyIncorrect" property. */
-        Property incorrect = model.createProperty(TaskSelector.potentiallyIncorrectUri);
+        Property incorrect = model.createProperty(ApplicationSettings.potentiallyIncorrectUri);
         Resource taskIdResource = model.createResource(taskId);
         model.removeAll((Resource) null, incorrect, taskIdResource);
         return model;

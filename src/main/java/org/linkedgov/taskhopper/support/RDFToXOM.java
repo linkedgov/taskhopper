@@ -58,8 +58,8 @@ public class RDFToXOM {
             } catch (IOException ex) {
                 Logger.getLogger(RDFToXOM.class.getName()).log(Level.SEVERE, null, ex);
             }
-            return model;
         }
+        return model;
     }
 
     /**
@@ -69,6 +69,8 @@ public class RDFToXOM {
      * @return
      */
     public static Model convertFromXOM(Element elem) {
-        return RDFToXOM.convertFromXOM(elem.copy().getDocument());
+        Element e = (Element) elem.copy();
+        Document doc = new Document(e);
+        return RDFToXOM.convertFromXOM(doc);
     }
 }

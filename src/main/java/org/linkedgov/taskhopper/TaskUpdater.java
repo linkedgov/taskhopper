@@ -24,6 +24,7 @@ import org.linkedgov.taskhopper.support.RDFToXOM;
  *
  * @author tom
  */
+// TODO: private most of these methods
 public class TaskUpdater {
 
     private static Logger log = Logger.getLogger(TaskUpdater.class.getName());
@@ -106,6 +107,7 @@ public class TaskUpdater {
      * @throws ValidityException
      * @throws IOException
      */
+     // TODO: try/catch/finally for the IOException (and elsewhere in class)
     public static Document markAsOkay(Document document, String issueId)
             throws UnsupportedEncodingException, ParsingException,
             ValidityException, IOException {

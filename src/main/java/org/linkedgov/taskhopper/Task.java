@@ -423,6 +423,7 @@ public class Task {
 >>>>>>> c5d9f48... no longer submitting redundant task IDs
         uri.addQueryParams(params);
         Document xmlResp = Task.getConnection().loadDocument(uri);
+        // TODO: parse response back out and modify state of the object... in a separate method
         return xmlResp;
     }
     
@@ -488,6 +489,7 @@ public class Task {
         Document output = TaskUpdater.referToExpert(input, this.getIssueUri());
         boolean resp = Task.getConnection().putDocument(output, this.getGraphUri());
 
+        // TODO: sit down and write what I've just spent 20 minutes explaining to Glyn in a comment so it makes sense to me in five years time.
         /* No need to call removeFromHopper as the XQuery to reimport the
          * task should do the job. And if it fails, it's probably safer to
          * have two tasks in the task list. */

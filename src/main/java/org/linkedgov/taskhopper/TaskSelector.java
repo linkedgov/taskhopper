@@ -1,6 +1,7 @@
 package org.linkedgov.taskhopper;
 import com.hp.hpl.jena.rdf.model.*;
 import org.linkedgov.taskhopper.http.ApplicationSettings;
+import org.linkedgov.taskhopper.support.RDFToXOM;
 import org.linkedgov.taskhopper.thirdparty.URIBuilder;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -186,11 +187,7 @@ public class TaskSelector {
         Element mainDocRDF = mainDoc.getFirstChildElement("RDF",
                 "http://www.w3.org/1999/02/22-rdf-syntax-ns#");
 
-        /* Jena requires an InputStream. */
-        InputStream mainDocStream = new ByteArrayInputStream(mainDocRDF.toXML().getBytes("UTF-8"));
-        Model model = ModelFactory.createDefaultModel();
-        model.read(mainDocStream, "");
-
+        Model model = RDFToXOM.convertFromXOM(mainDocRDF);
         /* Now select "potentiallyIncorrect" property. */
         Property incorrect = model.createProperty(ApplicationSettings.potentiallyIncorrectUri);
         StmtIterator stmts = model.listStatements((Resource) null, incorrect, (Resource) null);

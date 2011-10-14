@@ -2,6 +2,7 @@ package org.linkedgov.taskhopper;
 
 import com.hp.hpl.jena.rdf.model.Model;
 import junit.framework.TestCase;
+import junitx.util.PrivateAccessor;
 import nu.xom.Builder;
 import nu.xom.Document;
 import nu.xom.Element;
@@ -46,20 +47,27 @@ public class TaskUpdaterTest extends TestCase {
     /**
      * Test of editValue method, of class TaskUpdater.
      */
-    public void testEditValue() throws Exception {
+    public void testEditValue() throws Exception, Throwable {
         System.out.println("editValue");
         Builder builder = new Builder();
         Document document = builder.build(this.doc, "");
         String issueId = "http://linkedgov.org/data/dwp-electricity-use/1/issue/1";
-        Document out = TaskUpdater.editValue((Document) document.copy(), issueId, "99.50", null);
-        Model main = TaskUpdater.getMainGraphFromDocument(out);
+        Document out = (Document) PrivateAccessor.invoke(TaskUpdater.class,
+                "editValue",
+                new Class[] {Document.class, String.class, String.class, String.class},
+                new Object[] {(Document) document.copy(), issueId, "99.50", null});
+        
+        Model main = (Model) PrivateAccessor.invoke(TaskUpdater.class,
+                "getMainGraphFromDocument",
+                new Class[] {Document.class},
+                new Object[] {out});
         assertEquals(2, main.size());
     }
 
     /**
      * Test of getMainElementFromDocument method, and nullifyTask for single issue.
      */
-    public void testGetMainElementFromDocument() throws Exception {
+    public void testGetMainElementFromDocument() throws Exception, Throwable {
         System.out.println("getMainGraphFromDocument");
 
         // setup document.
@@ -77,15 +85,24 @@ public class TaskUpdaterTest extends TestCase {
 
         // test that we can retrieve a Jena graph from the document and that it has
         // two statements: the date and the reference to the potentially incorrect data.
-        Model main = TaskUpdater.getMainGraphFromDocument(document);
+        Model main = (Model) PrivateAccessor.invoke(TaskUpdater.class,
+                "getMainGraphFromDocument",
+                new Class[] {Document.class},
+                new Object[] {document});
         assertEquals(2, main.size());
 
         // run the document through nullify process, which should remove the reference
         // to the potentially incorrect data.
-        Document out = TaskUpdater.nullifyTask((Document) document.copy(), issueId);
+        Document out = (Document) PrivateAccessor.invoke(TaskUpdater.class,
+                "nullifyTask",
+                new Class[] {Document.class, String.class},
+                new Object[] {document.copy(), issueId});
 
         // checks to see if the main graph is only one statement now
-        Model mainGraphAfterUpdate = TaskUpdater.getMainGraphFromDocument(out);
+        Model mainGraphAfterUpdate = (Model) PrivateAccessor.invoke(TaskUpdater.class,
+                "getMainGraphFromDocument",
+                new Class[] {Document.class},
+                new Object[] {out});
         assertEquals(1, mainGraphAfterUpdate.size());
     }
 
@@ -98,26 +115,36 @@ public class TaskUpdaterTest extends TestCase {
      * that the returned document should contain only one issue and the remaining
      * graph contains only one statement.
      */
-    public void testMultipleIssuesInDocumentNullify() throws Exception {
+    public void testMultipleIssuesInDocumentNullify() throws Exception, Throwable {
         Builder builder = new Builder();
         Document document = builder.build(this.doc, "");
         String issueId = "http://linkedgov.org/data/dwp-electricity-use/1/issue/1";
         assertEquals(2, document.query("//issue").size());
-        Document out = TaskUpdater.nullifyTask((Document) document.copy(), issueId);
+        Document out = (Document) PrivateAccessor.invoke(TaskUpdater.class,
+                "nullifyTask",
+                new Class[] {Document.class, String.class},
+                new Object[] {document.copy(), issueId});
+
         assertEquals(1, out.query("//issue").size());
-        Model mainGraph = TaskUpdater.getMainGraphFromDocument(out);
+        Model mainGraph = (Model) PrivateAccessor.invoke(TaskUpdater.class,
+                "getMainGraphFromDocument",
+                new Class[] {Document.class},
+                new Object[] {out});
         assertEquals(1, mainGraph.size());
     }
 
     /**
      * Test of getTaskGraphFromDocument method, of class TaskUpdater.
      */
-    public void testGetTaskGraphFromDocument() throws Exception {
+    public void testGetTaskGraphFromDocument() throws Exception, Throwable {
           System.out.println("testGetTaskGraphFromDocument");
           Builder builder = new Builder();
           Document document = builder.build(this.doc, "");
           String issueId = "http://linkedgov.org/data/dwp-electricity-use/1/issue/1";
-          Model result = TaskUpdater.getTaskGraphFromDocument(document, issueId);
+          Model result = (Model) PrivateAccessor.invoke(TaskUpdater.class,
+                "getTaskGraphFromDocument",
+                new Class[] {Document.class, String.class},
+                new Object[] {document, issueId});
           assertEquals(1, result.size());
     }
 }

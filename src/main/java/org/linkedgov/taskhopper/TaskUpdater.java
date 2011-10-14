@@ -67,7 +67,7 @@ public class TaskUpdater {
      * @throws ValidityException
      * @throws IOException
      */
-    public static Document nullifyTask(Document document, String issueId)
+    private static Document nullifyTask(Document document, String issueId)
             throws UnsupportedEncodingException, ParsingException,
             ValidityException, IOException {
         /* Nullifying a task consists of removing the task from the
@@ -108,7 +108,7 @@ public class TaskUpdater {
      * @throws IOException
      */
      // TODO: try/catch/finally for the IOException (and elsewhere in class)
-    public static Document markAsOkay(Document document, String issueId)
+    private static Document markAsOkay(Document document, String issueId)
             throws UnsupportedEncodingException, ParsingException,
             ValidityException, IOException {
 
@@ -159,7 +159,7 @@ public class TaskUpdater {
      * @throws ValidityException
      * @throws IOException
      */
-    public static Document editValue(Document document, String taskId,
+    private static Document editValue(Document document, String taskId,
             String replacementValue, String replacementXsdType)
             throws UnsupportedEncodingException, ParsingException,
             ValidityException, IOException {
@@ -224,7 +224,7 @@ public class TaskUpdater {
      * @param taskID URL of the task
      * @return XML representation of the task with the issue marked as needing an expert.
      */
-    public static Document referToExpert(Document document, String taskId) {
+    private static Document referToExpert(Document document, String taskId) {
         Element root = document.getRootElement();
         Element taskRDF = TaskUpdater.getTaskElementFromDocument(document, taskId);
         Element task = (Element) taskRDF.getParent();
@@ -258,7 +258,7 @@ public class TaskUpdater {
      * @throws UnsupportedEncodingException
      * @return RDF model.
      */
-    public static Model getMainGraphFromDocument(Document document)
+    private static Model getMainGraphFromDocument(Document document)
             throws UnsupportedEncodingException {
         Element root = document.getRootElement();
         Element mainDoc = root.getFirstChildElement("main");
@@ -275,7 +275,7 @@ public class TaskUpdater {
      * @return
      * @throws UnsupportedEncodingException
      */
-    public static Model getTaskGraphFromDocument(Document document, String taskId) throws UnsupportedEncodingException {
+    private static Model getTaskGraphFromDocument(Document document, String taskId) throws UnsupportedEncodingException {
         Element taskRDF = TaskUpdater.getTaskElementFromDocument(document, taskId);
         if (taskRDF != null) {
             return RDFToXOM.convertFromXOM(taskRDF);

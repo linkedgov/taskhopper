@@ -59,21 +59,21 @@ public class TaskUpdater {
      * Modify document to mark a value from a task as null.
      *
      * @param document
-     * @param taskId
+     * @param issueId
      * @return
      * @throws UnsupportedEncodingException
      * @throws ParsingException
      * @throws ValidityException
      * @throws IOException
      */
-    public static Document nullifyTask(Document document, String taskId)
+    public static Document nullifyTask(Document document, String issueId)
             throws UnsupportedEncodingException, ParsingException,
             ValidityException, IOException {
         /* Nullifying a task consists of removing the task from the
          * XML document and removing the reference to the task from
          * the main RDF document. */
         Element root = document.getRootElement();
-        Element taskElem = TaskUpdater.getTaskElementFromDocument(document, taskId);
+        Element taskElem = TaskUpdater.getTaskElementFromDocument(document, issueId);
         taskElem.getParent().detach();
 
         /* Now modify the RDF graph to remove the statement of the form
@@ -82,7 +82,7 @@ public class TaskUpdater {
         Model model = TaskUpdater.getMainGraphFromDocument(document);
 
         /* Remove potentiallyIncorrect statements from graph. */
-        model = TaskUpdater.removePotentiallyIncorrect(model, taskId);
+        model = TaskUpdater.removePotentiallyIncorrect(model, issueId);
 
         /* Merge the RDF graph back into document in place of the original main
          * element. */

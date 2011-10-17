@@ -489,10 +489,17 @@ public class Task {
         Document output = TaskUpdater.referToExpert(input, this.getIssueUri());
         boolean resp = Task.getConnection().putDocument(output, this.getGraphUri());
 
-        // TODO: sit down and write what I've just spent 20 minutes explaining to Glyn in a comment so it makes sense to me in five years time.
-        /* No need to call removeFromHopper as the XQuery to reimport the
+        /* Unlike the other "update" tasks, we don't have to delete the task.
+         * When we nullify a task or edit the value or mark it as okay, we
+         * delete the task from the hopper. Here we are modifying the task in
+         * place.  We do this by modifying the document, and then reimporting
+         * it into the taskhopper.
+         * 
+         * No need to call removeFromHopper as the XQuery to reimport the
          * task should do the job. And if it fails, it's probably safer to
-         * have two tasks in the task list. */
+         * have two tasks in the task list.
+         */
+
         TaskSelector ts = new TaskSelector(Task.getConnection());
         ArrayList<Task> tasks = ts.importIssues(this.getGraphUri());
 

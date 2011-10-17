@@ -12,8 +12,6 @@ import nu.xom.Document;
 import nu.xom.Element;
 import nu.xom.Nodes;
 import org.xml.sax.SAXException;
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 import java.util.ArrayList;
 
 /**

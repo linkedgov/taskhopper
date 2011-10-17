@@ -87,8 +87,7 @@ public class TaskUpdater {
         /* Merge the RDF graph back into document in place of the original main
          * element. */
         Document rdfOut = RDFToXOM.convertToXOM(model);
-        root.getFirstChildElement("main").removeChildren();
-        root.getFirstChildElement("main").insertChild(rdfOut.getRootElement().copy(), 0);
+        document = TaskUpdater.replaceMainWith(document, rdfOut);
 
         /* Dump the whole document out. */
         return document;
@@ -134,8 +133,7 @@ public class TaskUpdater {
          * element. */
         Document rdfOut = RDFToXOM.convertToXOM(model);
         model.close();
-        root.getFirstChildElement("main").removeChildren();
-        root.getFirstChildElement("main").insertChild(rdfOut.getRootElement().copy(), 0);
+        document = TaskUpdater.replaceMainWith(document, rdfOut);
 
         /* Finally, remove the issue element from the document. */
         TaskUpdater.getIssueElementFromDocument(document, issueId).getParent().detach();
@@ -207,8 +205,7 @@ public class TaskUpdater {
          * element. */
         Document rdfOut = RDFToXOM.convertToXOM(model);
         model.close();
-        root.getFirstChildElement("main").removeChildren();
-        root.getFirstChildElement("main").insertChild(rdfOut.getRootElement().copy(), 0);
+        document = TaskUpdater.replaceMainWith(document, rdfOut);
 
         /* Finally, detach the task element from the document. */
         TaskUpdater.getIssueElementFromDocument(document, taskId).getParent().detach();
@@ -247,6 +244,13 @@ public class TaskUpdater {
         Resource taskIdResource = model.createResource(taskId);
         model.removeAll((Resource) null, incorrect, taskIdResource);
         return model;
+    }
+
+    protected static Document replaceMainWith(Document document, Document replacement) {
+        Element root = document.getRootElement();
+        root.getFirstChildElement("main").removeChildren();
+        root.getFirstChildElement("main").insertChild(replacement.getRootElement().copy(), 0);
+        return document;
     }
 
     /**

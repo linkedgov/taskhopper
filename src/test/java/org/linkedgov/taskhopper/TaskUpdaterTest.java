@@ -25,6 +25,8 @@ public class TaskUpdaterTest extends TestCase {
     @Override
     protected void setUp() throws Exception {
         super.setUp();
+
+
         this.doc = "<document>" +
                 "<dataset href=\"http://linkedgov.org/data/dwp-electricity-use/\" " +
                 "title=\"Electricity use by the DWP\" id=\"dwp-electricity-use\" />" +

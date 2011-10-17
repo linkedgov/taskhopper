@@ -24,7 +24,6 @@ import org.linkedgov.taskhopper.support.RDFToXOM;
  *
  * @author tom
  */
-// TODO: private most of these methods
 public class TaskUpdater {
 
     private static Logger log = Logger.getLogger(TaskUpdater.class.getName());
@@ -67,9 +66,9 @@ public class TaskUpdater {
      * @throws ValidityException
      * @throws IOException
      */
-    private static Document nullifyTask(Document document, String issueId)
+    protected static Document nullifyTask(Document document, String issueId)
             throws UnsupportedEncodingException, ParsingException,
-            ValidityException, IOException {
+            ValidityException, IOException, ClassNotFoundException {
         /* Nullifying a task consists of removing the task from the
          * XML document and removing the reference to the task from
          * the main RDF document. */
@@ -108,7 +107,7 @@ public class TaskUpdater {
      * @throws IOException
      */
      // TODO: try/catch/finally for the IOException (and elsewhere in class)
-    private static Document markAsOkay(Document document, String issueId)
+    protected static Document markAsOkay(Document document, String issueId)
             throws UnsupportedEncodingException, ParsingException,
             ValidityException, IOException {
 
@@ -159,7 +158,7 @@ public class TaskUpdater {
      * @throws ValidityException
      * @throws IOException
      */
-    private static Document editValue(Document document, String taskId,
+    protected static Document editValue(Document document, String taskId,
             String replacementValue, String replacementXsdType)
             throws UnsupportedEncodingException, ParsingException,
             ValidityException, IOException {
@@ -224,7 +223,7 @@ public class TaskUpdater {
      * @param taskID URL of the task
      * @return XML representation of the task with the issue marked as needing an expert.
      */
-    private static Document referToExpert(Document document, String taskId) {
+    protected static Document referToExpert(Document document, String taskId) {
         Element root = document.getRootElement();
         Element taskRDF = TaskUpdater.getTaskElementFromDocument(document, taskId);
         Element task = (Element) taskRDF.getParent();
@@ -242,7 +241,7 @@ public class TaskUpdater {
      * @param taskId
      * @return
      */
-    private static Model removePotentiallyIncorrect(Model model, String taskId) {
+    protected static Model removePotentiallyIncorrect(Model model, String taskId) {
         /* Now select "potentiallyIncorrect" property. */
         Property incorrect = model.createProperty(ApplicationSettings.potentiallyIncorrectUri);
         Resource taskIdResource = model.createResource(taskId);
@@ -258,7 +257,7 @@ public class TaskUpdater {
      * @throws UnsupportedEncodingException
      * @return RDF model.
      */
-    private static Model getMainGraphFromDocument(Document document)
+    protected static Model getMainGraphFromDocument(Document document)
             throws UnsupportedEncodingException {
         Element root = document.getRootElement();
         Element mainDoc = root.getFirstChildElement("main");
@@ -275,7 +274,7 @@ public class TaskUpdater {
      * @return
      * @throws UnsupportedEncodingException
      */
-    private static Model getTaskGraphFromDocument(Document document, String taskId) throws UnsupportedEncodingException {
+    protected static Model getTaskGraphFromDocument(Document document, String taskId) throws UnsupportedEncodingException {
         Element taskRDF = TaskUpdater.getTaskElementFromDocument(document, taskId);
         if (taskRDF != null) {
             return RDFToXOM.convertFromXOM(taskRDF);
@@ -291,7 +290,7 @@ public class TaskUpdater {
      * @param taskId
      * @return
      */
-    private static Element getTaskElementFromDocument(Document document, String taskId) {
+    protected static Element getTaskElementFromDocument(Document document, String taskId) {
         Element root = document.getRootElement();
         String taskQuery = String.format("//issue[@uri = '%s']", taskId);
         Nodes taskElems = root.query(taskQuery);

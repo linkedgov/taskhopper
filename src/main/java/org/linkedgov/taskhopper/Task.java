@@ -6,6 +6,7 @@ import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.Statement;
 import com.hp.hpl.jena.rdf.model.StmtIterator;
 import com.hp.hpl.jena.rdf.model.RDFNode;
+import java.io.UnsupportedEncodingException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.linkedgov.taskhopper.thirdparty.URIBuilder;
@@ -435,7 +436,7 @@ public class Task {
      * @throws IOException
      */
     public Document nullify()
-            throws ParsingException, IOException {
+            throws ParsingException, IOException, UnsupportedEncodingException, ValidityException, ClassNotFoundException {
 
         Document input = Task.getConnection().loadUrl(this.getGraphUri());
         Document output = TaskUpdater.nullifyTask(input, this.getIssueUri());

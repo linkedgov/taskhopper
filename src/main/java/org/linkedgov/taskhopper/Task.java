@@ -413,15 +413,11 @@ public class Task {
             params.put("graph-uri", this.getGraphUri());
         }
 
-<<<<<<< HEAD
         if (this.id != null && this.id.length() > 0) {
             params.put("id", this.id);
         }
 
         URIBuilder uri = new URIBuilder("new.xq");
-=======
-        URIBuilder uri = new URIBuilder(ApplicationSettings.xquery.get("new"));
->>>>>>> c5d9f48... no longer submitting redundant task IDs
         uri.addQueryParams(params);
         Document xmlResp = Task.getConnection().loadDocument(uri);
         // TODO: parse response back out and modify state of the object... in a separate method
@@ -435,8 +431,7 @@ public class Task {
      * @throws ParsingException
      * @throws IOException
      */
-    public Document nullify()
-            throws ParsingException, IOException, UnsupportedEncodingException, ValidityException, ClassNotFoundException {
+    public Document nullify() throws IOException, ParsingException {
 
         Document input = Task.getConnection().loadUrl(this.getGraphUri());
         Document output = TaskUpdater.nullifyTask(input, this.getIssueUri());
@@ -750,15 +745,8 @@ public class Task {
         boolean out = false;
 
         try {
-<<<<<<< HEAD
             Document xmlResp = Task.connection.
                     loadDocument("delete.xq?id=" + this.getId(), null);
-=======
-            Document xmlResp = Task.getConnection().
-                    loadDocument(ApplicationSettings.xquery.get("delete") +
-                        "?id=" + this.getId(), null);
-
->>>>>>> 967aa1b... removing checkConnection/hasConnection from Task
             if (xmlResp.getRootElement().getChildElements().size() == 0) {
                 out = true;
             }

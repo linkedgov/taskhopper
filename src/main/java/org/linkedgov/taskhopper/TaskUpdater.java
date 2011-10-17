@@ -9,6 +9,7 @@ import com.hp.hpl.jena.rdf.model.Statement;
 import com.hp.hpl.jena.rdf.model.StmtIterator;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import nu.xom.Attribute;
 import nu.xom.Document;
@@ -62,32 +63,32 @@ public class TaskUpdater {
      * @param issueId
      * @return
      * @throws UnsupportedEncodingException
-     * @throws ParsingException
      * @throws ValidityException
-     * @throws IOException
      */
-    protected static Document nullifyTask(Document document, String issueId)
-            throws UnsupportedEncodingException, ParsingException,
-            ValidityException, IOException, ClassNotFoundException {
+    protected static Document nullifyTask(Document document, String issueId) {
         /* Nullifying a task consists of removing the task from the
          * XML document and removing the reference to the task from
          * the main RDF document. */
         Element root = document.getRootElement();
-        Element taskElem = TaskUpdater.getIssueElementFromDocument(document, issueId);
-        taskElem.getParent().detach();
+        try {
+            Element taskElem = TaskUpdater.getIssueElementFromDocument(document, issueId);
+            taskElem.getParent().detach();
 
-        /* Now modify the RDF graph to remove the statement of the form
-         * <subject> <potentiallyIncorrect> <issueId> . */
-        /* First, we read in the RDF */
-        Model model = TaskUpdater.getMainGraphFromDocument(document);
+            /* Now modify the RDF graph to remove the statement of the form
+             * <subject> <potentiallyIncorrect> <issueId> . */
+            /* First, we read in the RDF */
+            Model model = TaskUpdater.getMainGraphFromDocument(document);
 
-        /* Remove potentiallyIncorrect statements from graph. */
-        model = TaskUpdater.removePotentiallyIncorrect(model, issueId);
+            /* Remove potentiallyIncorrect statements from graph. */
+            model = TaskUpdater.removePotentiallyIncorrect(model, issueId);
 
-        /* Merge the RDF graph back into document in place of the original main
-         * element. */
-        Document rdfOut = RDFToXOM.convertToXOM(model);
-        document = TaskUpdater.replaceMainWith(document, rdfOut);
+            /* Merge the RDF graph back into document in place of the original main
+             * element. */
+            Document rdfOut = RDFToXOM.convertToXOM(model);
+            document = TaskUpdater.replaceMainWith(document, rdfOut);
+        } catch(IOException ex) {
+            TaskUpdater.log.log(Level.SEVERE, "issue ID: " + issueId, ex);
+        }
 
         /* Dump the whole document out. */
         return document;
@@ -105,38 +106,39 @@ public class TaskUpdater {
      * @throws ValidityException
      * @throws IOException
      */
-     // TODO: try/catch/finally for the IOException (and elsewhere in class)
-    protected static Document markAsOkay(Document document, String issueId)
-            throws UnsupportedEncodingException, ParsingException,
-            ValidityException, IOException {
+    protected static Document markAsOkay(Document document, String issueId) {
 
         Element root = document.getRootElement();
-        Model model = TaskUpdater.getMainGraphFromDocument(document);
-        Model issueGraph = TaskUpdater.getIssueGraphFromDocument(document, issueId);
+        try {
+            Model model = TaskUpdater.getMainGraphFromDocument(document);
+            Model issueGraph = TaskUpdater.getIssueGraphFromDocument(document, issueId);
         
-        /* Iterate through all statements in the task graph, copy them into
-         * main graph. */
-        StmtIterator stmts = issueGraph.listStatements();
-        while (stmts.hasNext()) {
-            Statement stmt = (Statement) stmts.next();
-            Statement newStmt = model.createStatement(
+            /* Iterate through all statements in the task graph, copy them into
+             * main graph. */
+            StmtIterator stmts = issueGraph.listStatements();
+            while (stmts.hasNext()) {
+                Statement stmt = (Statement) stmts.next();
+                Statement newStmt = model.createStatement(
                     stmt.getSubject(), stmt.getPredicate(), stmt.getObject());
-            model.add(newStmt);
+                model.add(newStmt);
+            }
+
+            /* We are done with the issue graph, so let's close it. */
+            issueGraph.close();
+            /* Remove the references from the document graph. */
+            model = TaskUpdater.removePotentiallyIncorrect(model, issueId);
+
+            /* Merge the RDF graph back into document in place of the original main
+             * element. */
+            Document rdfOut = RDFToXOM.convertToXOM(model);
+            model.close();
+            document = TaskUpdater.replaceMainWith(document, rdfOut);
+
+            /* Finally, remove the issue element from the document. */
+            TaskUpdater.getIssueElementFromDocument(document, issueId).getParent().detach();
+        } catch(IOException e) {
+            TaskUpdater.log.log(Level.SEVERE, "issueId: " + issueId, e);
         }
-
-        /* We are done with the issue graph, so let's close it. */
-        issueGraph.close();
-        /* Remove the references from the document graph. */
-        model = TaskUpdater.removePotentiallyIncorrect(model, issueId);
-
-        /* Merge the RDF graph back into document in place of the original main
-         * element. */
-        Document rdfOut = RDFToXOM.convertToXOM(model);
-        model.close();
-        document = TaskUpdater.replaceMainWith(document, rdfOut);
-
-        /* Finally, remove the issue element from the document. */
-        TaskUpdater.getIssueElementFromDocument(document, issueId).getParent().detach();
 
         return document;
     }
@@ -156,7 +158,7 @@ public class TaskUpdater {
      * @throws ValidityException
      * @throws IOException
      */
-    protected static Document editValue(Document document, String taskId,
+    protected static Document editValue(Document document, String issueId,
             String replacementValue, String replacementXsdType)
             throws UnsupportedEncodingException, ParsingException,
             ValidityException, IOException {
@@ -167,49 +169,53 @@ public class TaskUpdater {
          * 2. the issue graph is the named graph in a particular
          *    <issue />.
          */
-        Element root = document.getRootElement();
-        Model model = TaskUpdater.getMainGraphFromDocument(document);
-        Model issueGraph = TaskUpdater.getIssueGraphFromDocument(document, taskId);
+        try {
+            Element root = document.getRootElement();
+            Model model = TaskUpdater.getMainGraphFromDocument(document);
+            Model issueGraph = TaskUpdater.getIssueGraphFromDocument(document, issueId);
 
-        StmtIterator stmts = issueGraph.listStatements();
-        while (stmts.hasNext()) {
-            Statement stmt = (Statement) stmts.next();
+            StmtIterator stmts = issueGraph.listStatements();
+            while (stmts.hasNext()) {
+                Statement stmt = (Statement) stmts.next();
 
-            /* Type mangling. We don't want to change the type. We may need to
-             * do so in the future to implement replacementXsdType.
-             *
-             * Until that point, we'll respect the type on the existing literal
-             * including if it has no type (in which case existingDatatype
-             * will be null).
-             */
-            RDFDatatype existingDatatype = null;
+                /* Type mangling. We don't want to change the type. We may need to
+                 * do so in the future to implement replacementXsdType.
+                 *
+                 * Until that point, we'll respect the type on the existing literal
+                 * including if it has no type (in which case existingDatatype
+                 * will be null).
+                 */
+                RDFDatatype existingDatatype = null;
 
-            if (stmt.getObject().isLiteral()) {
-                Literal existingLiteral = (Literal) stmt.getObject();
-                existingDatatype = existingLiteral.getDatatype();
+                if (stmt.getObject().isLiteral()) {
+                    Literal existingLiteral = (Literal) stmt.getObject();
+                    existingDatatype = existingLiteral.getDatatype();
+                }
+                Literal replacementValueWrapped = model.createTypedLiteral(
+                        replacementValue, existingDatatype);
+
+                Statement newStmt = model.createStatement(stmt.getSubject(), stmt.getPredicate(), replacementValueWrapped);
+
+                /* Add to the document graph rather than the task graph. */
+                model.add(newStmt);
             }
-            Literal replacementValueWrapped = model.createTypedLiteral(
-                    replacementValue, existingDatatype);
+            /* We are done with the issue graph, so let's close it. */
+            issueGraph.close();
+            /* Remove the references from the document graph. */
+            model = TaskUpdater.removePotentiallyIncorrect(model, issueId);
 
-            Statement newStmt = model.createStatement(stmt.getSubject(), stmt.getPredicate(), replacementValueWrapped);
+            /* Merge the RDF graph back into document in place of the original main
+             * element. */
+            Document rdfOut = RDFToXOM.convertToXOM(model);
+            model.close();
+            document = TaskUpdater.replaceMainWith(document, rdfOut);
 
-            /* Add to the document graph rather than the task graph. */
-            model.add(newStmt);
+            /* Finally, detach the task element from the document. */
+            TaskUpdater.getIssueElementFromDocument(document, issueId).getParent().detach();
+        } catch(IOException e) {
+            TaskUpdater.log.log(Level.SEVERE, "issueId: " + issueId, e);
         }
-        /* We are done with the issue graph, so let's close it. */
-        issueGraph.close();
-        /* Remove the references from the document graph. */
-        model = TaskUpdater.removePotentiallyIncorrect(model, taskId);
-
-        /* Merge the RDF graph back into document in place of the original main
-         * element. */
-        Document rdfOut = RDFToXOM.convertToXOM(model);
-        model.close();
-        document = TaskUpdater.replaceMainWith(document, rdfOut);
-
-        /* Finally, detach the task element from the document. */
-        TaskUpdater.getIssueElementFromDocument(document, taskId).getParent().detach();
-
+        
         return document;
     }
 

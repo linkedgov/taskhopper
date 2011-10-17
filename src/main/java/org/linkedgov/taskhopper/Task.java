@@ -588,8 +588,8 @@ public class Task {
      */
     public String getIssuePredicate() throws ParsingException, IOException {
         Document xmlResp = Task.getConnection().loadUrl(this.getGraphUri());
-        Model taskGraph = TaskUpdater.getTaskGraphFromDocument(xmlResp, this.getIssueUri());
-        StmtIterator stmts = taskGraph.listStatements();
+        Model issueGraph = TaskUpdater.getIssueGraphFromDocument(xmlResp, this.getIssueUri());
+        StmtIterator stmts = issueGraph.listStatements();
         Property predicate = null;
 
         while (stmts.hasNext()) {
@@ -626,13 +626,13 @@ public class Task {
         Document xmlResp = Task.getConnection().loadUrl(this.getGraphUri());
 
         /* Retrieve the task graph from the document */
-        Model taskGraph = TaskUpdater.getTaskGraphFromDocument(xmlResp, this.getIssueUri());
+        Model issueGraph = TaskUpdater.getIssueGraphFromDocument(xmlResp, this.getIssueUri());
         String resp = null;
         String datatype = null;
 
         /* Iterate through (what should be a single statement) graph. */
-        // assert (taskGraph.size() == 1);
-        StmtIterator stmts = taskGraph.listStatements();
+        // assert (issueGraph.size() == 1);
+        StmtIterator stmts = issueGraph.listStatements();
         while (stmts.hasNext()) {
             Statement stmt = (Statement) stmts.next();
             RDFNode object = stmt.getObject();

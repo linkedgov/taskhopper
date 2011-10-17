@@ -73,7 +73,7 @@ public class TaskUpdater {
          * XML document and removing the reference to the task from
          * the main RDF document. */
         Element root = document.getRootElement();
-        Element taskElem = TaskUpdater.getTaskElementFromDocument(document, issueId);
+        Element taskElem = TaskUpdater.getIssueElementFromDocument(document, issueId);
         taskElem.getParent().detach();
 
         /* Now modify the RDF graph to remove the statement of the form
@@ -113,11 +113,11 @@ public class TaskUpdater {
 
         Element root = document.getRootElement();
         Model model = TaskUpdater.getMainGraphFromDocument(document);
-        Model taskGraph = TaskUpdater.getTaskGraphFromDocument(document, issueId);
+        Model issueGraph = TaskUpdater.getIssueGraphFromDocument(document, issueId);
         
         /* Iterate through all statements in the task graph, copy them into
          * main graph. */
-        StmtIterator stmts = taskGraph.listStatements();
+        StmtIterator stmts = issueGraph.listStatements();
         while (stmts.hasNext()) {
             Statement stmt = (Statement) stmts.next();
             Statement newStmt = model.createStatement(
@@ -125,8 +125,8 @@ public class TaskUpdater {
             model.add(newStmt);
         }
 
-        /* We are done with the TaskGraph, so let's close it. */
-        taskGraph.close();
+        /* We are done with the issue graph, so let's close it. */
+        issueGraph.close();
         /* Remove the references from the document graph. */
         model = TaskUpdater.removePotentiallyIncorrect(model, issueId);
 
@@ -138,7 +138,7 @@ public class TaskUpdater {
         root.getFirstChildElement("main").insertChild(rdfOut.getRootElement().copy(), 0);
 
         /* Finally, remove the issue element from the document. */
-        TaskUpdater.getTaskElementFromDocument(document, issueId).getParent().detach();
+        TaskUpdater.getIssueElementFromDocument(document, issueId).getParent().detach();
 
         return document;
     }
@@ -171,9 +171,9 @@ public class TaskUpdater {
          */
         Element root = document.getRootElement();
         Model model = TaskUpdater.getMainGraphFromDocument(document);
-        Model taskGraph = TaskUpdater.getTaskGraphFromDocument(document, taskId);
+        Model issueGraph = TaskUpdater.getIssueGraphFromDocument(document, taskId);
 
-        StmtIterator stmts = taskGraph.listStatements();
+        StmtIterator stmts = issueGraph.listStatements();
         while (stmts.hasNext()) {
             Statement stmt = (Statement) stmts.next();
 
@@ -198,8 +198,8 @@ public class TaskUpdater {
             /* Add to the document graph rather than the task graph. */
             model.add(newStmt);
         }
-        /* We are done with the TaskGraph, so let's close it. */
-        taskGraph.close();
+        /* We are done with the issue graph, so let's close it. */
+        issueGraph.close();
         /* Remove the references from the document graph. */
         model = TaskUpdater.removePotentiallyIncorrect(model, taskId);
 
@@ -211,7 +211,7 @@ public class TaskUpdater {
         root.getFirstChildElement("main").insertChild(rdfOut.getRootElement().copy(), 0);
 
         /* Finally, detach the task element from the document. */
-        TaskUpdater.getTaskElementFromDocument(document, taskId).getParent().detach();
+        TaskUpdater.getIssueElementFromDocument(document, taskId).getParent().detach();
 
         return document;
     }
@@ -225,7 +225,7 @@ public class TaskUpdater {
      */
     protected static Document referToExpert(Document document, String taskId) {
         Element root = document.getRootElement();
-        Element taskRDF = TaskUpdater.getTaskElementFromDocument(document, taskId);
+        Element taskRDF = TaskUpdater.getIssueElementFromDocument(document, taskId);
         Element task = (Element) taskRDF.getParent();
         Attribute taskType = task.getAttribute("task-type");
         taskType.setLocalName("original-task-type");
@@ -274,10 +274,10 @@ public class TaskUpdater {
      * @return
      * @throws UnsupportedEncodingException
      */
-    protected static Model getTaskGraphFromDocument(Document document, String taskId) throws UnsupportedEncodingException {
-        Element taskRDF = TaskUpdater.getTaskElementFromDocument(document, taskId);
-        if (taskRDF != null) {
-            return RDFToXOM.convertFromXOM(taskRDF);
+    protected static Model getIssueGraphFromDocument(Document document, String taskId) throws UnsupportedEncodingException {
+        Element issue = TaskUpdater.getIssueElementFromDocument(document, taskId);
+        if (issue != null) {
+            return RDFToXOM.convertFromXOM(issue);
         } else {
             return null;
         }
@@ -290,17 +290,17 @@ public class TaskUpdater {
      * @param taskId
      * @return
      */
-    protected static Element getTaskElementFromDocument(Document document, String taskId) {
+    protected static Element getIssueElementFromDocument(Document document, String taskId) {
         Element root = document.getRootElement();
-        String taskQuery = String.format("//issue[@uri = '%s']", taskId);
-        Nodes taskElems = root.query(taskQuery);
-        if (taskElems.size() == 0) {
+        String issueQuery = String.format("//issue[@uri = '%s']", taskId);
+        Nodes issueElems = root.query(issueQuery);
+        if (issueElems.size() == 0) {
             return null;
         } else {
-            Element task = (Element) taskElems.get(0);
-            Element taskRDF = task.getFirstChildElement("RDF",
+            Element issue = (Element) issueElems.get(0);
+            Element issueRDF = issue.getFirstChildElement("RDF",
                     "http://www.w3.org/1999/02/22-rdf-syntax-ns#");
-            return taskRDF;
+            return issueRDF;
         }
     }
 }

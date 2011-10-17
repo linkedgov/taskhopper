@@ -136,15 +136,15 @@ public class TaskUpdaterTest extends TestCase {
     }
 
     /**
-     * Test of getTaskGraphFromDocument method, of class TaskUpdater.
+     * Test of getIssueGraphFromDocument method, of class TaskUpdater.
      */
-    public void testGetTaskGraphFromDocument() throws Exception, Throwable {
-          System.out.println("testGetTaskGraphFromDocument");
+    public void testGetIssueGraphFromDocument() throws Exception, Throwable {
+          System.out.println("testGetIssueGraphFromDocument");
           Builder builder = new Builder();
           Document document = builder.build(this.doc, "");
           String issueId = "http://linkedgov.org/data/dwp-electricity-use/1/issue/1";
           Model result = (Model) PrivateAccessor.invoke(TaskUpdater.class,
-                "getTaskGraphFromDocument",
+                "getIssueGraphFromDocument",
                 new Class[] {Document.class, String.class},
                 new Object[] {document, issueId});
           assertEquals(1, result.size());

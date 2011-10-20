@@ -318,8 +318,11 @@ public class Task {
 
         try {
             Task t = Task.randomByType(type);
-            Element root = (Element) t.toXML().getRootElement().copy();
-            xml.getRootElement().appendChild(root);
+
+            if (t != null) {
+                Element root = (Element) t.toXML().getRootElement().copy();
+                xml.getRootElement().appendChild(root);
+            }
         } catch (IOException ex) {
             Task.log(ex);
         } catch (SAXException ex) {

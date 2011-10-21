@@ -183,7 +183,6 @@ public class Dataset {
 
         try {
             URIBuilder builder = this.getConnection().getURIBuilder();
-            // TODO: put XQueries into config file
             builder.setPath("/exist/rest/db/linkedgov-meta/taskhopper/instance_count.xq");
             builder.addQueryParam("collection", this.getId());
             Document doc = this.getConnection().loadUrl(builder.toURI().toString());

@@ -22,7 +22,9 @@ import org.linkedgov.taskhopper.thirdparty.URIBuilder;
 import org.xml.sax.SAXException;
 
 /**
- * Hold information about datasets and extract metadata from database.
+ * Provides convenience functions related to the dataset as a whole.
+ *
+ * Primarily this is the ability to retrieve the number of instances in a dataset and getting example dataset.
  *
  * @author tom
  */

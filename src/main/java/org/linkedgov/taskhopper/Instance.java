@@ -59,6 +59,38 @@ public class Instance {
      * @throws IOException
      * @throws JSONException
      */
+
+    /* Example JSON response:
+     * 
+     * {
+     *     "dataset": {
+     *         "href": "http://linkedgov.org/data/dwp-electricity-use/", 
+     *         "id": "dwp-electricity-use", 
+     *         "title": "Electricity use by the DWP"
+     *     }, 
+     *     "main": {
+     *         "rdf": {
+     *             "http://linkedgov.org/data/dwp-electricity-use/1": {
+     *                 "http://linkedgov.org/schema/date": [
+     *                     {
+     *                         "datatype": "http://www.w3.org/2001/XMLSchema#date", 
+     *                         "type": "literal", 
+     *                         "value": "2011-09-07"
+     *                     }
+     *                 ], 
+     *                 "http://linkedgov.org/schema/kwhUsed": [
+     *                     {
+     *                         "datatype": "http://www.w3.org/2001/XMLSchema#float", 
+     *                         "type": "literal", 
+     *                         "value": "99,50"
+     *                     }
+     *                 ]
+     *             }
+     *         }
+     *     }
+     * }
+     */
+
     public JSONObject toJSON() throws IOException, JSONException {
         JSONObject out = new JSONObject();
         JSONArray issues = new JSONArray();

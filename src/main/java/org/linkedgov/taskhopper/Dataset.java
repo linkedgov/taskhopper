@@ -260,19 +260,22 @@ public class Dataset {
         int docsProcessed = 0;
         HashSet set = new HashSet<String>();
 
+        // paged iteration: we're trying to find a certain number of values up to a limit
         while (foundValues <= limit) {
+            // call limit is the number of documents to retrieve from a particular iteration
             int callLimit = 20;
 
             if (limit < 20) {
                 callLimit = limit;
             }
 
-            int max = Math.max(docsProcessed, foundValues);
             int start = 0;
 
+            // add number of rows processed so far
             if (docsProcessed != 0) {
                 start = docsProcessed + 1;
             }
+
             ArrayList<String> apiResults = this.getInstanceListing(start, callLimit);
 
             for (String result : apiResults) {
@@ -293,6 +296,8 @@ public class Dataset {
                 docsProcessed += 1;
             }
 
+            // if we iterate through all the instances in the dataset
+            // (and haven't yet hit the limit), break
             if (docsProcessed == this.cachedInstanceCount) {
                 break;
             }

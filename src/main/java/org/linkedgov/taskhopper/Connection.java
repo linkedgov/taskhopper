@@ -1,7 +1,6 @@
 package org.linkedgov.taskhopper;
 
 import java.io.UnsupportedEncodingException;
-import org.linkedgov.taskhopper.thirdparty.URIBuilder;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
@@ -23,7 +22,6 @@ import org.apache.http.auth.UsernamePasswordCredentials;
 import org.linkedgov.taskhopper.thirdparty.URIBuilder;
 import org.xml.sax.SAXException;
 
-// TODO: might be an idea to ensure the HTTP client is thread safe.
 /**
  * Stores details for and provides convenience methods for connecting to the eXist database.
  *
@@ -150,9 +148,11 @@ public class Connection {
      */
     public Document loadUrl(String url) throws ParsingException, IOException {
         HttpGet get = new HttpGet(url);
-        HttpResponse response = this.getClient().execute(get);
+        HttpClient client = this.getClient();
+        HttpResponse response = client.execute(get);
         HttpEntity entity = response.getEntity();
         Document xml = Connection.readDocument(entity.getContent());
+        client.getConnectionManager().shutdown();
 
         return xml;
     }
@@ -175,9 +175,11 @@ public class Connection {
 
         HttpGet get = new HttpGet("http://" + this.getUrl() + ":"
                 + this.getPort() + path + urlStub);
-        HttpResponse response = this.getClient().execute(get);
+        HttpClient client = this.getClient();
+        HttpResponse response = client.execute(get);
         HttpEntity entity = response.getEntity();
         Document xml = Connection.readDocument(entity.getContent());
+        client.getConnectionManager().shutdown();
         return xml;
     }
 
@@ -237,10 +239,12 @@ public class Connection {
     public boolean putDocument(Document xml, String url)
             throws UnsupportedEncodingException, IOException, ParsingException {
         HttpPut put = new HttpPut(url);
+        HttpClient client = this.getClient();
         put.addHeader("Content-Type", "application/xml");
         StringEntity ent = new StringEntity(xml.toXML());
         put.setEntity(ent);
-        HttpResponse response = this.getClient().execute(put);
+        HttpResponse response = client.execute(put);
+        client.getConnectionManager().shutdown();
 
         if (response.getStatusLine().getStatusCode() == 201) {
             return true;

@@ -78,7 +78,7 @@
         <!--
             URI of the potentially incorrect predicate.
         -->
-        <env-env-entry-type>java.lang.String</env-env-entry-type>
+        <env-entry-type>java.lang.String</env-entry-type>
         <env-entry-value>http://linkedgov.org/schema/potentiallyIncorrect</env-entry-value>
     </env-entry>
 
